@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Sandstorm
 {
-    class Camera
+    public class Camera
     {
         public enum CameraMode
         {

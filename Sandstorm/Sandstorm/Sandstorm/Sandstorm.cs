@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Sandstorm.Terrain;
+using Sandstorm.ParticleSystem;
+
 
 namespace Sandstorm
 {
@@ -16,6 +18,7 @@ namespace Sandstorm
         Camera _camera;
         CameraController _cameraController;
         HeightMap _heightMap;
+        Galaxy _particleSystem;
 
         public Sandstorm()
         {
@@ -44,6 +47,7 @@ namespace Sandstorm
             _cameraController = new CameraController(_camera);
 
             _heightMap = new HeightMap(GraphicsDevice, Content, _camera);
+            _particleSystem = new Galaxy(GraphicsDevice, Content, _camera);
 
             base.Initialize();
         }
@@ -87,7 +91,10 @@ namespace Sandstorm
                 this.Exit();
 
             // TODO: Add your update logic here
-            _cameraController.Update(gameTime);
+            if(this.IsActive) //Update only if its in focus
+                _cameraController.Update(gameTime);
+
+            _particleSystem.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -101,6 +108,7 @@ namespace Sandstorm
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _heightMap.Draw();
+            _particleSystem.Draw();
 
             base.Draw(gameTime);
         }
