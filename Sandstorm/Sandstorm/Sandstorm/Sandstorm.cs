@@ -3,8 +3,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Sandstorm.Terrain;
+using Sandstorm.ParticleSystem;
 using System.Windows.Forms;
 using System.Diagnostics;
+
 
 namespace Sandstorm
 {
@@ -21,6 +23,7 @@ namespace Sandstorm
         HeightMap _heightMap;
         SandstormEditor _editor;
         SandstormBeamer _beamer;
+        Galaxy _particleSystem;
 
         public Sandstorm(SandstormEditor editor, SandstormBeamer beamer)
         {
@@ -62,6 +65,7 @@ namespace Sandstorm
             _orthoCamera = new Camera(new Viewport(0, 0, _beamer.panel1.Width, _beamer.panel1.Height));
             _orthoCamera.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
             _orthoCamera.Type = Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
+            _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera);
 
             _heightMap = new HeightMap(GraphicsDevice, Content);
 
@@ -134,6 +138,8 @@ namespace Sandstorm
             if (_editor.panel1.Focused)
                 _cameraController.Update(gameTime);
 
+            _particleSystem.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -145,6 +151,7 @@ namespace Sandstorm
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _heightMap.Draw(_perspCamera);
+            _particleSystem.Draw();
             GraphicsDevice.Present(null, null, _editor.panel1.Handle);
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
