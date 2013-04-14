@@ -12,6 +12,12 @@ namespace Sandstorm
             CAMERA_MODE_FLIGHT
         }
 
+        public enum ProjectionType
+        {
+            PERSPECTIVE_PROJECTION,
+            ORTHOGRAPHIC_PROJECTION
+        }
+
         private Vector3 WORLD_XAXIS = new Vector3(1f, 0f, 0f);
         private Vector3 WORLD_YAXIS = new Vector3(0f, 1f, 0f);
         private Vector3 WORLD_ZAXIS = new Vector3(0f, 0f, 1f);
@@ -25,6 +31,9 @@ namespace Sandstorm
         private Vector3 _lookAt = new Vector3(0f);
         private Vector3 _eyePos = new Vector3(0f);
         private Quaternion _orientation = new Quaternion(0f, 0f, 0f, 1f);
+        private ProjectionType _type = ProjectionType.PERSPECTIVE_PROJECTION;
+        private int _orthoWidth;
+        private int _orthoHeight;
 
         private float _pitch;
 
@@ -37,6 +46,12 @@ namespace Sandstorm
 
             UpdateViewMatrix();
             UpdateProjectionMatrix();
+        }
+
+        public Quaternion Orientation
+        {
+            get { return _orientation; }
+            set { _orientation = value; UpdateViewMatrix(); }
         }
 
         public float FarPlane 
@@ -66,13 +81,23 @@ namespace Sandstorm
         public Viewport Viewport
         {
             get { return _viewport; }
-            set { _viewport = value; UpdateProjectionMatrix(); }
+            set 
+            { 
+                _viewport = value; 
+                UpdateProjectionMatrix(); 
+            }
         }
 
         public CameraMode Mode
         {
             get { return _mode; }
             set { _mode = value; }
+        }
+
+        public ProjectionType Type
+        {
+            get { return _type; }
+            set { _type = value; UpdateProjectionMatrix(); }
         }
 
         public Matrix ViewMatrix
@@ -169,7 +194,33 @@ namespace Sandstorm
 
         public void UpdateProjectionMatrix()
         {
-            Matrix.CreatePerspectiveFieldOfView(_fieldOfView, _viewport.AspectRatio, _nearPlane, _farPlane, out _projMatrix);
+            int width, height;
+
+            if (_viewport.Width > _viewport.Height)
+            {
+                height = 510;
+                width = (_viewport.Width * height / _viewport.Height);
+            }
+            else if (_viewport.Width < _viewport.Height)
+            {
+                width = 510;
+                height = (_viewport.Height * width / _viewport.Width);
+            }
+            else
+            {
+                width = 510;
+                height = 510;
+            }
+
+            switch (_type)
+            {
+                case ProjectionType.PERSPECTIVE_PROJECTION:
+                    Matrix.CreatePerspectiveFieldOfView(_fieldOfView, _viewport.AspectRatio, _nearPlane, _farPlane, out _projMatrix);
+                    break;
+                case ProjectionType.ORTHOGRAPHIC_PROJECTION:
+                    Matrix.CreateOrthographic(width, height, _nearPlane, _farPlane, out _projMatrix);
+                    break;
+            }
         }
 
         public void UpdateViewMatrix()

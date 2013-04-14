@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Sandstorm.Terrain;
+using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Sandstorm
 {
@@ -13,12 +15,18 @@ namespace Sandstorm
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Camera _camera;
+        Camera _perspCamera;
+        Camera _orthoCamera;
         CameraController _cameraController;
         HeightMap _heightMap;
+        SandstormEditor _editor;
+        SandstormBeamer _beamer;
 
-        public Sandstorm()
+        public Sandstorm(SandstormEditor editor, SandstormBeamer beamer)
         {
+            _editor = editor;
+            _beamer = beamer;
+            Mouse.WindowHandle = _editor.Handle;
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -31,26 +39,65 @@ namespace Sandstorm
         /// </summary>
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferWidth = 500;
-            graphics.PreferredBackBufferHeight = 500;
+            Form xnaWindow = (Form)Control.FromHandle((this.Window.Handle));
+            xnaWindow.GotFocus += new EventHandler(xnaWindow_GotFocus);
+            _editor.Show();
+            _beamer.Show();
+
+            graphics.PreferredBackBufferWidth = _editor.panel1.Width;
+            graphics.PreferredBackBufferHeight = _editor.panel1.Height;
+            graphics.PreferMultiSampling = true;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
 
-            this.IsMouseVisible = true;
-            this.Window.AllowUserResizing = true;
-            this.Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
+            _beamer.panel1.Resize += new EventHandler(_beamer_ResizeEnd);
+            _editor.panel1.Resize += new EventHandler(_editor_ResizeEnd);
 
-            _camera = new Camera(GraphicsDevice.Viewport);
-            _cameraController = new CameraController(_camera);
+            // Create perspective camera for the editor
+            _perspCamera = new Camera(new Viewport(0, 0, _editor.panel1.Width, _editor.panel1.Height));
+            _perspCamera.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver4);
+            _cameraController = new CameraController(_perspCamera);
 
-            _heightMap = new HeightMap(GraphicsDevice, Content, _camera);
+            // Create orthographic camera for the beamer
+            _orthoCamera = new Camera(new Viewport(0, 0, _beamer.panel1.Width, _beamer.panel1.Height));
+            _orthoCamera.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
+            _orthoCamera.Type = Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
+
+            _heightMap = new HeightMap(GraphicsDevice, Content);
 
             base.Initialize();
         }
 
-        void Window_ClientSizeChanged(object sender, EventArgs e)
+        void xnaWindow_GotFocus(object sender, EventArgs e)
         {
-            _camera.Viewport = GraphicsDevice.Viewport;
+            ((Form)sender).Visible = false;
+            _editor.TopMost = false;
+        }
+
+        void _beamer_ResizeEnd(object sender, EventArgs e)
+        {
+            if (_beamer.panel1.Width > GraphicsDevice.Viewport.Width || 
+                _beamer.panel1.Height > GraphicsDevice.Viewport.Height)
+            {
+                graphics.PreferredBackBufferWidth = _beamer.panel1.Width;
+                graphics.PreferredBackBufferHeight = _beamer.panel1.Height;
+                graphics.ApplyChanges();
+            }
+
+            _orthoCamera.Viewport = new Viewport(0, 0, _beamer.panel1.Width, _beamer.panel1.Height);
+        }
+
+        void _editor_ResizeEnd(object sender, EventArgs e)
+        {
+            if (_editor.panel1.Width > GraphicsDevice.Viewport.Width || 
+                _editor.panel1.Height > GraphicsDevice.Viewport.Height)
+            {
+                graphics.PreferredBackBufferWidth = _editor.panel1.Width;
+                graphics.PreferredBackBufferHeight = _editor.panel1.Height;
+                graphics.ApplyChanges();
+            }
+
+            _perspCamera.Viewport = new Viewport(0, 0, _editor.panel1.Width, _editor.panel1.Height);
         }
 
         /// <summary>
@@ -59,9 +106,6 @@ namespace Sandstorm
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
             // TODO: use this.Content to load your game content here
             _heightMap.GenerateHeightField(512, 512);
         }
@@ -83,11 +127,12 @@ namespace Sandstorm
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
                 this.Exit();
 
             // TODO: Add your update logic here
-            _cameraController.Update(gameTime);
+            if (_editor.panel1.Focused)
+                _cameraController.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -99,10 +144,12 @@ namespace Sandstorm
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            _heightMap.Draw(_perspCamera);
+            GraphicsDevice.Present(null, null, _editor.panel1.Handle);
 
-            _heightMap.Draw();
-
-            base.Draw(gameTime);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            _heightMap.Draw(_orthoCamera);
+            GraphicsDevice.Present(null, null, _beamer.panel1.Handle);
         }
     }
 }

@@ -7,16 +7,14 @@ namespace Sandstorm.Terrain
     class HeightMap
     {
         Effect _effect;
-        Camera _camera;
         Texture2D _heightMap;
         GraphicsDevice _graphicsDevice;
         ContentManager _contentManager;
         VertexPositionTexture[] _vertices;
         int[] _indices;
 
-        public HeightMap(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, Camera pCamera)
+        public HeightMap(GraphicsDevice pGraphicsDevice, ContentManager pContentManager)
         {
-            _camera = pCamera;
             _graphicsDevice = pGraphicsDevice;
             _contentManager = pContentManager;
 
@@ -77,7 +75,7 @@ namespace Sandstorm.Terrain
 
         }
 
-        public void Draw()
+        public void Draw(Camera pCamera)
         {
             RasterizerState rs = new RasterizerState();
             rs.CullMode = CullMode.None;
@@ -85,8 +83,8 @@ namespace Sandstorm.Terrain
             _graphicsDevice.RasterizerState = rs;
 
             _effect.CurrentTechnique = _effect.Techniques["Terrain"];
-            _effect.Parameters["viewMatrix"].SetValue(_camera.ViewMatrix);
-            _effect.Parameters["projMatrix"].SetValue(_camera.ProjMatrix);
+            _effect.Parameters["viewMatrix"].SetValue(pCamera.ViewMatrix);
+            _effect.Parameters["projMatrix"].SetValue(pCamera.ProjMatrix);
             _effect.Parameters["worldMatrix"].SetValue(Matrix.Identity);
             _effect.Parameters["heightMap"].SetValue(_heightMap);
 
