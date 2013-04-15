@@ -81,6 +81,7 @@ namespace Sandstorm.Terrain
             rs.CullMode = CullMode.None;
             //rs.FillMode = FillMode.WireFrame;
             _graphicsDevice.RasterizerState = rs;
+            _graphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             _effect.CurrentTechnique = _effect.Techniques["Terrain"];
             _effect.Parameters["viewMatrix"].SetValue(pCamera.ViewMatrix);
