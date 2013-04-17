@@ -18,6 +18,8 @@ namespace TestApp.ViewModels
         // hier kommt die ViewModel Implementation hin
         KinectSensor  sensor;
 
+        ProjectorWindow m_ProjectorWindow;
+
         private WriteableBitmap colorBitmap;
         private DepthImagePixel[] depthPixels;
         private byte[] colorPixels;
@@ -31,6 +33,8 @@ namespace TestApp.ViewModels
         ICommand m_StopKinectCommand;
         ICommand m_SetColor;
         ICommand m_SetDepth;
+        ICommand m_OpenProjectorWindowCommand;
+        ICommand m_CloseProjectorWindowCommand;
 
         #endregion
 
@@ -79,9 +83,20 @@ namespace TestApp.ViewModels
             get { return m_SetDepth ?? (m_SetDepth = new RelayCommand(this.SetDepthImage)); }
         }
 
+        public ICommand OpenProjectorWindowCommand
+        {
+            get { return m_OpenProjectorWindowCommand ?? (m_OpenProjectorWindowCommand = new RelayCommand(this.OpenProjector)); }
+        }
+
+        public ICommand CloseProjectorWindowCommand
+        {
+            get { return m_CloseProjectorWindowCommand ?? (m_CloseProjectorWindowCommand = new RelayCommand(this.CloseProjector)); }
+        }
+
         #endregion
 
         #region COMMANDS
+
         internal void StartKinect()
         {
             foreach (var potentialSensor in KinectSensor.KinectSensors)
@@ -139,6 +154,18 @@ namespace TestApp.ViewModels
                 Status = false;
             }
 
+        }
+
+        internal void OpenProjector()
+        {
+            m_ProjectorWindow = new ProjectorWindow { ViewModel = new ViewModels.ProjectorWindowViewModel() };
+            m_ProjectorWindow.Show();
+        }
+
+        internal void CloseProjector()
+        {
+            m_ProjectorWindow.Close();
+            m_ProjectorWindow = null;
         }
 
         internal void SetColorImage() { ImageSelector = false; }
