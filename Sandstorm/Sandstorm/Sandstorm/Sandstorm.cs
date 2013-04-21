@@ -151,7 +151,7 @@ namespace Sandstorm
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _heightMap.Draw(_perspCamera);
-            _particleSystem.Draw();
+            //_particleSystem.Draw();
             GraphicsDevice.Present(null, null, _editor.panel1.Handle);
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
