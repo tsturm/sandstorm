@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandstorm", "Sandstorm\Sandstorm\Sandstorm.csproj", "{FFDB76C3-4EBF-4115-A89F-5CDDB8DCE56C}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "SandstormContent", "Sandstorm\SandstormContent\SandstormContent.contentproj", "{CD38F6FA-BADC-4510-811D-CE20496BA8D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandstormContent", "Sandstorm\SandstormContent\SandstormContent.contentproj", "{CD38F6FA-BADC-4510-811D-CE20496BA8D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandstormGUI", "SandstormGUI\SandstormGUI.csproj", "{5D8A0A64-34A1-4F1D-8DC9-42DECAB5E170}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandstormKinect", "SandstormKinect\SandstormKinect.csproj", "{5531CED4-3CCB-403F-B23C-3DF4616A441D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +21,14 @@ Global
 		{FFDB76C3-4EBF-4115-A89F-5CDDB8DCE56C}.Release|x86.Build.0 = Release|x86
 		{CD38F6FA-BADC-4510-811D-CE20496BA8D7}.Debug|x86.ActiveCfg = Debug|x86
 		{CD38F6FA-BADC-4510-811D-CE20496BA8D7}.Release|x86.ActiveCfg = Release|x86
+		{5D8A0A64-34A1-4F1D-8DC9-42DECAB5E170}.Debug|x86.ActiveCfg = Debug|x86
+		{5D8A0A64-34A1-4F1D-8DC9-42DECAB5E170}.Debug|x86.Build.0 = Debug|x86
+		{5D8A0A64-34A1-4F1D-8DC9-42DECAB5E170}.Release|x86.ActiveCfg = Release|x86
+		{5D8A0A64-34A1-4F1D-8DC9-42DECAB5E170}.Release|x86.Build.0 = Release|x86
+		{5531CED4-3CCB-403F-B23C-3DF4616A441D}.Debug|x86.ActiveCfg = Debug|x86
+		{5531CED4-3CCB-403F-B23C-3DF4616A441D}.Debug|x86.Build.0 = Debug|x86
+		{5531CED4-3CCB-403F-B23C-3DF4616A441D}.Release|x86.ActiveCfg = Release|x86
+		{5531CED4-3CCB-403F-B23C-3DF4616A441D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

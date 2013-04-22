@@ -10,7 +10,8 @@
     <RootNamespace>Sandstorm</RootNamespace>
     <AssemblyName>Sandstorm</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>HiDef</XnaProfile>
@@ -109,6 +110,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SandstormKinect\SandstormKinect.csproj">
+      <Project>{5531CED4-3CCB-403F-B23C-3DF4616A441D}</Project>
+      <Name>SandstormKinect</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SandstormContent\SandstormContent.contentproj">
       <Name>SandstormContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
@@ -117,7 +122,7 @@
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 und x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -141,9 +146,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Kinect\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="SandstormBeamer.resx">
       <DependentUpon>SandstormBeamer.cs</DependentUpon>
@@ -151,6 +154,9 @@
     <EmbeddedResource Include="SandstormEditor.resx">
       <DependentUpon>SandstormEditor.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

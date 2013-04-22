@@ -1,4 +1,5 @@
 using System;
+using SandstormKinect;
 
 namespace Sandstorm
 {
@@ -17,6 +18,10 @@ namespace Sandstorm
 
             SandstormBeamer beamer = new SandstormBeamer();
             beamer.Disposed += new EventHandler(form_Disposed);
+
+
+            SandstormKinectThread kinect = new SandstormKinectThread();
+            kinect.StartKinect();
 
             using (game = new Sandstorm(editor, beamer))
             {
