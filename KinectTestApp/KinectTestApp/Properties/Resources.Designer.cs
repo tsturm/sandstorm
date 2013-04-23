@@ -59,5 +59,19 @@ namespace TestApp.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static System.Drawing.Bitmap mesh_green {
+            get {
+                object obj = ResourceManager.GetObject("mesh_green", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap test_image {
+            get {
+                object obj = ResourceManager.GetObject("test_image", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

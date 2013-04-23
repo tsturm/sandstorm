@@ -28,6 +28,9 @@
             <Button Content="Start" Height="30" IsEnabled="{Binding Path=Status, Converter={StaticResource boolConverter}}" Command="{Binding Path=StartKinectCommand}" />
             <Button Content="Stop" Height="30" IsEnabled="{Binding Path=Status}" Command="{Binding Path=StopKinectCommand}" />
             <Label />
+            <Button Content="Open ProjectorWindows" Height="30" Command="{Binding Path=OpenProjectorWindowCommand}"/>
+            <Button Content="Close ProjectorWindows" Height="30" Command="{Binding Path=CloseProjectorWindowCommand}" />
+            <Label />
             <StackPanel>
                 <Button Content="Color Image" Command="{Binding Path=SetColor}" IsEnabled="{Binding Path=ImageSelector}" />
                 <Button Content="Depth Image" Command="{Binding Path=SetDepth}" IsEnabled="{Binding Path=ImageSelector, Converter={StaticResource boolConverter}}"/>
