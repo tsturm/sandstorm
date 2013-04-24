@@ -32,8 +32,8 @@ namespace Sandstorm
         private Vector3 _eyePos = new Vector3(0f);
         private Quaternion _orientation = new Quaternion(0f, 0f, 0f, 1f);
         private ProjectionType _type = ProjectionType.PERSPECTIVE_PROJECTION;
-        private int _orthoWidth;
-        private int _orthoHeight;
+        private int _orthoWidth = 492;
+        private int _orthoHeight = 492;
 
         private float _pitch;
 
@@ -132,10 +132,30 @@ namespace Sandstorm
 	        UpdateViewMatrix();
         }
 
+        public void Horizontal(float factor)
+        {
+            Matrix trans = Matrix.CreateTranslation(factor, 0f, 0f);
+            _viewMatrix = Matrix.Multiply(_viewMatrix, trans);
+        }
+
+        public void Vertical(float factor)
+        {
+            Matrix trans = Matrix.CreateTranslation(0f, factor, 0f);
+            _viewMatrix = Matrix.Multiply(_viewMatrix, trans);
+        }
+
         public void Zoom(float pFactor)
         {
-            _orbitalDistance += pFactor;
-            UpdateViewMatrix();
+            if (_type == ProjectionType.PERSPECTIVE_PROJECTION)
+            {
+                _orbitalDistance += pFactor;
+                UpdateViewMatrix();
+            }
+            else
+            {
+                _orthoHeight = _orthoWidth += (int)pFactor;
+                UpdateProjectionMatrix();
+            }
         }
 
         public void RotateOrbital(float pYaw, float pPitch)
@@ -198,18 +218,18 @@ namespace Sandstorm
 
             if (_viewport.Width > _viewport.Height)
             {
-                height = 510;
+                height = _orthoHeight;
                 width = (_viewport.Width * height / _viewport.Height);
             }
             else if (_viewport.Width < _viewport.Height)
             {
-                width = 510;
+                width = _orthoWidth;
                 height = (_viewport.Height * width / _viewport.Width);
             }
             else
             {
-                width = 510;
-                height = 510;
+                width = _orthoWidth;
+                height = _orthoHeight;
             }
 
             switch (_type)
