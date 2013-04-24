@@ -27,48 +27,83 @@ namespace Sandstorm
             }
             else
             {
-                // Handle mouse input
-                MouseState mouseState = Mouse.GetState();
 
-                if (mouseState.LeftButton == ButtonState.Pressed)
+                if (_camera.Type == Camera.ProjectionType.PERSPECTIVE_PROJECTION)
                 {
-                    if (!_mlb)
+                    // Handle mouse input
+                    MouseState mouseState = Mouse.GetState();
+
+                    if (mouseState.LeftButton == ButtonState.Pressed)
                     {
-                        _mlb = true;
-                        _currentMousePos = new Vector2(mouseState.X, mouseState.Y);
+                        if (!_mlb)
+                        {
+                            _mlb = true;
+                            _currentMousePos = new Vector2(mouseState.X, mouseState.Y);
+                        }
+                        else
+                        {
+                            Vector2 mPos = new Vector2(mouseState.X, mouseState.Y);
+                            Vector2 delta = mPos - _currentMousePos;
+                            _currentMousePos = mPos;
+
+                            float yaw = delta.X;
+                            float pitch = delta.Y;
+
+                            _camera.Rotate(yaw, pitch);
+                        }
                     }
                     else
                     {
-                        Vector2 mPos = new Vector2(mouseState.X, mouseState.Y);
-                        Vector2 delta = mPos - _currentMousePos;
-                        _currentMousePos = mPos;
+                        _mlb = false;
+                    }
 
-                        float yaw = delta.X;
-                        float pitch = delta.Y;
+                    //Zoom
+                    if (_msw)
+                    {
+                        _msw = true;
+                        _scrollWheel = mouseState.ScrollWheelValue;
+                    }
+                    else
+                    {
+                        int delta = _scrollWheel - mouseState.ScrollWheelValue;
 
-                        _camera.Rotate(yaw, pitch);
+                        _camera.Zoom(delta);
+
+                        _scrollWheel = mouseState.ScrollWheelValue;
+                    }
+
+                }
+                else
+                {
+
+
+                    KeyboardState keyState = Keyboard.GetState();
+
+                    if (keyState.IsKeyDown(Keys.Left))
+                    {
+                        _camera.Horizontal(-.5f);
+                    }
+                    else if (keyState.IsKeyDown(Keys.Right))
+                    {
+                        _camera.Horizontal(.5f);
+                    }
+                    else if (keyState.IsKeyDown(Keys.Up))
+                    {
+                        _camera.Vertical(.5f);
+                    }
+                    else if (keyState.IsKeyDown(Keys.Down))
+                    {
+                        _camera.Vertical(-.5f);
+                    }
+                    else if (keyState.IsKeyDown(Keys.Add))
+                    {
+                        _camera.Zoom(-1f);
+                    }
+                    else if (keyState.IsKeyDown(Keys.Subtract))
+                    {
+                        _camera.Zoom(1f);
                     }
                 }
-                else
-                {
-                    _mlb = false;
-                }
-
-                //Zoom
-                if (_msw)
-                {
-                    _msw = true;
-                    _scrollWheel = mouseState.ScrollWheelValue;
-                }
-                else
-                {
-                    int delta = _scrollWheel - mouseState.ScrollWheelValue;
-
-                    _camera.Zoom(delta);
-
-                    _scrollWheel = mouseState.ScrollWheelValue;
-                }
-                
             }
         }
     }

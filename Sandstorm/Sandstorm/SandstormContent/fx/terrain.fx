@@ -44,8 +44,15 @@ VertexToPixel TerrainVS( float4 inPos : POSITION, float2 inTexCoord: TEXCOORD0)
 
 	Output.Position = mul(pos, worldViewProjection);
 	Output.TexCoord = inTexCoord;
-	Output.Color = float4(height, height, height, 1.0);
-    
+
+	if(height < 0.25) {
+		Output.Color = lerp(float4(0,0,0.65,1), float4(0.2,0.52,0.03,1), height*4);
+	} else if(height >= 0.25 && height < 0.4) {
+		Output.Color = lerp(float4(0.2,0.52,0.03,1), float4(0.9,0.85,0.34,1), (height-0.25)*4);
+	} else if(height >= 0.4) {
+		Output.Color = lerp(float4(0.9,0.85,0.34,1), float4(0.7,0.17,0,1), (height-0.5)*4);
+	}
+
 	return Output;    
 }
 
