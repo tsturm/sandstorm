@@ -10,6 +10,7 @@ prerequisites:
 - VisualStudio 2010
 - XNA Studio 4
 - Kinect SDK 1.7
+- UMLet 11.5.1
 
 
 

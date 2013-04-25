@@ -21,7 +21,7 @@ namespace Sandstorm
 
 
             SandstormKinectThread kinect = new SandstormKinectThread();
-            kinect.StartKinect();
+            kinect.
 
             using (game = new Sandstorm(editor, beamer))
             {

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.5.1">
+  <help_text>//settings
+fontsize=12
+fontfamily=Monospaced //possible: SansSerif,Serif,Monospaced
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Beschreibung
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+</help_text>
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.custom.Node</type>
+    <coordinates>
+      <x>290</x>
+      <y>40</y>
+      <w>110</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>center: Variante A</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Node</type>
+    <coordinates>
+      <x>440</x>
+      <y>40</y>
+      <w>110</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>center:&lt;&lt;Sensor&gt;&gt;
+center:Sandstorm.Kinect.dll</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>290</x>
+      <y>120</y>
+      <w>210</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Stereotype&gt;&gt;
+Package::FatClass
+{Some Properties}
+--
+-id: Long {composite}
+_-ClassAttribute: Long_
+--
+#Operation(i: int): int
+/+AbstractOperation()/
+--
+Responsibilities
+-- Resp1
+-- Resp2</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>630</x>
+      <y>140</y>
+      <w>110</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>{active}
+ActiveClass
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>540</x>
+      <y>190</y>
+      <w>170</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>OuterClass
+{innerclass
+InnerClass
+innerclass}
+{innerclass
+InnerClass
+{innerclass
+InnerInnerClass
+--
+field
+innerclass}
+innerclass}
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Note</type>
+    <coordinates>
+      <x>320</x>
+      <y>360</y>
+      <w>140</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Note..</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
