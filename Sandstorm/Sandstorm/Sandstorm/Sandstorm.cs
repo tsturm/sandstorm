@@ -20,13 +20,16 @@ namespace Sandstorm
         Camera _perspCamera;
         Camera _orthoCamera;
         CameraController _cameraController;
+        CameraController _cameraController2;
         HeightMap _heightMap;
         SandstormEditor _editor;
         SandstormBeamer _beamer;
         Galaxy _particleSystem;
+        Kinect _kinectSystem;
 
-        public Sandstorm(SandstormEditor editor, SandstormBeamer beamer)
+        public Sandstorm(SandstormEditor editor, SandstormBeamer beamer, Kinect kinectSytem)
         {
+            _kinectSystem = kinectSytem;
             _editor = editor;
             _beamer = beamer;
             Mouse.WindowHandle = _editor.Handle;
@@ -47,6 +50,8 @@ namespace Sandstorm
             _editor.Show();
             _beamer.Show();
 
+            _kinectSystem.StartKinect();
+
             graphics.PreferredBackBufferWidth = _editor.panel1.Width;
             graphics.PreferredBackBufferHeight = _editor.panel1.Height;
             graphics.PreferMultiSampling = true;
@@ -63,7 +68,12 @@ namespace Sandstorm
 
             // Create orthographic camera for the beamer
             _orthoCamera = new Camera(new Viewport(0, 0, _beamer.panel1.Width, _beamer.panel1.Height));
-            _orthoCamera.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
+            //_orthoCamera.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
+            Quaternion rot1 = Quaternion.CreateFromAxisAngle(new Vector3(-1, 0, 0), MathHelper.PiOver2);
+            Quaternion rot2 = Quaternion.CreateFromAxisAngle(new Vector3(0, 1, 0), MathHelper.Pi);
+            _cameraController2 = new CameraController(_orthoCamera);
+
+            _orthoCamera.Orientation = Quaternion.Multiply(rot1, rot2);
             _orthoCamera.Type = Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
             _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera);
 
@@ -111,7 +121,7 @@ namespace Sandstorm
         protected override void LoadContent()
         {
             // TODO: use this.Content to load your game content here
-            _heightMap.GenerateHeightField(512, 512);
+            _heightMap.GenerateHeightField(420, 420);
         }
 
         /// <summary>
@@ -136,10 +146,22 @@ namespace Sandstorm
 
             // TODO: Add your update logic here
             if (_editor.panel1.Focused)
+            {
                 _cameraController.Update(gameTime);
+            }
+
+
+                _cameraController2.Update(gameTime);
+
+            //_orthoCamera.Left(5.1f);
 
             _particleSystem.Update(gameTime);
-
+            
+            if (null != _kinectSystem.data)
+            {
+                _heightMap.setData(_kinectSystem.data);
+            }
+            
             base.Update(gameTime);
         }
 
@@ -154,9 +176,11 @@ namespace Sandstorm
             //_particleSystem.Draw();
             GraphicsDevice.Present(null, null, _editor.panel1.Handle);
 
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
             _heightMap.Draw(_orthoCamera);
             GraphicsDevice.Present(null, null, _beamer.panel1.Handle);
+
+            GraphicsDevice.Textures[0] = null;
         }
     }
 }

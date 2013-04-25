@@ -11,6 +11,7 @@ namespace Sandstorm.Terrain
         GraphicsDevice _graphicsDevice;
         ContentManager _contentManager;
         VertexPositionTexture[] _vertices;
+        bool ready = true;
         int[] _indices;
 
         public HeightMap(GraphicsDevice pGraphicsDevice, ContentManager pContentManager)
@@ -27,14 +28,26 @@ namespace Sandstorm.Terrain
 
             for (int i = 0; i < heightMapData.Length; i++)
             {
-                heightMapData2[i].X = heightMapData[i].R / 255f;
-                heightMapData2[i].Y = heightMapData[i].G / 255f;
-                heightMapData2[i].Z = heightMapData[i].B / 255f;
-                heightMapData2[i].W = heightMapData[i].A / 255f;
+                heightMapData2[i].X = ((heightMapData[i].R / 255f) + 1f) /2f;
+                heightMapData2[i].Y = ((heightMapData[i].G / 255f) + 1f) /2f;
+                heightMapData2[i].Z = ((heightMapData[i].B / 255f) + 1f) /2f;
+                heightMapData2[i].W = ((heightMapData[i].A / 255f) + 1f) /2f;
             }
 
             _heightMap = new Texture2D(_graphicsDevice, heightMap.Width, heightMap.Height, false, SurfaceFormat.Vector4);
+            
             _heightMap.SetData(heightMapData2);
+        }
+
+        public void setData(Vector4[] data)
+        {
+            _graphicsDevice.Textures[0] = null;
+            _graphicsDevice.Textures[1] = null;
+            _graphicsDevice.Textures[2] = null;
+            _graphicsDevice.Textures[3] = null;
+            _heightMap.Dispose();
+            _heightMap = new Texture2D(_graphicsDevice, 420, 420, false, SurfaceFormat.Vector4);
+           _heightMap.SetData(data);
         }
 
         public void GenerateHeightField(int pWidth, int pHeight)
