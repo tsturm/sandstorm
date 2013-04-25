@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Sandstorm.Terrain
 {
-    class HeightMap
+    public class HeightMap
     {
         Effect _effect;
         Texture2D _heightMap;
@@ -28,14 +28,14 @@ namespace Sandstorm.Terrain
 
             for (int i = 0; i < heightMapData.Length; i++)
             {
-                heightMapData2[i].X = ((heightMapData[i].R / 255f) + 1f) /2f;
-                heightMapData2[i].Y = ((heightMapData[i].G / 255f) + 1f) /2f;
-                heightMapData2[i].Z = ((heightMapData[i].B / 255f) + 1f) /2f;
-                heightMapData2[i].W = ((heightMapData[i].A / 255f) + 1f) /2f;
+                heightMapData2[i].X = ((heightMapData[i].R / 255f) + 1f) / 2f;
+                heightMapData2[i].Y = ((heightMapData[i].G / 255f) + 1f) / 2f;
+                heightMapData2[i].Z = ((heightMapData[i].B / 255f) + 1f) / 2f;
+                heightMapData2[i].W = ((heightMapData[i].A / 255f) + 1f) / 2f;
             }
 
             _heightMap = new Texture2D(_graphicsDevice, heightMap.Width, heightMap.Height, false, SurfaceFormat.Vector4);
-            
+
             _heightMap.SetData(heightMapData2);
         }
 
@@ -47,7 +47,7 @@ namespace Sandstorm.Terrain
             _graphicsDevice.Textures[3] = null;
             _heightMap.Dispose();
             _heightMap = new Texture2D(_graphicsDevice, 420, 420, false, SurfaceFormat.Vector4);
-           _heightMap.SetData(data);
+            _heightMap.SetData(data);
         }
 
         public void GenerateHeightField(int pWidth, int pHeight)
@@ -62,7 +62,7 @@ namespace Sandstorm.Terrain
                 for (int x = 0; x < pWidth; x++)
                 {
                     _vertices[x + z * pWidth].Position = new Vector3(-widthOver2 + x, 0f, -heightOver2 + z);
-                    _vertices[x + z * pWidth].TextureCoordinate = new Vector2((float)x/(float)pWidth, (float)z/(float)pHeight);
+                    _vertices[x + z * pWidth].TextureCoordinate = new Vector2((float)x / (float)pWidth, (float)z / (float)pHeight);
                 }
             }
 
@@ -73,11 +73,11 @@ namespace Sandstorm.Terrain
                 for (int x = 0; x < pWidth - 1; x++)
                 {
                     _indices[counter++] = x + z * pWidth;
-                    _indices[counter++] = (x+1) + z * pWidth; 
-                    _indices[counter++] = (x+1) + (z+1) * pWidth;
+                    _indices[counter++] = (x + 1) + z * pWidth;
+                    _indices[counter++] = (x + 1) + (z + 1) * pWidth;
 
-                    _indices[counter++] = (x+1) + (z+1) * pWidth;
-                    _indices[counter++] = x + (z+1) * pWidth;
+                    _indices[counter++] = (x + 1) + (z + 1) * pWidth;
+                    _indices[counter++] = x + (z + 1) * pWidth;
                     _indices[counter++] = x + z * pWidth;
                 }
             }
@@ -105,15 +105,26 @@ namespace Sandstorm.Terrain
             {
                 pass.Apply();
 
-                _graphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, 
-                                                         _vertices, 
-                                                         0, 
-                                                         _vertices.Length, 
+                _graphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList,
+                                                         _vertices,
+                                                         0,
+                                                         _vertices.Length,
                                                          _indices,
                                                          0,
                                                          _indices.Length / 3,
                                                          VertexPositionTexture.VertexDeclaration);
             }
+        }
+
+        public float getHeight(float x, float y)
+        {
+            /*Color[] heightMapData = new Color[_heightMap.Width * _heightMap.Height];
+            _heightMap.GetData(heightMapData);
+            int mapx = (int)(_heightMap.Width * x);
+            int mapy = (int)(_heightMap.Height * y);
+            Color val = heightMapData[mapx * _heightMap.Width + mapy];
+            return val.PackedValue;*/
+            return 0;
         }
     }
 }

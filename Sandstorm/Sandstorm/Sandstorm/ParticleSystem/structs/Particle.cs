@@ -9,8 +9,8 @@ namespace Sandstorm.ParticleSystem
 {
     class Particle
     {
-        Vector3 _pos;
-        Vector3 _force;
+        public Vector3 _pos;
+        public Vector3 _force;
 
         public Particle(Vector3 pos, Vector3 force)
         {
@@ -33,9 +33,19 @@ namespace Sandstorm.ParticleSystem
             return "Pos: " + _pos + " force: " + _force;
         }
 
-        public Vector3 getPos()
+        public Vector3 getPosition()
         {
-            return this._pos;
+            return _pos;
+        }
+
+        public Vector3 getForce()
+        {
+            return _force;
+        }
+
+        public void setForce(Vector3 force)
+        {
+            _force = force;
         }
     }
 }

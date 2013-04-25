@@ -9,6 +9,7 @@ using Sandstorm.ParticleSystem.structs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Sandstorm.Terrain;
 
 namespace Sandstorm.ParticleSystem
 {
@@ -23,17 +24,23 @@ namespace Sandstorm.ParticleSystem
         private Camera _camera;
         private GraphicsDevice _graphicsDevice;
         private ContentManager _contentManager;
+        private HeightMap _heightMap;
 
-        public Galaxy(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, Camera pCamera)
+        public Galaxy(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, Camera pCamera, HeightMap heightMap)
         {
-            _emiters.Add(new Emiter(new Vector3(1f, 1f, 1f),new Vector3(0.1f, 0.1f, 0.1f),_sharedList));
+            _emiters.Add(new Emiter(new Vector3(0f, 100f, 0f), new Vector3(1.0f, 1f, 1.0f), _sharedList));
+            _emiters.Add(new Emiter(new Vector3(100f, 100f, 0f), new Vector3(-1.0f, 1f, 1.0f), _sharedList));
+            _emiters.Add(new Emiter(new Vector3(0f, 100f, 100f), new Vector3(1.0f, 1f, 11.0f), _sharedList));
+            _emiters.Add(new Emiter(new Vector3(100f, 100f, 100f), new Vector3(-1.0f, 1f, -1.0f), _sharedList));
 
             _camera = pCamera;
             _graphicsDevice = pGraphicsDevice;
             _contentManager = pContentManager;
 
-            _drawEngine = new DrawEngine(pGraphicsDevice,pContentManager,pCamera,_sharedList);
-            _physicEngine = new PhysicEngine(_sharedList);
+            _heightMap = heightMap;
+
+            _drawEngine = new DrawEngine(pGraphicsDevice, pContentManager, pCamera, _sharedList);
+            _physicEngine = new PhysicEngine(_sharedList, _heightMap);
         }
 
 

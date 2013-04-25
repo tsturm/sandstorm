@@ -74,9 +74,11 @@ namespace Sandstorm
 
             _orthoCamera.Orientation = Quaternion.Multiply(rot1, rot2);
             _orthoCamera.Type = Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
-            _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera);
+            
 
             _heightMap = new HeightMap(GraphicsDevice, Content);
+
+            _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera, _heightMap);
 
             base.Initialize();
         }

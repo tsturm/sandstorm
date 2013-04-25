@@ -62,7 +62,7 @@ namespace Sandstorm.ParticleSystem.draw
             int i = 0;
             foreach (Particle p in particleList)
             {
-                Vector3 pos = p.getPos();
+                Vector3 pos = p.getPosition();
                 billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(0, 0));
                 billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(1, 0));
                 billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(1, 1));
