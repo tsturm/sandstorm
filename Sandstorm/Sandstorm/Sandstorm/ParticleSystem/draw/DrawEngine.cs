@@ -23,6 +23,11 @@ namespace Sandstorm.ParticleSystem.draw
         private SpriteBatch _spriteBatch = null;
         private SpriteFont _font = null;
 
+        private Effect _bbEffect;
+        private Texture2D _particleTexture;
+        private VertexBuffer _particleVertexBuffer;
+
+
 
         public DrawEngine(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, Camera pCamera,SharedList pList)
         {
@@ -33,6 +38,10 @@ namespace Sandstorm.ParticleSystem.draw
 
             _spriteBatch = new SpriteBatch(this._graphicsDevice);
             _font = _contentManager.Load<SpriteFont>("font/FPSFont");
+
+
+            _bbEffect = _contentManager.Load<Effect>("fx/bbEffect");
+            _particleTexture = _contentManager.Load<Texture2D>("tex/particle");
         }
 
 
@@ -46,6 +55,27 @@ namespace Sandstorm.ParticleSystem.draw
             return _fpsCounter.getFrames();
         }
 
+
+        private void CreateBillboardVerticesFromList(List<Particle> particleList)
+        {
+            VertexPositionTexture[] billboardVertices = new VertexPositionTexture[particleList.Count * 6];
+            int i = 0;
+            foreach (Particle p in particleList)
+            {
+                Vector3 pos = p.getPosition();
+                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(0, 0));
+                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(1, 0));
+                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(1, 1));
+
+                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(0, 0));
+                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(1, 1));
+                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(0, 1));
+            }
+            _particleVertexBuffer = new VertexBuffer(_graphicsDevice, typeof(VertexPositionTexture),billboardVertices.Length, BufferUsage.WriteOnly);
+            _particleVertexBuffer.SetData(billboardVertices);
+        }
+
+
         public void Draw(int pFPSDraw,int pFPSPhysic) //Draw all Particles
         {         
             
@@ -57,12 +87,28 @@ namespace Sandstorm.ParticleSystem.draw
             
             _spriteBatch.DrawString(_font, s, new Vector2(0,0), Color.White);
             _spriteBatch.End();
+            
 
 
-            foreach (Particle p in _sharedList.getParticles())
+
+            CreateBillboardVerticesFromList(_sharedList.getParticles());
+            _bbEffect.CurrentTechnique = _bbEffect.Techniques["CylBillboard"];
+            _bbEffect.Parameters["xWorld"].SetValue(Matrix.Identity);
+            _bbEffect.Parameters["xView"].SetValue(_camera.ViewMatrix);
+            _bbEffect.Parameters["xProjection"].SetValue(_camera.ProjMatrix);
+            _bbEffect.Parameters["xCamPos"].SetValue(_camera.getCameraPos());
+            _bbEffect.Parameters["xAllowedRotDir"].SetValue(new Vector3(0, 1, 0));
+            _bbEffect.Parameters["xBillboardTexture"].SetValue(_particleTexture);
+
+            _graphicsDevice.BlendState = BlendState.AlphaBlend;
+
+            foreach (EffectPass pass in _bbEffect.CurrentTechnique.Passes)
             {
-                Console.WriteLine(p);
+                pass.Apply();
+                _graphicsDevice.SetVertexBuffer(_particleVertexBuffer);
+                _graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _particleVertexBuffer.VertexCount / 3);
             }
+            _graphicsDevice.BlendState = BlendState.Opaque; 
         }
     }
 }

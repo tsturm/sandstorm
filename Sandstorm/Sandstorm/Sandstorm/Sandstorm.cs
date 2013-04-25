@@ -16,7 +16,6 @@ namespace Sandstorm
     public class Sandstorm : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
         Camera _perspCamera;
         Camera _orthoCamera;
         CameraController _cameraController;
@@ -75,9 +74,11 @@ namespace Sandstorm
 
             _orthoCamera.Orientation = Quaternion.Multiply(rot1, rot2);
             _orthoCamera.Type = Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
-            _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera);
+            
 
             _heightMap = new HeightMap(GraphicsDevice, Content);
+
+            _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera, _heightMap);
 
             base.Initialize();
         }
@@ -173,7 +174,7 @@ namespace Sandstorm
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _heightMap.Draw(_perspCamera);
-            //_particleSystem.Draw();
+            _particleSystem.Draw();
             GraphicsDevice.Present(null, null, _editor.panel1.Handle);
 
             GraphicsDevice.Clear(Color.Black);
