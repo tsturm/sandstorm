@@ -32,5 +32,10 @@ namespace Sandstorm.ParticleSystem
         {
             return "Pos: " + _pos + " force: " + _force;
         }
+
+        public Vector3 getPos()
+        {
+            return this._pos;
+        }
     }
 }

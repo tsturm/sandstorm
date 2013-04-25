@@ -262,5 +262,10 @@ namespace Sandstorm
                                                   -Vector3.Dot(_viewMatrix.Up, _eyePos),
                                                   -Vector3.Dot(_viewMatrix.Forward, _eyePos));
         }
+
+        public Vector3 getCameraPos()
+        {
+            return this._eyePos;
+        }
     }
 }
