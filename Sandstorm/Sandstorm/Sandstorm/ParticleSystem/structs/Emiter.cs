@@ -12,7 +12,10 @@ namespace Sandstorm.ParticleSystem
         Vector3 _pos;
         Vector3 _force;
         SharedList _sharedlist;
-
+        private Random _rand = new Random();
+        
+        private static float MIN_RAND = 0.01f;
+        private static float MAX_RAND = 0.5f;
         public Emiter(Vector3 pos, Vector3 force, SharedList sharedlist)
         {
             this._pos = pos;
@@ -20,9 +23,21 @@ namespace Sandstorm.ParticleSystem
             this._sharedlist = sharedlist;
         }
 
+        private float getRandomFloat(float min, float max)
+        {
+            return (float)(min + (_rand.NextDouble() * (max - min)));
+        }
+        private Vector3 getSmallRandomForce()
+        {
+            return new Vector3(this.getRandomFloat(MIN_RAND, MAX_RAND), this.getRandomFloat(MIN_RAND, MAX_RAND), this.getRandomFloat(MIN_RAND, MAX_RAND));
+        }
         public void emit()
         {
-            this._sharedlist.addParticle(new Particle(this._pos,this._force));
+            Particle p = new Particle(this._pos, this._force);
+
+            p.applyExternalForce(this.getSmallRandomForce());
+
+            this._sharedlist.addParticle(p);
         }
     }
 }
