@@ -17,7 +17,7 @@ namespace Sandstorm.ParticleSystem
     {
         private DrawEngine _drawEngine = null; //Draw-Engine
         private PhysicEngine _physicEngine = null; //PhysicEngine
-        private SharedList _sharedList = new SharedList(); //SharedList of Particles
+        public SharedList _sharedList = new SharedList(); //SharedList of Particles
 
         private List<Emiter> _emiters = new List<Emiter>();
 

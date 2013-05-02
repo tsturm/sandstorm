@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Sandstorm.ParticleSystem.structs;
 
 namespace Sandstorm.ParticleSystem
 {
-    class SharedList
+    public class SharedList
     {
-        private List<Particle> _particles = new List<Particle>();
+        public List<Particle> _particles = new List<Particle>();
+
         private int _maxCount = 1000;
 
         public List<Particle> getParticles()
@@ -15,9 +17,9 @@ namespace Sandstorm.ParticleSystem
             return this._particles;
         }
 
-        public void addParticle(Particle particle)
+        public void addParticle(Particle pParticle)
         {
-            this._particles.Add(particle);
+            this._particles.Add(pParticle);
             if (this._particles.Count > _maxCount)
             {
                 this._particles.RemoveAt(0);

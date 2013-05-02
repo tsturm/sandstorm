@@ -34,6 +34,7 @@ namespace Sandstorm
             Mouse.WindowHandle = _editor.Handle;
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            this.IsFixedTimeStep = false;
         }
 
         /// <summary>
@@ -152,7 +153,7 @@ namespace Sandstorm
             }
 
 
-                _cameraController2.Update(gameTime);
+            _cameraController2.Update(gameTime);
 
             //_orthoCamera.Left(5.1f);
 

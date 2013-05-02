@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Kinect.cs" />
+    <Compile Include="ParticleSystem\draw\billboard\Billboard.cs" />
     <Compile Include="ParticleSystem\structs\Emiter.cs" />
     <Compile Include="ParticleSystem\structs\FPSCounter.cs" />
     <Compile Include="ParticleSystem\structs\Particle.cs" />

@@ -4,18 +4,18 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Sandstorm.ParticleSystem.structs;
 
 namespace Sandstorm.ParticleSystem
 {
-    class Particle
+    public class Particle
     {
-        public Vector3 _pos;
-        public Vector3 _force;
-
-        public Particle(Vector3 pos, Vector3 force)
+        Vector3 _pos;
+        Vector3 _force;
+        public Particle(Vector3 pPos, Vector3 pForce)
         {
-            this._pos = pos;
-            this._force = force;
+            _pos = pPos;
+            _force = pForce;
         }
 
         public void move()
@@ -23,29 +23,30 @@ namespace Sandstorm.ParticleSystem
             this._pos += this._force;
         }
 
-        public void applyExternalForce(Vector3 force)
+        public void applyExternalForce(Vector3 pForce)
         {
-            this._force += force;
+            this._force += pForce;
         }
 
-        public override string ToString()
+        override
+        public string ToString()
         {
-            return "Pos: " + _pos + " force: " + _force;
+            return "Pos: " + this._pos + " force: " + this._force;
         }
 
         public Vector3 getPosition()
         {
-            return _pos;
+            return this._pos;
         }
 
         public Vector3 getForce()
         {
-            return _force;
+            return this._force;
         }
 
-        public void setForce(Vector3 force)
+        public void setForce(Vector3 pForce)
         {
-            _force = force;
+            this._force = pForce;
         }
     }
 }

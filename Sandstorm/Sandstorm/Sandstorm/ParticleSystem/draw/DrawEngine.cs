@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Sandstorm.ParticleSystem.structs;
-
+using Dhpoware;
 
 namespace Sandstorm.ParticleSystem.draw
 {
@@ -22,11 +22,10 @@ namespace Sandstorm.ParticleSystem.draw
 
         private SpriteBatch _spriteBatch = null;
         private SpriteFont _font = null;
-
-        private Effect _bbEffect;
-        private Texture2D _particleTexture;
-        private VertexBuffer _particleVertexBuffer;
-
+        
+        private Billboard _billboard;
+        private Texture2D billboardTexture;
+        private Effect billboardEffect;
 
 
         public DrawEngine(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, Camera pCamera,SharedList pList)
@@ -40,14 +39,15 @@ namespace Sandstorm.ParticleSystem.draw
             _font = _contentManager.Load<SpriteFont>("font/FPSFont");
 
 
-            _bbEffect = _contentManager.Load<Effect>("fx/bbEffect");
-            _particleTexture = _contentManager.Load<Texture2D>("tex/particle");
+            billboardTexture = _contentManager.Load<Texture2D>("tex/particle"); 
+            billboardEffect = _contentManager.Load<Effect>(@"fx\Billboard");
+            billboardEffect.CurrentTechnique = billboardEffect.Techniques["BillboardingCameraAligned"];
         }
 
 
         public void Update(GameTime pGameTime) //Update DrawEngine
         {
-            _fpsCounter.Update(pGameTime);
+            _fpsCounter.Update();
         }
 
         public int getFPS()
@@ -55,30 +55,10 @@ namespace Sandstorm.ParticleSystem.draw
             return _fpsCounter.getFrames();
         }
 
-
-        private void CreateBillboardVerticesFromList(List<Particle> particleList)
-        {
-            VertexPositionTexture[] billboardVertices = new VertexPositionTexture[particleList.Count * 6];
-            int i = 0;
-            foreach (Particle p in particleList)
-            {
-                Vector3 pos = p.getPosition();
-                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(0, 0));
-                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(1, 0));
-                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(1, 1));
-
-                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(0, 0));
-                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(1, 1));
-                billboardVertices[i++] = new VertexPositionTexture(pos, new Vector2(0, 1));
-            }
-            _particleVertexBuffer = new VertexBuffer(_graphicsDevice, typeof(VertexPositionTexture),billboardVertices.Length, BufferUsage.WriteOnly);
-            _particleVertexBuffer.SetData(billboardVertices);
-        }
-
-
+        
         public void Draw(int pFPSDraw,int pFPSPhysic) //Draw all Particles
-        {         
-            
+        {
+
             _spriteBatch.Begin();
             String s = string.Format("Particles={0}, DrawEngineFPS={1}, PhysicEngineFPS={2}", _sharedList.getParticles().Count, pFPSDraw, pFPSPhysic);
         
@@ -87,28 +67,65 @@ namespace Sandstorm.ParticleSystem.draw
             
             _spriteBatch.DrawString(_font, s, new Vector2(0,0), Color.White);
             _spriteBatch.End();
+
+            _sharedList.getParticles().ToArray();
+                       
+            _billboard = new Billboard(_graphicsDevice,
+                                      _sharedList.getParticles().ToArray(),
+                                      1.0f,
+                                      1.0f,
+                                      0.0f,
+                                      0.0f);
+
+
+            RasterizerState prevRasterizerState = _graphicsDevice.RasterizerState;
+            BlendState prevBlendState = _graphicsDevice.BlendState;
+
+            // First pass:
+            // Render the non-transparent pixels of the billboards and store
+            // their depths in the depth buffer.
+
             
+        float BILLBOARD_ANIM_FPS = 24.0f;
+        float BILLBOARD_ANIM_TIME_MIN = 0.0f;
+        float BILLBOARD_ANIM_TIME_MAX = MathHelper.TwoPi;
+        float BILLBOARD_ANIM_SCALE = 0.15f;
+        float billboardAnimationTime = BILLBOARD_ANIM_TIME_MIN;
+        Vector2 billboardSize = new Vector2(2.0f, 2.0f);
 
 
+            billboardEffect.Parameters["world"].SetValue(Matrix.Identity);
+            billboardEffect.Parameters["view"].SetValue(_camera.ViewMatrix);
+            billboardEffect.Parameters["projection"].SetValue(_camera.ProjMatrix);
+            billboardEffect.Parameters["billboardSize"].SetValue(billboardSize);
+            billboardEffect.Parameters["colorMap"].SetValue(billboardTexture);
+            billboardEffect.Parameters["animationTime"].SetValue(billboardAnimationTime);
+            billboardEffect.Parameters["animationScaleFactor"].SetValue(BILLBOARD_ANIM_SCALE);
+            billboardEffect.Parameters["alphaTestDirection"].SetValue(1.0f);
 
-            CreateBillboardVerticesFromList(_sharedList.getParticles());
-            _bbEffect.CurrentTechnique = _bbEffect.Techniques["CylBillboard"];
-            _bbEffect.Parameters["xWorld"].SetValue(Matrix.Identity);
-            _bbEffect.Parameters["xView"].SetValue(_camera.ViewMatrix);
-            _bbEffect.Parameters["xProjection"].SetValue(_camera.ProjMatrix);
-            _bbEffect.Parameters["xCamPos"].SetValue(_camera.getCameraPos());
-            _bbEffect.Parameters["xAllowedRotDir"].SetValue(new Vector3(0, 1, 0));
-            _bbEffect.Parameters["xBillboardTexture"].SetValue(_particleTexture);
+            _graphicsDevice.BlendState = BlendState.Opaque;
+            _graphicsDevice.DepthStencilState = DepthStencilState.Default;
+            _graphicsDevice.RasterizerState = RasterizerState.CullNone;
 
-            _graphicsDevice.BlendState = BlendState.AlphaBlend;
+            _billboard.Draw(_graphicsDevice, billboardEffect);
 
-            foreach (EffectPass pass in _bbEffect.CurrentTechnique.Passes)
-            {
-                pass.Apply();
-                _graphicsDevice.SetVertexBuffer(_particleVertexBuffer);
-                _graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _particleVertexBuffer.VertexCount / 3);
-            }
-            _graphicsDevice.BlendState = BlendState.Opaque; 
+            // Second pass:
+            // Render the transparent pixels of the billboards.
+            // Disable depth buffer writes to ensure that the depth values from
+            // the first pass are used instead.
+
+            billboardEffect.Parameters["alphaTestDirection"].SetValue(-1.0f);
+
+            _graphicsDevice.BlendState = BlendState.NonPremultiplied;
+            _graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
+
+
+            _billboard.Draw(_graphicsDevice, billboardEffect);
+
+            // Restore original states.
+
+            _graphicsDevice.BlendState = prevBlendState;
+            _graphicsDevice.RasterizerState = prevRasterizerState;
         }
     }
 }

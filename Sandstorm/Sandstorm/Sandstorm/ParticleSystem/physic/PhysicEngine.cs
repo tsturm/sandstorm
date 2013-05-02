@@ -27,11 +27,12 @@ namespace Sandstorm.ParticleSystem.physic
 
         public void Update(GameTime pGameTime) //Update physic
         {
-            _fpsCounter.Update(pGameTime);
-
-            foreach (Particle p in _sharedList.getParticles())
+            _fpsCounter.Update();
+            foreach(Particle p in _sharedList.getParticles())
             {
                 p.move();//move the Particle
+
+
                 foreach (Vector3 f in _forces)//apply external forces (Gravitation etc)
                 {
                     p.applyExternalForce(f);
@@ -52,7 +53,6 @@ namespace Sandstorm.ParticleSystem.physic
 
         public void Draw() //Nothing to draw.. normally
         {
-
         }
 
         public int getFPS()
