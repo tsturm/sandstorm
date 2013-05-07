@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Sandstorm.ParticleSystem.structs;
 using Sandstorm.Terrain;
@@ -27,8 +31,7 @@ namespace Sandstorm.ParticleSystem.physic
 
         public void Update(GameTime pGameTime) //Update physic
         {
-            _fpsCounter.Update();
-            foreach(Particle p in _sharedList.getParticles())
+            Parallel.ForEach(_sharedList.getParticles(), p =>
             {
                 p.move();//move the Particle
 
@@ -48,11 +51,12 @@ namespace Sandstorm.ParticleSystem.physic
                         normal.Normalize();
                         p.setForce((p.getForce() - ((2 * Vector3.Dot(p.getForce(), normal)) * normal)) * 0.6f);//*0.6f Particle lose 40% of ist Power on colision
                     }
-            }
+            });
         }
 
         public void Draw() //Nothing to draw.. normally
         {
+            _fpsCounter.Update();
         }
 
         public int getFPS()

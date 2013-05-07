@@ -10,7 +10,7 @@ namespace Sandstorm.ParticleSystem
     {
         public List<Particle> _particles = new List<Particle>();
 
-        private int _maxCount = 1000;
+        private int _maxCount = 100000;
 
         public List<Particle> getParticles()
         {

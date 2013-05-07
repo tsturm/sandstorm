@@ -38,7 +38,8 @@ namespace Sandstorm.ParticleSystem
 
             p.applyExternalForce(this.getSmallRandomForce());
 
-            this._sharedlist.addParticle(p);
+            for(int i=0; i < 100;i++)
+                this._sharedlist.addParticle(p);
         }
     }
 }

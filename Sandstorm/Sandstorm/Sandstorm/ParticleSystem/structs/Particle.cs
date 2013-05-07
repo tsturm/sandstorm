@@ -9,7 +9,7 @@ using Sandstorm.ParticleSystem.structs;
 namespace Sandstorm.ParticleSystem
 {
     public class Particle
-    {
+    {        
         Vector3 _pos;
         Vector3 _force;
         public Particle(Vector3 pPos, Vector3 pForce)
@@ -28,8 +28,7 @@ namespace Sandstorm.ParticleSystem
             this._force += pForce;
         }
 
-        override
-        public string ToString()
+        override public string ToString()
         {
             return "Pos: " + this._pos + " force: " + this._force;
         }

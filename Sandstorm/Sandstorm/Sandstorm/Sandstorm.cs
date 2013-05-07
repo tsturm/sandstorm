@@ -31,11 +31,38 @@ namespace Sandstorm
             _kinectSystem = kinectSytem;
             _editor = editor;
             _beamer = beamer;
-            Mouse.WindowHandle = _editor.Handle;
+            Mouse.WindowHandle = _editor.Handle;            
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreparingDeviceSettings += new System.EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings); 
             Content.RootDirectory = "Content";
             this.IsFixedTimeStep = false;
+
+            graphics.SynchronizeWithVerticalRetrace = false;
         }
+
+        void graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        {
+            GraphicsAdapter adapter = null;
+            foreach (var item in GraphicsAdapter.Adapters)
+            {
+                if (item.IsProfileSupported(GraphicsProfile.HiDef))
+                {
+                    adapter = item;
+                }
+                else
+                {
+                    if (adapter == null && item.IsProfileSupported(GraphicsProfile.Reach))
+                    {
+                        adapter = item;
+                    }
+                }
+            }
+            if (adapter == null)
+            {
+                throw new System.NotSupportedException("None of your graphics cards support XNA.");
+            }
+            e.GraphicsDeviceInformation.Adapter = adapter;
+        } 
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
