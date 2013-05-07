@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="Kinect.cs" />
     <Compile Include="ParticleSystem\draw\Instancing.cs" />
+    <Compile Include="ParticleSystem\Galaxy.cs" />
     <Compile Include="ParticleSystem\structs\BillboardVertex.cs" />
     <Compile Include="ParticleSystem\structs\Emiter.cs" />
     <Compile Include="ParticleSystem\structs\FPSCounter.cs" />
@@ -98,7 +99,6 @@
     </Compile>
     <Compile Include="Navigation\Camera.cs" />
     <Compile Include="Navigation\CameraController.cs" />
-    <Compile Include="ParticleSystem\structs\Galaxy.cs" />
     <Compile Include="ParticleSystem\draw\DrawEngine.cs" />
     <Compile Include="ParticleSystem\physic\PhysicEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
