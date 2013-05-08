@@ -10,19 +10,22 @@ namespace Sandstorm.ParticleSystem
     {
         public List<Particle> _particles = new List<Particle>();
 
-        private int _maxCount = 100000;
+        private int _maxCount = 10000;
 
         public List<Particle> getParticles()
         {
             return this._particles;
         }
 
+        private readonly object syncLock = new object();
         public void addParticle(Particle pParticle)
         {
-            this._particles.Add(pParticle);
-            if (this._particles.Count > _maxCount)
-            {
-                this._particles.RemoveAt(0);
+            lock (syncLock) {
+                this._particles.Add(pParticle);
+                if (this._particles.Count > _maxCount)
+                {
+                    this._particles.RemoveAt(0);
+                }
             }
         }
     }
