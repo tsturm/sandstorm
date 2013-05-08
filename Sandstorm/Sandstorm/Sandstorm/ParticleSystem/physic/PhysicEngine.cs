@@ -34,23 +34,23 @@ namespace Sandstorm.ParticleSystem.physic
             Parallel.ForEach(_sharedList.getParticles(), p =>
             {
                 p.move();//move the Particle
+                //check colision
+                Vector3 nextPosition = p.getPosition();// +p.getForce();
+                float pHeight = _heightMap.getHeight(nextPosition.X, nextPosition.Z);
 
+                if (nextPosition.Y < pHeight + p.getRadius())
+                {
+                    Vector3 normal = _heightMap.getNormal(nextPosition.X, nextPosition.Z);
+                    p.reflect(normal);
+                    p.setPosition(new Vector3(p.getPosition().X, pHeight, p.getPosition().Z) + (p.getRadius() * 1.005f * normal));
+                    p.applyFriction(0.2f);
+                }
 
                 foreach (Vector3 f in _forces)//apply external forces (Gravitation etc)
                 {
                     p.applyExternalForce(f);
                 }
-                //check colision
-                if ( _heightMap != null)
-                    if (p.getPosition().Y < _heightMap.getHeight(p.getPosition().X, p.getPosition().Z))
-                    {
-                        Vector3 v = new Vector3(p.getPosition().X, _heightMap.getHeight(p.getPosition().X, p.getPosition().Z), p.getPosition().Z);
-                        Vector3 v1 = v - new Vector3(p.getPosition().X + 0.01f, _heightMap.getHeight(p.getPosition().X + 0.01f, p.getPosition().Z), p.getPosition().Z);
-                        Vector3 v2 = v - new Vector3(p.getPosition().X, _heightMap.getHeight(p.getPosition().X, p.getPosition().Z + 0.01f), p.getPosition().Z + 0.01f);
-                        Vector3 normal = Vector3.Cross(v1,v2);
-                        normal.Normalize();
-                        p.setForce((p.getForce() - ((2 * Vector3.Dot(p.getForce(), normal)) * normal)) * 0.6f);//*0.6f Particle lose 40% of ist Power on colision
-                    }
+                //p.collide(_sharedList.getParticles().ToArray());
             });
         }
 
