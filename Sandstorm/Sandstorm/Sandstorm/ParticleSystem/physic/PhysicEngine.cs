@@ -21,10 +21,13 @@ namespace Sandstorm.ParticleSystem.physic
 
         private HeightMap _heightMap;
 
+        private CollisionDetector _collisionDetector;
+
         public PhysicEngine(SharedList pList, HeightMap heightMap)
         {
             this._sharedList = pList;
             this._heightMap = heightMap;
+            _collisionDetector = new CollisionDetector(pList, _heightMap);
 
             this._forces.Add(new Vector3(0f, -0.1f, 0f));
         }
@@ -36,7 +39,7 @@ namespace Sandstorm.ParticleSystem.physic
                 p.move();//move the Particle
                 //check colision
                 Vector3 nextPosition = p.getPosition();// +p.getForce();
-                float pHeight = _heightMap.getHeight(nextPosition.X, nextPosition.Z);
+                float pHeight = _heightMap.getHeightData(nextPosition.X, nextPosition.Z);
 
                 if (nextPosition.Y < pHeight + p.getRadius())
                 {
@@ -52,6 +55,7 @@ namespace Sandstorm.ParticleSystem.physic
                 }
                 //p.collide(_sharedList.getParticles().ToArray());
             });
+            _collisionDetector.checkCollisions();
         }
 
         public void Draw() //Nothing to draw.. normally

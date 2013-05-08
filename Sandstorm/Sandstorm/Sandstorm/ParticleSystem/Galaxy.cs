@@ -28,10 +28,17 @@ namespace Sandstorm.ParticleSystem
 
         public Galaxy(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, Camera pCamera, HeightMap heightMap)
         {
-            _emiters.Add(new Emiter(new Vector3(0f, 100f, 0f), new Vector3(1.0f, 1f, 1.0f), _sharedList));
-            //_emiters.Add(new Emiter(new Vector3(100f, 100f, 0f), new Vector3(-1.0f, 1f, 1.0f), _sharedList));
-            //_emiters.Add(new Emiter(new Vector3(0f, 100f, 100f), new Vector3(1.0f, 1f, -1.0f), _sharedList));
-            //_emiters.Add(new Emiter(new Vector3(100f, 100f, 100f), new Vector3(-1.0f, 1f, -1.0f), _sharedList));
+            _emiters.Add(new Emiter(new Vector3(50f, 100f, 50f), new Vector3(-0.5f, 0f, -0.5f), _sharedList));
+
+            _emiters.Add(new Emiter(new Vector3(0f, 100f, 0f), new Vector3(1.0f, 5f, 1.0f), _sharedList));
+            _emiters.Add(new Emiter(new Vector3(100f, 100f, 0f), new Vector3(-1.0f, 5f, 1.0f), _sharedList));
+            _emiters.Add(new Emiter(new Vector3(0f, 100f, 100f), new Vector3(1.0f, 5f, -1.0f), _sharedList));
+            _emiters.Add(new Emiter(new Vector3(100f, 100f, 100f), new Vector3(-1.0f, 5f, -1.0f), _sharedList));
+
+            _emiters.Add(new Emiter(new Vector3(-100f, 100f, -100f), new Vector3(1.0f, 5f, 1.0f), _sharedList));
+            _emiters.Add(new Emiter(new Vector3(-200f, 100f, -100f), new Vector3(1.0f, 5f, 1.0f), _sharedList));
+            _emiters.Add(new Emiter(new Vector3(-100f, 100f, -200f), new Vector3(1.0f, 5f, 1.0f), _sharedList));
+            _emiters.Add(new Emiter(new Vector3(-200f, 100f, -200f), new Vector3(1.0f, 5f, 1.0f), _sharedList));
 
             _camera = pCamera;
             _graphicsDevice = pGraphicsDevice;
@@ -48,7 +55,7 @@ namespace Sandstorm.ParticleSystem
         {
             foreach (Emiter e in _emiters)
             {
-                for(int i=0;i<100;i++)
+                //for(int i=0;i<100;i++)
                     e.emit();
             }
             _drawEngine.Update(pGameTime);

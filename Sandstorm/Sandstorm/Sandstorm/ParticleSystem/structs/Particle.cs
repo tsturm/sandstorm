@@ -80,6 +80,8 @@ namespace Sandstorm.ParticleSystem
 
         public bool checkCollision(Particle p2)
         {
+            if (p2 == null)
+                return false;
             if (p2 == this)
                 return false;
             float distance = Vector3.Distance(this.getPosition(), p2.getPosition());
@@ -99,7 +101,7 @@ namespace Sandstorm.ParticleSystem
                 reflect(p2normal);
                 applyFriction();
                 applyExternalForce((p2normal * (1 / (this.getRadius() + p2.getRadius()))) * (1 - _flexibitity));
-                applyExternalForce(p2.getOldForce() * (1 - _flexibitity));
+                applyExternalForce(p2.getOldForce());
             }
         }
 
