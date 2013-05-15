@@ -48,3 +48,5 @@ $RECYCLE.BIN/
 *.out
 *.run.xml
 *.synctex.gz
+*.toc
+*.bbl
