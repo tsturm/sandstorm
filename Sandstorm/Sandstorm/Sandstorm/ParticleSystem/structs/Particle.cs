@@ -17,6 +17,17 @@ namespace Sandstorm.ParticleSystem
             this._pos = pos;
             this._force = force;
         }
+
+        public void move()
+        {
+            this._pos += this._force;
+        }
+
+        public void applyExternalForce(Vector3 force)
+        {
+            this._force += force;
+        }
+
         public override string ToString()
         {
             return "Pos: " + _pos + " force: " + _force;

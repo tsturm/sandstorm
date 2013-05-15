@@ -78,6 +78,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Kinect.cs" />
     <Compile Include="SandstormBeamer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +103,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Sandstorm.cs" />
     <Compile Include="Terrain\HeightMap.cs" />
+    <Compile Include="VertexPosition.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

@@ -7,6 +7,7 @@ namespace Sandstorm
     static class Program
     {
         static Sandstorm game;
+        static Kinect kinectSystem;
 
         /// <summary>
         /// The main entry point for the application.
@@ -19,11 +20,17 @@ namespace Sandstorm
             SandstormBeamer beamer = new SandstormBeamer();
             beamer.Disposed += new EventHandler(form_Disposed);
 
+<<<<<<< HEAD
 
             SandstormKinectThread kinect = new SandstormKinectThread();
             kinect.
 
             using (game = new Sandstorm(editor, beamer))
+=======
+            kinectSystem = new Kinect();
+
+            using (game = new Sandstorm(editor, beamer, kinectSystem))
+>>>>>>> 8b9e99782521984dd08207b0c2b44dcfac5057fa
             {
                 game.Run();
             }
@@ -31,6 +38,7 @@ namespace Sandstorm
 
         static void form_Disposed (object sender, EventArgs e)
         {
+            kinectSystem.StopKinect();
             game.Exit();
         }
     }
