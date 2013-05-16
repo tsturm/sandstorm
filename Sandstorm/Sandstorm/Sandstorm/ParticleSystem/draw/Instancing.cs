@@ -143,11 +143,13 @@ namespace Sandstorm.ParticleSystem.draw
 
         public void Draw()
         {
-            Array.Resize(ref _instanceTransforms, _sharedList._particles.Count);
+            Array.Resize(ref _instanceTransforms, _sharedList.Particles.Length);
 
-            Parallel.For(0, _sharedList._particles.Count, i =>
+            Parallel.For(0, _sharedList.Particles.Length, i =>
             {
-                _instanceTransforms[i] = _sharedList._particles[i].getPosition();
+                Particle p = _sharedList.Particles[i];
+                if(p != null)
+                    _instanceTransforms[i] = p.Pos;
             });
 
             DrawInstances(_vertexBuffer, _indexBuffer, _billboardTexture, _instanceTransforms);

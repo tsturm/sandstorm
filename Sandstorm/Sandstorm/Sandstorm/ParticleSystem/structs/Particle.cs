@@ -10,12 +10,31 @@ namespace Sandstorm.ParticleSystem
 {
     public class Particle
     {        
-        Vector3 _pos;
-        Vector3 _force;
-        public Particle(Vector3 pPos, Vector3 pForce)
+        private Vector3 _pos;
+        private Vector3 _force;
+
+        public Vector3 Pos
         {
-            _pos = pPos;
-            _force = pForce;
+            get { return _pos; }
+            set { _pos = value; }
+        }
+
+        public Vector3 Force
+        {
+            get { return _force; }
+            set { _force = value; }
+        }
+
+        public Particle()
+        {
+        }        
+
+        public static Particle getParticle(Vector3 pPos, Vector3 pForce)
+        {
+            Particle p = SharedList.FreeParticles.Get();
+            p._pos = pPos;
+            p._force = pForce;
+            return p;
         }
 
         public void move()
@@ -31,21 +50,6 @@ namespace Sandstorm.ParticleSystem
         override public string ToString()
         {
             return "Pos: " + this._pos + " force: " + this._force;
-        }
-
-        public Vector3 getPosition()
-        {
-            return this._pos;
-        }
-
-        public Vector3 getForce()
-        {
-            return this._force;
-        }
-
-        public void setForce(Vector3 pForce)
-        {
-            this._force = pForce;
         }
     }
 }
