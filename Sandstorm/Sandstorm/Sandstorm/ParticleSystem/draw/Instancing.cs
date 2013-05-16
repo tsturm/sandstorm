@@ -43,19 +43,19 @@ namespace Sandstorm.ParticleSystem.draw
             BillboardVertex vertex = new BillboardVertex();
 
             vertex.Position = new Vector4(1f, 1f, 1f, 1f);
-            vertex.TexCoord = new Vector4(0.0f, 0.0f, -1.0f, 1.0f);
+            vertex.TexCoord = new Vector4(0.0f, 0.0f, -5.0f, 5.0f);
             vertices.Add(vertex);
 
             vertex.Position = new Vector4(1, 1, 1, 1);
-            vertex.TexCoord = new Vector4(1.0f, 0.0f, 1.0f, 1.0f);
+            vertex.TexCoord = new Vector4(1.0f, 0.0f, 5.0f, 5.0f);
             vertices.Add(vertex);
 
             vertex.Position = new Vector4(1, 1, 1, 0);
-            vertex.TexCoord = new Vector4(0.0f, 1.0f, -1.0f, -1.0f);
+            vertex.TexCoord = new Vector4(0.0f, 1.0f, -5.0f, -5.0f);
             vertices.Add(vertex);
 
             vertex.Position = new Vector4(1, 1, 1, 0);
-            vertex.TexCoord = new Vector4(1.0f, 1.0f, 1.0f, -1.0f);
+            vertex.TexCoord = new Vector4(1.0f, 1.0f, 5.0f, -5.0f);
             vertices.Add(vertex);
 
             indices.Add((short)(0 + baseIndex));
@@ -81,7 +81,7 @@ namespace Sandstorm.ParticleSystem.draw
             this._contentManager = pContentManager;
             this._sharedList = pList;
             _effect = _contentManager.Load<Effect>("fx/InstancedModel");
-            _billboardTexture = _contentManager.Load<Texture2D>("tex/particle"); 
+            _billboardTexture = _contentManager.Load<Texture2D>("tex/smokePNG"); 
 
             LoadParticleInstance();
         }
@@ -122,11 +122,11 @@ namespace Sandstorm.ParticleSystem.draw
             _effect.Parameters["projection"].SetValue(_camera.ProjMatrix);
             _effect.Parameters["Texture"].SetValue(_billboardTexture);
             _effect.Parameters["alphaTestDirection"].SetValue(1.0f);
-            _effect.Parameters["alphaTestThreshold"].SetValue(0.8f);
+            _effect.Parameters["alphaTestThreshold"].SetValue(0.5f);
             
 
-            _graphicsDevice.BlendState = BlendState.Opaque;
-            _graphicsDevice.DepthStencilState = DepthStencilState.Default;
+            _graphicsDevice.BlendState = BlendState.AlphaBlend;
+            _graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
             _graphicsDevice.RasterizerState = RasterizerState.CullNone;
 
 

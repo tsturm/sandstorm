@@ -107,8 +107,10 @@ void PS_Billboarding(in  float2 inTexCoord : TEXCOORD0,
 {
 	outColor = tex2D(colorMapSampler, inTexCoord);
 
+	//outColor = float4(1,0,1,1);
 	// Apply the alpha test.
-	clip((outColor.a - alphaTestThreshold) * alphaTestDirection);
+	//clip((outColor.r - alphaTestThreshold) * alphaTestDirection);
+
 }
 
 

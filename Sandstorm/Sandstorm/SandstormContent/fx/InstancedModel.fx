@@ -40,6 +40,7 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
     float4 Position : POSITION0;
+	float4 Color : COLOR;
     float2 TextureCoordinate : TEXCOORD0;
 };
 
@@ -58,6 +59,7 @@ VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 
 	output.Position = mul(float4(pos, 1.0f), worldViewProjection);
 	output.TextureCoordinate = input.TextureCoordinate.xy;
+	output.Color = normalize(float4(pos, 0.8-abs(pos.y)));
 
     return output;
 }
@@ -67,10 +69,11 @@ VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 // Both techniques share this same pixel shader.
 void PixelShaderFunction(VertexShaderOutput input,out float4 outColor : COLOR)                    
 {
-	outColor = tex2D(Sampler, input.TextureCoordinate);
+	outColor = tex2D(Sampler, input.TextureCoordinate) * input.Color;
 
 	// Apply the alpha test.
-	clip((outColor.a - alphaTestThreshold) * alphaTestDirection);
+	//clip((outColor.a - alphaTestThreshold) * alphaTestDirection);
+	clip((outColor.a < 0.2) ? 1 : -1);
 
 	//TODO: Blending
 }

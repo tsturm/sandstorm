@@ -1,4 +1,4 @@
-//------------------------------------------------------
+﻿//------------------------------------------------------
 //--                                                  --
 //--		   www.riemers.net                    --
 //--   		    Basic shaders                     --
@@ -39,7 +39,10 @@ VertexToPixel TerrainVS( float4 inPos : POSITION, float2 inTexCoord: TEXCOORD0)
 	float4x4 worldViewProjection = mul (worldMatrix, viewProjection);
 
 	float4 pos = inPos;
+
 	float height = tex2Dlod(TextureSampler, float4(inTexCoord, 0, 0)).r;
+
+	
 	pos.y = height * 100.0;
 
 	Output.Position = mul(pos, worldViewProjection);

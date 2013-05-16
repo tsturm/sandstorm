@@ -38,7 +38,7 @@ namespace Sandstorm.ParticleSystem
         }
         public void emit()
         {
-            Parallel.For(0, 1, i =>
+            Parallel.For(0, 50, i =>
             {
 
                 Particle p = new Particle(this._pos, this._force);
