@@ -33,24 +33,26 @@ namespace Sandstorm.ParticleSystem.physic
         {
             Parallel.ForEach(_sharedList.getParticles(), p =>
             {
-                p.move();//move the Particle
-
-
-                foreach (Vector3 f in _forces)//apply external forces (Gravitation etc)
+                if (p != null)
                 {
-                    p.applyExternalForce(f);
-                }
-                //check colision
-                if ( _heightMap != null)
-                    if (p.getPosition().Y < _heightMap.getHeight(p.getPosition().X, p.getPosition().Z))
+                    p.move();//move the Particle
+
+                    foreach (Vector3 f in _forces)//apply external forces (Gravitation etc)
                     {
-                        Vector3 v = new Vector3(p.getPosition().X, _heightMap.getHeight(p.getPosition().X, p.getPosition().Z), p.getPosition().Z);
-                        Vector3 v1 = v - new Vector3(p.getPosition().X + 0.01f, _heightMap.getHeight(p.getPosition().X + 0.01f, p.getPosition().Z), p.getPosition().Z);
-                        Vector3 v2 = v - new Vector3(p.getPosition().X, _heightMap.getHeight(p.getPosition().X, p.getPosition().Z + 0.01f), p.getPosition().Z + 0.01f);
-                        Vector3 normal = Vector3.Cross(v1,v2);
-                        normal.Normalize();
-                        p.setForce((p.getForce() - ((2 * Vector3.Dot(p.getForce(), normal)) * normal)) * 0.6f);//*0.6f Particle lose 40% of ist Power on colision
+                        p.applyExternalForce(f);
                     }
+                    //check colision
+                    if ( _heightMap != null)
+                        if (p.Pos.Y < _heightMap.getHeight(p.Pos.X, p.Pos.Z))
+                        {
+                            Vector3 v = new Vector3(p.Pos.X, _heightMap.getHeight(p.Pos.X, p.Pos.Z), p.Pos.Z);
+                            Vector3 v1 = v - new Vector3(p.Pos.X + 0.01f, _heightMap.getHeight(p.Pos.X + 0.01f, p.Pos.Z), p.Pos.Z);
+                            Vector3 v2 = v - new Vector3(p.Pos.X, _heightMap.getHeight(p.Pos.X, p.Pos.Z + 0.01f), p.Pos.Z + 0.01f);
+                            Vector3 normal = Vector3.Cross(v1,v2);
+                            normal.Normalize();
+                            p.Force = ((p.Force - ((2 * Vector3.Dot(p.Force, normal)) * normal)) * 0.6f);//*0.6f Particle lose 40% of ist Power on colision
+                        }
+                }
             });
         }
 

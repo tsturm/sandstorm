@@ -8,11 +8,29 @@ namespace Sandstorm.ParticleSystem
 {
     public class SharedList
     {
-        public List<Particle> _particles = new List<Particle>();
+        public static int _maxCount = 100000;
 
-        private int _maxCount = 10000;
+        private static readonly ObjectPool<Particle> _freeParticles = new ObjectPool<Particle>(_maxCount);
+        private Particle[] _particles = new Particle[_maxCount];
 
-        public List<Particle> getParticles()
+        private int _pos = 0;
+        private int _count = 0;
+
+        public static ObjectPool<Particle> FreeParticles
+        {
+            get { return _freeParticles; }
+        }
+        public Particle[] Particles
+        {
+            get { return _particles; }
+        }
+
+        public int Count
+        {
+            get { return _count; }
+        }
+
+        public Particle[] getParticles()
         {
             return this._particles;
         }
@@ -21,11 +39,18 @@ namespace Sandstorm.ParticleSystem
         public void addParticle(Particle pParticle)
         {
             lock (syncLock) {
-                this._particles.Add(pParticle);
-                if (this._particles.Count > _maxCount)
+                if (_count >= _maxCount)
                 {
-                    this._particles.RemoveAt(0);
+                    Particle p = this._particles[_pos];
+                    _freeParticles.Put(p);
+                    _count--;
                 }
+
+                this._particles[_pos] = pParticle;
+                _count++;
+                _pos = (++_pos) % _maxCount;
+
+               
             }
         }
     }
