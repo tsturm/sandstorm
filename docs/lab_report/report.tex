@@ -12,7 +12,7 @@
 \usepackage{amsmath}
 
 %% Pakete usefull
-%\usepackage{tikz}
+\usepackage{tikz}
 %\usepackage{tikzscale}
 %\usepackage{bbding}
 %\usepackage{listings} 
@@ -39,7 +39,7 @@
 \setlength{\parindent}{0pt}
 
 %% TiKz Stuff %%%
-%\usetikzlibrary{calc, decorations.pathmorphing,decorations.pathreplacing, fadings, shadings, shapes, arrows,trees, positioning,patterns,automata}
+\usetikzlibrary{calc, decorations.pathmorphing,decorations.pathreplacing, fadings, shadings, shapes, arrows,trees, positioning,patterns,automata}
 %\pgfdeclarelayer{background}
 %\pgfdeclarelayer{foreground}
 %\pgfsetlayers{background,main,foreground}
@@ -97,7 +97,7 @@
 %% END Memoir customization
 
 %% TikZ input Hack
- %\newcommand{\inputTikZ}[1]{\input{#1.tikz}} 
+ \newcommand{\inputTikZ}[1]{\input{#1.tikz}} 
  %\newsubfloat{figure} %% use for \subbottom or \subtop in a figure
 
 %%%##########################################
@@ -149,7 +149,7 @@
 \input{include/chapter_01}
 \clearpage
  %and so on
-
+\inputTikZ{graphics/hardware}
 %% end of doc
 \clearpage
 

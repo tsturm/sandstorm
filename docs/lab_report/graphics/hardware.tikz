@@ -1,0 +1,149 @@
+% !TEX root = ../report.tex
+
+\begin{tikzpicture}[scale=1]
+	%%% Parameter %%%
+	\pgfmathsetmacro{\boxHeight}{1}
+	\pgfmathsetmacro{\boxWidth}{4}
+	%%
+%	\pgfmathsetmacro{\carrierH}{0.5}
+%	\pgfmathsetmacro{\carrierT}{0.07}
+%	\pgfmathsetmacro{\viewpointDepth}{0.5}
+%	\pgfmathsetmacro{\viewpointCentering}{0.5}
+%	\pgfmathsetmacro{\viewpointDepthH}{0.3}
+%	\newlength\arrowDist
+%	\setlength{\arrowDist}{0.15cm}
+%	\newlength\arrowLength
+%	\setlength{\arrowLength}{0.9cm}
+%	%%%%%%%%%%%
+		% Eckpunkte
+	\coordinate (P1) at (0,0);   				
+	\coordinate (P2) at (0,\boxHeight);
+	\coordinate (P3) at (\boxWidth, \boxHeight);
+	\coordinate (P4) at (\boxWidth, 0);
+	\coordinate (P5) at ($(P2)+(0, \boxWidth)$);
+	\coordinate (P6) at ($(P5)+(\boxWidth*0.5,0)$);
+		%Basic Elemente
+	\draw[thick] (P1) -- (P2) -- (P3) -- (P4) -- cycle;
+	\draw[] (P2) -- (P5) -- (P6);
+	\fill[red!60, opacity = 0.5] (P2) -- (P5) -- (P3);
+	\fill[blue!60, opacity = 0.5] (P2) -- (P6) -- (P3);
+	\shade[shading=ball, ball color=black!70] (P5) circle (0.15em);
+	\shade[shading=ball, ball color=black!70] (P6) circle (0.15em);
+	
+%	\coordinate (P5) at ($(F2)!\frameWidth!(P1)$);	
+%	\coordinate (P6) at ($(F2)!\frameWidth!(P2)$);
+%	\coordinate (P7) at (intersection cs: first line={(P5) -- (F1)}, second line={(P3) -- (F2)});
+%	\coordinate (P8) at (intersection cs: first line={(P6) -- (F1)}, second line={(P4) -- (F2)});
+%		% Träger oben
+%	\coordinate (P9) at ($(P2)!\viewpointDepth!(P4)$);
+%	\coordinate (P10) at (intersection cs: first line={(P9) -- (F2)}, second line={(P6) -- (P8)});
+%	\coordinate (P11) at ($(P1)!\viewpointDepth!(P3)$);
+%	\coordinate (P12) at (intersection cs: first line={(P11) -- (F2)}, second line={(P5) -- (P7)});
+%		% Sichtfeld	
+%	\coordinate (V) at ($(P9)!\viewpointCentering!(P10)$);
+%		% Träger hinten
+%	\coordinate (P13) at ($(P3)!\viewpointDepthH!(P4)$);
+%	\coordinate (P14) at ($(P7)!\viewpointDepthH!(P8)$);
+%	\coordinate (P15) at ($(P1)!\viewpointDepthH!(P2)$);
+%	\coordinate (P16) at ($(P5)!\viewpointDepthH!(P6)$);
+%		% Pfeile Centers
+%	\coordinate (P17) at ($(P9)!\arrowDist!(P11)$);
+%	\coordinate (P18) at ($(P10)!\arrowDist!(P12)$);
+%	\coordinate (P19) at ($(P17)!\viewpointCentering!(P18)$); %oben
+%	\coordinate (P20) at ($(P13)!\arrowDist!(P15)$);
+%	\coordinate (P21) at ($(P14)!\arrowDist!(P16)$);
+%	\coordinate (P22) at ($(P20)!\viewpointCentering!(P21)$); % hinten
+%	\coordinate (P23) at ($(P2)!\arrowDist!(P1)$);
+%	\coordinate (P24) at ($(P6)!\arrowDist!(P5)$);
+%	\coordinate (P25) at ($(P23)!\viewpointCentering!(P24)$); % obenV
+%	\coordinate (P26) at ($(P4)!\arrowDist!(P3)$);
+%	\coordinate (P27) at ($(P8)!\arrowDist!(P7)$);
+%	\coordinate (P28) at ($(P26)!\viewpointCentering!(P27)$); % obenH
+%	\coordinate (P29) at ($(P4)!\arrowDist!(P2)$);
+%	\coordinate (P30) at ($(P8)!\arrowDist!(P6)$);
+%	\coordinate (P31) at ($(P29)!\viewpointCentering!(P30)$); % hintenO
+%	\coordinate (P32) at ($(P3)!\arrowDist!(P1)$);
+%	\coordinate (P33) at ($(P7)!\arrowDist!(P5)$);
+%	\coordinate (P34) at ($(P32)!\viewpointCentering!(P33)$); % hintenU
+%		% Trägerbleche
+%		%%% oben
+%	\coordinate (P35) at ($(P9)+(0, \carrierH cm)$);
+%	\coordinate (P36) at ($(P9)!\carrierT cm!(F1)$);
+%	\coordinate (P37) at ($(P10)!\carrierT cm!(F1)$);
+%	\coordinate (P38) at ($(P35)!\carrierT cm!(F1)$);
+%	\coordinate (P39) at (intersection cs: first line={(P35) -- (F2)}, second line={(P12) -- (P10)});
+%	\coordinate (P40) at ($(P39)!\carrierT cm!(F1)$);
+%		%%% hinten
+%	\coordinate (P41) at ($(P13)!\carrierH cm!(F1)$);
+%	\coordinate (P42) at ($(P14)!\carrierH cm!(F1)$);
+%	\coordinate (P43) at ($(P13)+(0, \carrierT cm)$);;
+%	\coordinate (P44) at ($(P14)+(0, \carrierT cm)$);
+%	\coordinate (P45) at ($(P43)!\carrierH cm!(F1)$);
+%	\coordinate (P46) at ($(P44)!\carrierH cm!(F1)$);
+%		%Träger tiefe
+%	\begin{scope}[opacity=0.1]
+%	\shade[right color=gray!40,left color=gray!2] (P5) -- (P6) -- (P8) -- (P7);
+%	\shade[left color=gray!40,right color=gray!2] (P7) -- (P3) -- (P4) -- (P8);
+%	\end{scope}
+%	\shade[top color=gray!70,bottom color=gray!5, opacity =0.5] (P1) -- (P3) -- (P7) -- (P5);
+%		% Frame Hinterteil
+%	\draw[thick,color=black!70] (P5) -- (P7) (P7) -- (P8) (P3) -- (P7); 
+%		% Frame
+%	\draw[thick,color=black] 
+%		(P1) -- (P2)  (P5) -- (P6) 
+%		(P1) -- (P3) (P2) -- (P4) (P6) -- (P8)
+%		(P1) -- (P5) (P2) -- (P6) (P4) -- (P8);
+%		% Pfeile
+%	\begin{scope}[arrow]
+%	\foreach \destination in {P17, P18, P25, P28}
+%		\draw[] (P19) -- ($(P19)!\arrowLength!(\destination)$);
+%	\end{scope}
+% 	\shade[shading=ball, ball color=black!90] (P19) circle (0.25em) node[] {};
+%		% Kameraträger oben
+%	\draw[thin, color = black!75]
+%		(P36) -- (P37) -- (P40) (P10) -- (P37);
+%	\fill [gray!60, opacity = 0.5]
+%		(P9) -- (P10) -- (P39) -- (P35);
+%	\fill [gray, opacity = 0.5]	
+%		(P9) -- (P35) -- (P38) -- (P36)
+%		(P35) -- (P39) -- (P40) -- (P38);
+%	\draw[thin, color=black, opacity = 1]
+%		(P9) -- (P10) -- (P39) -- (P40) -- (P38) -- (P36) -- (P9) -- (P35) -- (P38) -- (P35) -- (P39);
+%		% Kameraträger hinten
+%	\draw[thin, color = black!75]
+%		(P41) -- (P42) -- (P14) (P42) -- (P46);
+%	%%fill
+%	\fill [gray!60, opacity = 0.5]
+%		(P13) -- (P14) -- (P44) -- (P43);
+%	\fill [gray, opacity = 0.5]	
+%		(P43) -- (P44) -- (P46) -- (P45)
+%		(P13) -- (P43) -- (P45) -- (P41);
+%	\draw[thin, color=black, opacity = 1]
+%		(P13) -- (P14) -- (P44) -- (P46) -- (P45) -- (P41) -- (P13) -- (P43) -- (P45) (P43) -- (P44);
+%	\begin{scope}[arrow]
+%	\foreach \destination in {P20, P21, P31, P34}
+%		\draw[] (P22) -- ($(P22)!\arrowLength!(\destination)$);
+%	\end{scope}
+%	\shade[shading=ball, ball color=black!90] (P22) circle (0.25em) node[] {};
+%	\draw[thick,color=black](P3) -- (P4);
+%	%Beschriftung
+%	\draw[decorate,decoration={brace,mirror,raise=3pt,amplitude=10pt}, thin]
+%    		($(P6)+(-0.1,0)$)--($(P5)+(-0.1,0)$);
+%	\draw ($(P5)!0.5!(P6)$)+(-0.9,0.1) node[rotate=90] {\footnotesize 680 mm};
+%	\draw[decorate,decoration={brace,mirror,raise=3pt,amplitude=10pt}, thin]
+%    		($(P5)+(-0.1,0)$)--($(P1)+(-0.1,0)$);
+%	\draw ($(P1)!0.5!(P5)$)+(-0.6,-0.6) node[rotate=-30] {\footnotesize 300 mm};
+%	\draw[decorate,decoration={brace,raise=3pt,amplitude=10pt}, thin]
+%    		($(P3)+(0,-0.1)$)--($(P1)+(0,-0.1)$);
+%	\draw ($(P1)!0.5!(P3)$)+(0.5,-0.7) node[rotate=34] {\footnotesize 500 mm};
+%	\draw[thin, -latex'] (7.7,2.8) to[out=-90,in=45] (3,2);
+%	\draw (7.7,3.2) node[] {\footnotesize Grundplatte};
+%	\draw[thin, -latex'] (7.7,8.8) to[out=-90,in=45] (4,6.6);
+%	\draw[thin, -latex'] (7.7,8.8) to[out=-90,in=45] (1.75,10.2);
+%	\draw (7.7,9.2) node[] {\footnotesize Technikträger};
+%	% Verbindungspunkte DEBUG
+	\foreach \i in {1,2,..., 6}
+		{
+ 		%\shade[shading=ball, ball color=black!70] (P\i) circle (0.15em) node[above right] {\tiny \i};
+		}
+\end{tikzpicture}
