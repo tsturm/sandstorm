@@ -6,6 +6,8 @@ using Sandstorm.Terrain;
 using Sandstorm.ParticleSystem;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace Sandstorm
@@ -72,6 +74,57 @@ namespace Sandstorm
         /// </summary>
         protected override void Initialize()
         {
+          /*  GC.RegisterForFullGCNotification(1, 1);
+            
+            // Start a thread using WaitForFullGCProc.
+            Thread startpolling = new Thread(() =>
+            {
+                while (true)
+                {
+                    // Check for a notification of an approaching collection.
+                    GCNotificationStatus s = GC.WaitForFullGCApproach(1000);
+                    if (s == GCNotificationStatus.Succeeded)
+                    {
+                        //Call event
+
+                        Console.WriteLine("GC is about to begin");
+                        GC.Collect();
+
+                    }
+                    else if (s == GCNotificationStatus.Canceled)
+                    {
+                        // Cancelled the Registration
+                    }
+                    else if (s == GCNotificationStatus.Timeout)
+                    {
+                        // Timeout occurred.
+                    }
+
+                    // Check for a notification of a completed collection.
+                    s = GC.WaitForFullGCComplete(1000);
+                    if (s == GCNotificationStatus.Succeeded)
+                    {
+                        //Call event
+                        Console.WriteLine("GC has ended");
+                        int counter = GC.CollectionCount(2);
+                        Console.WriteLine("GC Collected {0} objects", counter);
+                    }
+                    else if (s == GCNotificationStatus.Canceled)
+                    {
+                        //Cancelled the registration
+                    }
+                    else if (s == GCNotificationStatus.Timeout)
+                    {
+                        // Timeout occurred
+                    }
+
+                    Thread.Sleep(500);
+                }
+
+
+            });
+            startpolling.Start();*/
+
             Form xnaWindow = (Form)Control.FromHandle((this.Window.Handle));
             xnaWindow.GotFocus += new EventHandler(xnaWindow_GotFocus);
             _editor.Show();

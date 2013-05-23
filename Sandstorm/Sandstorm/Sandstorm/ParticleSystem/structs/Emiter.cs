@@ -5,7 +5,6 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Sandstorm.ParticleSystem.structs;
-
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,9 +28,8 @@ namespace Sandstorm.ParticleSystem
 
         protected float getRandomFloat(float min, float max)
         {
-            return (float)((_rand.NextDouble() * (Math.Abs(max) + Math.Abs(min)) - Math.Abs(min)));
+            return (float)(_rand.NextDouble() * (max - min) + min);
         }
-
         private Vector3 getSmallRandomForce()
         {
             return new Vector3(this.getRandomFloat(MIN_RAND, MAX_RAND), this.getRandomFloat(MIN_RAND, MAX_RAND), this.getRandomFloat(MIN_RAND, MAX_RAND));
@@ -40,10 +38,9 @@ namespace Sandstorm.ParticleSystem
         virtual
         public void emit()
         {
-            Parallel.For(0, 1, i =>
+            Parallel.For(0, 50, i =>
             {
-
-                Particle p = new Particle(this._pos, this._force);
+                Particle p = Particle.getParticle(this._pos, this._force);
                 p.applyExternalForce(this.getSmallRandomForce());
                 this._sharedlist.addParticle(p);
             });
