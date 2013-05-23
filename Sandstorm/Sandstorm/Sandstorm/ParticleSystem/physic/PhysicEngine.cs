@@ -38,30 +38,35 @@ namespace Sandstorm.ParticleSystem.physic
 
             Parallel.ForEach(_sharedList.getParticles(), p =>
             {
-                foreach (Vector3 f in _forces)//apply external forces (Gravitation etc)
-                {
-                    p.applyExternalForce(f);
-                }
-                p.move();//move the Particle
-                //check colision
-                Vector3 nextPosition = p.getPosition();// +p.getForce();
-                float pHeight = _heightMap.getHeightData(nextPosition.X, nextPosition.Z);
-
-                if (nextPosition.Y < pHeight + p.getRadius())
-                {
-                    Vector3 normal = _heightMap.getNormal(nextPosition.X, nextPosition.Z);
-                    p.reflect(normal);
-                    Vector3 f= p.getForce();
-                    f.Y = 0;
-                    p.setForce(f);
-                    p.setPosition(new Vector3(p.getPosition().X, pHeight, p.getPosition().Z) + (/*p.getRadius() **/ 1.005f * normal));
-                    
-                    
-                    p.applyFriction(0.1f);
-                }
-
                 
-                //p.collide(_sharedList.getParticles().ToArray());
+                if (p != null)
+                {
+
+                    foreach (Vector3 f in _forces)//apply external forces (Gravitation etc)
+                    {
+                        p.applyExternalForce(f);
+                    }
+                    p.move();//move the Particle
+                    //check colision
+                    Vector3 nextPosition = p.Pos;// +p.getForce();
+                    float pHeight = _heightMap.getHeightData(nextPosition.X, nextPosition.Z);
+
+                    if (nextPosition.Y < pHeight + p.Radius)
+                    {
+                        Vector3 normal = _heightMap.getNormal(nextPosition.X, nextPosition.Z);
+                        p.reflect(normal);
+                        Vector3 f= p.Force;
+                        f.Y = 0;
+                        p.Force = f;
+                        p.Pos = new Vector3(p.Pos.X, pHeight, p.Pos.Z) + (/*p.getRadius() **/ 1.005f * normal);
+                    
+                    
+                        p.applyFriction(0.1f);
+                    }
+
+
+                    //p.collide(_sharedList.getParticles().ToArray());
+                }
             });
             _collisionDetector.checkCollisions();
         }

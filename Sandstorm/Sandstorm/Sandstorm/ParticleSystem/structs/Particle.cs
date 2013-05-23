@@ -10,82 +10,79 @@ namespace Sandstorm.ParticleSystem
 {
     public class Particle
     {
-        Vector3 _pos;
-        Vector3 _oldpos;
-        Vector3 _force;
-        Vector3 _oldforce;
+        private Vector3 _pos;
+        private Vector3 _oldpos;
+        private Vector3 _force;
+        private Vector3 _oldforce;
         static float _friction = 0.8f;//=0 -> no friction bounces like a Ball, =1 -> sticky like hell 
         static float _radius = 0.2f;
         static float _flexibitity = 0.8f;
 
-        public Particle(Vector3 pPos, Vector3 pForce)
+        public Vector3 Pos
         {
-            _pos = pPos;
-            _oldpos = pPos;
-            _force = pForce;
-            _oldforce = new Vector3(0, 0, 0);
+            get { return _pos; }
+            set { _pos = value; }
+        }
+
+        public Vector3 Force
+        {
+            get { return _force; }
+            set { _force = value; }
+        }
+        public Vector3 OldPos
+        {
+            get { return _oldpos; }
+            set { _oldpos = value; }
+        }
+        public Vector3 OldForce
+        {
+            get { return _oldforce; }
+            set { _oldforce = value; }
+        }
+
+        public float Radius
+        {
+            get { return _radius; }
+        }
+
+        public Particle()
+        {
+        }
+
+        public static Particle getParticle(Vector3 pPos, Vector3 pForce)
+        {
+            Particle p = SharedList.FreeParticles.Get();
+            p.Pos = pPos;
+            p.OldPos = p.Pos;
+            p.Force = pForce;
+            p.OldForce = new Vector3(0, 0, 0);
+            return p;
         }
 
         public void move()
         {
-            this._oldpos = _pos;
-            this._pos += this._force;
+            this.OldPos = Pos;
+            this.Pos += this.Force;
         }
 
         public void applyExternalForce(Vector3 pForce)
         {
-            this._force += pForce;
+            this.Force += pForce;
         }
 
-        override
-        public string ToString()
+        override public string ToString()
         {
-            return "Pos: " + this._pos + " force: " + this._force;
+            return "Pos: " + this.Pos + " force: " + this.Force;
         }
-
-        public Vector3 getPosition()
-        {
-            return this._pos;
-        }
-
-        public Vector3 getOldPosition()
-        {
-            return this._oldpos;
-        }
-
-        public Vector3 getForce()
-        {
-            return this._force;
-        }
-
-        public void setForce(Vector3 pForce)
-        {
-            this._force = pForce;
-        }
-
-        public Vector3 getOldForce()
-        {
-            return _oldforce;
-        }
-
-        public float getRadius()
-        {
-            return _radius;
-        }
-
-        public void setRadius(float radius)
-        {
-            _radius = radius;
-        }
-
+        
         public bool checkCollision(Particle p2)
         {
             if (p2 == null)
                 return false;
             if (p2 == this)
                 return false;
-            float distance = Vector3.Distance(this.getPosition(), p2.getPosition());
-            if (distance <= this.getRadius() + p2.getRadius())
+            float distance = Vector3.Distance(this.Pos, p2.Pos);
+            if (distance <= this.Radius + p2.Radius)
                 return true;
             else
                 return false;
@@ -96,12 +93,12 @@ namespace Sandstorm.ParticleSystem
             if (checkCollision(p2))
             {
                 _oldforce = _force;
-                Vector3 p2normal = this.getPosition() - p2.getPosition();
+                Vector3 p2normal = this.Pos - p2.Pos;
                 p2normal.Normalize();
                 reflect(p2normal);
                 applyFriction();
-                applyExternalForce((p2normal * (1 / (this.getRadius() + p2.getRadius()))) * (1 - _flexibitity));
-                applyExternalForce(p2.getOldForce());
+                applyExternalForce((p2normal * (1 / (this.Radius + p2.Radius))) * (1 - _flexibitity));
+                applyExternalForce(p2.OldForce);
             }
         }
 
@@ -123,16 +120,10 @@ namespace Sandstorm.ParticleSystem
             _force *= 1 - friction;
         }
 
-        internal Particle Clone()
+        /*internal Particle Clone()
         {
             return new Particle(_pos, _force);
-        }
+        }*/
 
-
-
-        internal void setPosition(Vector3 pos)
-        {
-            _pos = pos;
-        }
     }
 }

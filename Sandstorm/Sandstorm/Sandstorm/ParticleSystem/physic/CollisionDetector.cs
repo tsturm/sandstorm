@@ -67,27 +67,33 @@ namespace Sandstorm.ParticleSystem.physic
         {
             foreach(Particle p in _particleList.getParticles())
             {
-                List<Particle> oldCell = getCell(p.getOldPosition());
-                if (oldCell != null)
+                if (p != null)
                 {
-                    List<Particle> newCell = getCell(p.getPosition());
-                    if (newCell != null)
+                    List<Particle> oldCell = getCell(p.OldPos);
+                    if (oldCell != null)
                     {
-                        if (oldCell != newCell)
+                        List<Particle> newCell = getCell(p.Pos);
+                        if (newCell != null)
                         {
-                            newCell.Add(p);
-                            if (oldCell.Contains(p))
-                                oldCell.Remove(p);
+                            if (oldCell != newCell)
+                            {
+                                newCell.Add(p);
+                                if (oldCell.Contains(p))
+                                    oldCell.Remove(p);
+                            }
                         }
                     }
                 }
             }
             Parallel.ForEach(_particleList.getParticles(), p =>
             {
-                List<Particle> cell = getCell(p.getPosition());
-                if (cell != null)
+                if (p != null)
                 {
-                    p.collide(cell.ToArray());
+                    List<Particle> cell = getCell(p.Pos);
+                    if (cell != null)
+                    {
+                        p.collide(cell.ToArray());
+                    }
                 }
             });
         }

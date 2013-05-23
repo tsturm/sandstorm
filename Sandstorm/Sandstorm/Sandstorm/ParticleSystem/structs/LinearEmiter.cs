@@ -17,7 +17,7 @@ namespace Sandstorm.ParticleSystem.structs
         {
             for (int i = 0; i < 100; i++)
             {
-                Particle p = new Particle(this._pos+new Vector3(60+getRandomFloat(0,180),10,-40), new Vector3(0,0,0.1f));
+                Particle p = Particle.getParticle(this._pos + new Vector3(60 + getRandomFloat(0, 180), 10, -40), new Vector3(0, 0, 0.1f));
                 _sharedlist.addParticle(p);
             }
         }
