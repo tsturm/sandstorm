@@ -11,9 +11,4 @@ prerequisites:
 - XNA Studio 4
 - Kinect SDK 1.7
 - UMLet 11.5.1
-
-
-
-further links:
-
-- http://idav.ucdavis.edu/~okreylos/ResDev/SARndbox/index.html
+- JabRef 2.9.2
