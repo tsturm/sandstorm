@@ -18,7 +18,8 @@ namespace Sandstorm.ParticleSystem.physic
         private HeightMap _heightMap = null;
 
         private List<Particle>[, ,] _cells;
-        private static int _cellsize = 10;
+        private List<Particle> _ignoreCell;
+        private static int _cellsize = 2;
         private static int _cellsPerDimension;
 
         public CollisionDetector(SharedList particleList, HeightMap heightMap)
@@ -30,12 +31,14 @@ namespace Sandstorm.ParticleSystem.physic
 
         public void initCells()
         {
+
             _cellsPerDimension = _heightMap.getWidth()/_cellsize;
-            _cells = new List<Particle>[_cellsPerDimension, _cellsPerDimension/2, _cellsPerDimension];
+            _cells = new List<Particle>[_cellsPerDimension, _cellsPerDimension, _cellsPerDimension];
             for (int x = 0; x < _cellsPerDimension; x++)
-                for (int y = 0; y < _cellsPerDimension/2; y++)
+                for (int y = 0; y < _cellsPerDimension; y++)
                     for (int z = 0; z < _cellsPerDimension; z++)
                         _cells[x, y, z] = new List<Particle>();
+            _ignoreCell = new List<Particle>();
         }
 
         public List<Particle> getCell(float x, float y, float z)
@@ -50,9 +53,9 @@ namespace Sandstorm.ParticleSystem.physic
             int cy = (int)y;
             int cz = (int)z;
             if(cx>=0 && cy>=0 && cz>=0)
-                if (cx < _cellsPerDimension && cy < _cellsPerDimension/2 && cz < _cellsPerDimension)
+                if (cx < _cellsPerDimension && cy < _cellsPerDimension && cz < _cellsPerDimension)
                     return _cells[cx, cy, cz];
-            return new List<Particle>();
+            return null;
         }
 
         public List<Particle> getCell(Vector3 particlePos)
@@ -65,34 +68,27 @@ namespace Sandstorm.ParticleSystem.physic
             foreach(Particle p in _particleList.getParticles())
             {
                 List<Particle> oldCell = getCell(p.getOldPosition());
-                List<Particle> newCell = getCell(p.getPosition());
-                if (oldCell != newCell)
+                if (oldCell != null)
                 {
-                    if (oldCell.Contains(p))
+                    List<Particle> newCell = getCell(p.getPosition());
+                    if (newCell != null)
                     {
-                        oldCell.Remove(p);
-                        newCell.Add(p);
+                        if (oldCell != newCell)
+                        {
+                            newCell.Add(p);
+                            if (oldCell.Contains(p))
+                                oldCell.Remove(p);
+                        }
                     }
-                    else
-                    {
-                        newCell.Add(p);
-                    }
-                }
-                else
-                {
-                    if (!oldCell.Contains(p))
-                        newCell.Add(p);
                 }
             }
             Parallel.ForEach(_particleList.getParticles(), p =>
             {
-                p.collide(getCell(p.getPosition()).ToArray());
-                p.collide(getCell(p.getPosition() + new Vector3(0, 0, 1)).ToArray());
-                p.collide(getCell(p.getPosition() + new Vector3(0, 0, -1)).ToArray());
-                p.collide(getCell(p.getPosition() + new Vector3(0, 1, 0)).ToArray());
-                p.collide(getCell(p.getPosition() + new Vector3(0, -1, 0)).ToArray());
-                p.collide(getCell(p.getPosition() + new Vector3(1, 0, 0)).ToArray());
-                p.collide(getCell(p.getPosition() + new Vector3(-1, 0, 0)).ToArray());
+                List<Particle> cell = getCell(p.getPosition());
+                if (cell != null)
+                {
+                    p.collide(cell.ToArray());
+                }
             });
         }
     }

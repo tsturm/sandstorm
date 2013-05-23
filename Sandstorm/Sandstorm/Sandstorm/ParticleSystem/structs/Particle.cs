@@ -15,13 +15,13 @@ namespace Sandstorm.ParticleSystem
         Vector3 _force;
         Vector3 _oldforce;
         static float _friction = 0.8f;//=0 -> no friction bounces like a Ball, =1 -> sticky like hell 
-        static float _radius = 0.7f;
+        static float _radius = 0.2f;
         static float _flexibitity = 0.8f;
 
         public Particle(Vector3 pPos, Vector3 pForce)
         {
             _pos = pPos;
-            _oldpos = new Vector3(0, 0, 0);
+            _oldpos = pPos;
             _force = pForce;
             _oldforce = new Vector3(0, 0, 0);
         }

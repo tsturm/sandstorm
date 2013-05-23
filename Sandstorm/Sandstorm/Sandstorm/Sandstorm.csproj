@@ -84,6 +84,7 @@
     <Compile Include="ParticleSystem\structs\BillboardVertex.cs" />
     <Compile Include="ParticleSystem\structs\Emiter.cs" />
     <Compile Include="ParticleSystem\structs\FPSCounter.cs" />
+    <Compile Include="ParticleSystem\structs\LinearEmiter.cs" />
     <Compile Include="ParticleSystem\structs\Particle.cs" />
     <Compile Include="ParticleSystem\structs\SharedList.cs" />
     <Compile Include="SandstormBeamer.cs">

@@ -30,12 +30,18 @@ namespace Sandstorm.ParticleSystem.physic
             _collisionDetector = new CollisionDetector(pList, _heightMap);
 
             this._forces.Add(new Vector3(0f, -0.1f, 0f));
+            this._forces.Add(new Vector3(0f, -0.0f, 0.05f));
         }
 
         public void Update(GameTime pGameTime) //Update physic
         {
+
             Parallel.ForEach(_sharedList.getParticles(), p =>
             {
+                foreach (Vector3 f in _forces)//apply external forces (Gravitation etc)
+                {
+                    p.applyExternalForce(f);
+                }
                 p.move();//move the Particle
                 //check colision
                 Vector3 nextPosition = p.getPosition();// +p.getForce();
@@ -45,14 +51,16 @@ namespace Sandstorm.ParticleSystem.physic
                 {
                     Vector3 normal = _heightMap.getNormal(nextPosition.X, nextPosition.Z);
                     p.reflect(normal);
-                    p.setPosition(new Vector3(p.getPosition().X, pHeight, p.getPosition().Z) + (p.getRadius() * 1.005f * normal));
-                    p.applyFriction(0.2f);
+                    Vector3 f= p.getForce();
+                    f.Y = 0;
+                    p.setForce(f);
+                    p.setPosition(new Vector3(p.getPosition().X, pHeight, p.getPosition().Z) + (/*p.getRadius() **/ 1.005f * normal));
+                    
+                    
+                    p.applyFriction(0.1f);
                 }
 
-                foreach (Vector3 f in _forces)//apply external forces (Gravitation etc)
-                {
-                    p.applyExternalForce(f);
-                }
+                
                 //p.collide(_sharedList.getParticles().ToArray());
             });
             _collisionDetector.checkCollisions();
