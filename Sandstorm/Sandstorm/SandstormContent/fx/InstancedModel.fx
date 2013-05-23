@@ -59,7 +59,7 @@ VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 
 	output.Position = mul(float4(pos, 1.0f), worldViewProjection);
 	output.TextureCoordinate = input.TextureCoordinate.xy;
-	output.Color = normalize(float4(pos, 0.8-abs(pos.y)));
+	output.Color = normalize(float4(pos, 0.5-abs(pos.y)));
 
     return output;
 }
