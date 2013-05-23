@@ -143,14 +143,17 @@ namespace Sandstorm.ParticleSystem.draw
 
         public void Draw()
         {
-            Array.Resize(ref _instanceTransforms, _sharedList.Particles.Length);
+            Array.Resize(ref _instanceTransforms, _sharedList.Count);
 
-            Parallel.For(0, _sharedList.Particles.Length, i =>
+            //TODO: Parallelisieren?!
+            //Parallel.For(0, _sharedList.Particles.Length, i =>
+            int k=0;
+            for(int i=0; i < _sharedList.Particles.Length;i++)
             {
                 Particle p = _sharedList.Particles[i];
                 if(p != null)
-                    _instanceTransforms[i] = p.Pos;
-            });
+                    _instanceTransforms[k++] = p.Pos;
+            }//);
 
             DrawInstances(_vertexBuffer, _indexBuffer, _billboardTexture, _instanceTransforms);
         }

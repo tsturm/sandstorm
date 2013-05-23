@@ -21,39 +21,54 @@ namespace Sandstorm.ParticleSystem.physic
 
         private HeightMap _heightMap;
 
+        private CollisionDetector _collisionDetector;
+
         public PhysicEngine(SharedList pList, HeightMap heightMap)
         {
             this._sharedList = pList;
             this._heightMap = heightMap;
+            _collisionDetector = new CollisionDetector(pList, _heightMap);
 
             this._forces.Add(new Vector3(0f, -0.1f, 0f));
+            this._forces.Add(new Vector3(0f, -0.0f, 0.05f));
         }
 
         public void Update(GameTime pGameTime) //Update physic
         {
+
             Parallel.ForEach(_sharedList.getParticles(), p =>
             {
+                
                 if (p != null)
                 {
-                    p.move();//move the Particle
 
                     foreach (Vector3 f in _forces)//apply external forces (Gravitation etc)
                     {
                         p.applyExternalForce(f);
                     }
+                    p.move();//move the Particle
                     //check colision
-                    if ( _heightMap != null)
-                        if (p.Pos.Y < _heightMap.getHeight(p.Pos.X, p.Pos.Z))
-                        {
-                            Vector3 v = new Vector3(p.Pos.X, _heightMap.getHeight(p.Pos.X, p.Pos.Z), p.Pos.Z);
-                            Vector3 v1 = v - new Vector3(p.Pos.X + 0.01f, _heightMap.getHeight(p.Pos.X + 0.01f, p.Pos.Z), p.Pos.Z);
-                            Vector3 v2 = v - new Vector3(p.Pos.X, _heightMap.getHeight(p.Pos.X, p.Pos.Z + 0.01f), p.Pos.Z + 0.01f);
-                            Vector3 normal = Vector3.Cross(v1,v2);
-                            normal.Normalize();
-                            p.Force = ((p.Force - ((2 * Vector3.Dot(p.Force, normal)) * normal)) * 0.6f);//*0.6f Particle lose 40% of ist Power on colision
-                        }
+                    Vector3 nextPosition = p.Pos;// +p.getForce();
+                    float pHeight = _heightMap.getHeightData(nextPosition.X, nextPosition.Z);
+
+                    if (nextPosition.Y < pHeight + p.Radius)
+                    {
+                        Vector3 normal = _heightMap.getNormal(nextPosition.X, nextPosition.Z);
+                        p.reflect(normal);
+                        Vector3 f= p.Force;
+                        f.Y = 0;
+                        p.Force = f;
+                        p.Pos = new Vector3(p.Pos.X, pHeight, p.Pos.Z) + (/*p.getRadius() **/ 1.005f * normal);
+                    
+                    
+                        p.applyFriction(0.1f);
+                    }
+
+
+                    //p.collide(_sharedList.getParticles().ToArray());
                 }
             });
+            _collisionDetector.checkCollisions();
         }
 
         public void Draw() //Nothing to draw.. normally

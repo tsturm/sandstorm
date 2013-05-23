@@ -12,13 +12,13 @@ namespace Sandstorm.ParticleSystem
 {
     class Emiter
     {
-        Vector3 _pos;
-        Vector3 _force;
-        SharedList _sharedlist;
-        private Random _rand = new Random();
-        
-        private static float MIN_RAND = -0.5f;
-        private static float MAX_RAND = 0.5f;
+        protected Vector3 _pos;
+        protected Vector3 _force;
+        protected SharedList _sharedlist;
+        protected Random _rand = new Random();
+
+        protected static float MIN_RAND = -0.5f;
+        protected static float MAX_RAND = 0.5f;
         public Emiter(Vector3 pos, Vector3 force, SharedList sharedlist)
         {
             this._pos = pos;
@@ -26,7 +26,7 @@ namespace Sandstorm.ParticleSystem
             this._sharedlist = sharedlist;
         }
 
-        private float getRandomFloat(float min, float max)
+        protected float getRandomFloat(float min, float max)
         {
             return (float)(_rand.NextDouble() * (max - min) + min);
         }
@@ -34,6 +34,8 @@ namespace Sandstorm.ParticleSystem
         {
             return new Vector3(this.getRandomFloat(MIN_RAND, MAX_RAND), this.getRandomFloat(MIN_RAND, MAX_RAND), this.getRandomFloat(MIN_RAND, MAX_RAND));
         }
+
+        virtual
         public void emit()
         {
             Parallel.For(0, 50, i =>
