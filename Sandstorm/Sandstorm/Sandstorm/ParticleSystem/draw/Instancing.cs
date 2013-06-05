@@ -31,7 +31,8 @@ namespace Sandstorm.ParticleSystem.draw
 
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
-            new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 1)
+            new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 1),
+            new VertexElement(sizeof(float)*3, VertexElementFormat.Vector3, VertexElementUsage.Position, 2)
         );        
 
         private void LoadParticleInstance()
@@ -109,7 +110,7 @@ namespace Sandstorm.ParticleSystem.draw
             // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
              _graphicsDevice.SetVertexBuffers(
                         new VertexBufferBinding(vertexBuffer,0,0),
-                        new VertexBufferBinding(instanceVertexBuffer, 0, 1)
+                        new VertexBufferBinding(instanceVertexBuffer, 0, 2)
             );
 
             _graphicsDevice.Indices = indexBuffer;
@@ -143,7 +144,7 @@ namespace Sandstorm.ParticleSystem.draw
 
         public void Draw()
         {
-            Array.Resize(ref _instanceTransforms, _sharedList.Count);
+            Array.Resize(ref _instanceTransforms, _sharedList.Count*2);
 
             //TODO: Parallelisieren?!
             //Parallel.For(0, _sharedList.Particles.Length, i =>
@@ -151,8 +152,11 @@ namespace Sandstorm.ParticleSystem.draw
             for(int i=0; i < _sharedList.Particles.Length;i++)
             {
                 Particle p = _sharedList.Particles[i];
-                if(p != null)
+                if (p != null)
+                {
                     _instanceTransforms[k++] = p.Pos;
+                    _instanceTransforms[k++] = p.Force;
+                }
             }//);
 
             DrawInstances(_vertexBuffer, _indexBuffer, _billboardTexture, _instanceTransforms);
