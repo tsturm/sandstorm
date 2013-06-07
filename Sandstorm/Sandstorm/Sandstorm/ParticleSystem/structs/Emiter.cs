@@ -4,15 +4,21 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Sandstorm.ParticleSystem.structs;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Sandstorm.ParticleSystem
 {
     class Emiter
     {
-        Vector3 _pos;
-        Vector3 _force;
-        SharedList _sharedlist;
+        protected Vector3 _pos;
+        protected Vector3 _force;
+        protected SharedList _sharedlist;
+        protected Random _rand = new Random();
 
+        protected static float MIN_RAND = -0.5f;
+        protected static float MAX_RAND = 0.5f;
         public Emiter(Vector3 pos, Vector3 force, SharedList sharedlist)
         {
             this._pos = pos;
@@ -20,9 +26,24 @@ namespace Sandstorm.ParticleSystem
             this._sharedlist = sharedlist;
         }
 
+        protected float getRandomFloat(float min, float max)
+        {
+            return (float)(_rand.NextDouble() * (max - min) + min);
+        }
+        private Vector3 getSmallRandomForce()
+        {
+            return new Vector3(this.getRandomFloat(MIN_RAND, MAX_RAND), this.getRandomFloat(MIN_RAND, MAX_RAND), this.getRandomFloat(MIN_RAND, MAX_RAND));
+        }
+
+        virtual
         public void emit()
         {
-            this._sharedlist.addParticle(new Particle(this._pos,this._force));
+            Parallel.For(0, 50, i =>
+            {
+                Particle p = Particle.getParticle(this._pos, this._force);
+                p.applyExternalForce(this.getSmallRandomForce());
+                this._sharedlist.addParticle(p);
+            });
         }
     }
 }

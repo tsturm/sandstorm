@@ -32,13 +32,8 @@ namespace Sandstorm
         private Vector3 _eyePos = new Vector3(0f);
         private Quaternion _orientation = new Quaternion(0f, 0f, 0f, 1f);
         private ProjectionType _type = ProjectionType.PERSPECTIVE_PROJECTION;
-<<<<<<< .merge_file_zSIiZT
-        private int _orthoWidth;
-        private int _orthoHeight;
-=======
         private int _orthoWidth = 492;
         private int _orthoHeight = 492;
->>>>>>> .merge_file_OAGXtb
 
         private float _pitch;
 
@@ -151,10 +146,6 @@ namespace Sandstorm
 
         public void Zoom(float pFactor)
         {
-<<<<<<< .merge_file_zSIiZT
-            _orbitalDistance += pFactor;
-            UpdateViewMatrix();
-=======
             if (_type == ProjectionType.PERSPECTIVE_PROJECTION)
             {
                 _orbitalDistance += pFactor;
@@ -165,7 +156,6 @@ namespace Sandstorm
                 _orthoHeight = _orthoWidth += (int)pFactor;
                 UpdateProjectionMatrix();
             }
->>>>>>> .merge_file_OAGXtb
         }
 
         public void RotateOrbital(float pYaw, float pPitch)
@@ -228,31 +218,18 @@ namespace Sandstorm
 
             if (_viewport.Width > _viewport.Height)
             {
-<<<<<<< .merge_file_zSIiZT
-                height = 510;
-=======
                 height = _orthoHeight;
->>>>>>> .merge_file_OAGXtb
                 width = (_viewport.Width * height / _viewport.Height);
             }
             else if (_viewport.Width < _viewport.Height)
             {
-<<<<<<< .merge_file_zSIiZT
-                width = 510;
-=======
                 width = _orthoWidth;
->>>>>>> .merge_file_OAGXtb
                 height = (_viewport.Height * width / _viewport.Width);
             }
             else
             {
-<<<<<<< .merge_file_zSIiZT
-                width = 510;
-                height = 510;
-=======
                 width = _orthoWidth;
                 height = _orthoHeight;
->>>>>>> .merge_file_OAGXtb
             }
 
             switch (_type)

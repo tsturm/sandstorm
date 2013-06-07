@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Sandstorm.ParticleSystem.structs;
+using Sandstorm.Terrain;
 
 namespace Sandstorm.ParticleSystem.physic
 {
@@ -14,32 +19,61 @@ namespace Sandstorm.ParticleSystem.physic
 
         private List<Vector3> _forces = new List<Vector3>();
 
-        public PhysicEngine(SharedList pList)
+        private HeightMap _heightMap;
+
+        private CollisionDetector _collisionDetector;
+
+        public PhysicEngine(SharedList pList, HeightMap heightMap)
         {
             this._sharedList = pList;
+            this._heightMap = heightMap;
+            _collisionDetector = new CollisionDetector(pList, _heightMap);
 
-            this._forces.Add(new Vector3(0f, 0f, 0.01f));
-            //_sharedList.getParticles().Add(new Particle(new Vector3(1f, 0f, 0f), new Vector3(1f, 0f, 0f))); //Test-Particle
+            this._forces.Add(new Vector3(0f, -0.03f, 0f));
+            this._forces.Add(new Vector3(0f, -0.0f, 0.05f));
         }
 
         public void Update(GameTime pGameTime) //Update physic
         {
-            _fpsCounter.Update(pGameTime);
 
-            foreach(Particle p in _sharedList.getParticles())
+            Parallel.ForEach(_sharedList.getParticles(), p =>
             {
-                p.move();
-                foreach (Vector3 f in _forces)//apply external forces (Gravitation etc)
+                
+                if (p != null)
                 {
-                    p.applyExternalForce(f);
+
+                    foreach (Vector3 f in _forces)//apply external forces (Gravitation etc)
+                    {
+                        p.applyExternalForce(f);
+                    }
+                    p.move();//move the Particle
+                    //check colision
+                    Vector3 nextPosition = p.Pos;// +p.getForce();
+                    float pHeight = _heightMap.getHeightData(nextPosition.X, nextPosition.Z);
+
+                    if (nextPosition.Y < pHeight + p.Radius)
+                    {
+                        Vector3 normal = _heightMap.getNormal(nextPosition.X, nextPosition.Z);
+                        p.reflect(normal);
+                        Vector3 f= p.Force;
+                        f.Y = 0;
+                        p.Force = f;
+                        p.Pos = new Vector3(p.Pos.X, pHeight, p.Pos.Z) + (/*p.getRadius() **/ 1.005f * normal);
+                    
+                    
+                        p.applyFriction(0.1f);
+                    }
+
+
+                    //p.collide(_sharedList.getParticles().ToArray());
                 }
-                //check colision
-            }
+            });
+            _collisionDetector.checkCollisions();
         }
 
         public void Draw() //Nothing to draw.. normally
         {
-            
+            _fpsCounter.Update();
         }
 
         public int getFPS()

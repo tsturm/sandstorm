@@ -2,25 +2,55 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Sandstorm.ParticleSystem.structs;
 
 namespace Sandstorm.ParticleSystem
 {
-    class SharedList
+    public class SharedList
     {
-        private List<Particle> _particles = new List<Particle>();
-        private int _maxCount = 1000;
+        public static int _maxCount = 100000;
 
-        public List<Particle> getParticles()
+        private static readonly ObjectPool<Particle> _freeParticles = new ObjectPool<Particle>(_maxCount);
+        private Particle[] _particles = new Particle[_maxCount];
+
+        private int _pos = 0;
+        private int _count = 0;
+
+        public static ObjectPool<Particle> FreeParticles
+        {
+            get { return _freeParticles; }
+        }
+        public Particle[] Particles
+        {
+            get { return _particles; }
+        }
+
+        public int Count
+        {
+            get { return _count; }
+        }
+
+        public Particle[] getParticles()
         {
             return this._particles;
         }
 
-        public void addParticle(Particle particle)
+        private readonly object syncLock = new object();
+        public void addParticle(Particle pParticle)
         {
-            this._particles.Add(particle);
-            if (this._particles.Count > _maxCount)
-            {
-                this._particles.RemoveAt(0);
+            lock (syncLock) {
+                if (_count >= _maxCount)
+                {
+                    Particle p = this._particles[_pos];
+                    _freeParticles.Put(p);
+                    _count--;
+                }
+
+                this._particles[_pos] = pParticle;
+                _count++;
+                _pos = (++_pos) % _maxCount;
+
+               
             }
         }
     }

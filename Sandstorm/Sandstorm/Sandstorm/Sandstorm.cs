@@ -6,6 +6,8 @@ using Sandstorm.Terrain;
 using Sandstorm.ParticleSystem;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace Sandstorm
@@ -16,7 +18,6 @@ namespace Sandstorm
     public class Sandstorm : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
         Camera _perspCamera;
         Camera _orthoCamera;
         CameraController _cameraController;
@@ -32,10 +33,38 @@ namespace Sandstorm
             _kinectSystem = kinectSytem;
             _editor = editor;
             _beamer = beamer;
-            Mouse.WindowHandle = _editor.Handle;
+            Mouse.WindowHandle = _editor.Handle;            
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreparingDeviceSettings += new System.EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings); 
             Content.RootDirectory = "Content";
+            this.IsFixedTimeStep = false;
+
+            graphics.SynchronizeWithVerticalRetrace = false;
         }
+
+        void graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        {
+            GraphicsAdapter adapter = null;
+            foreach (var item in GraphicsAdapter.Adapters)
+            {
+                if (item.IsProfileSupported(GraphicsProfile.HiDef))
+                {
+                    adapter = item;
+                }
+                else
+                {
+                    if (adapter == null && item.IsProfileSupported(GraphicsProfile.Reach))
+                    {
+                        adapter = item;
+                    }
+                }
+            }
+            if (adapter == null)
+            {
+                throw new System.NotSupportedException("None of your graphics cards support XNA.");
+            }
+            e.GraphicsDeviceInformation.Adapter = adapter;
+        } 
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -45,6 +74,57 @@ namespace Sandstorm
         /// </summary>
         protected override void Initialize()
         {
+          /*  GC.RegisterForFullGCNotification(1, 1);
+            
+            // Start a thread using WaitForFullGCProc.
+            Thread startpolling = new Thread(() =>
+            {
+                while (true)
+                {
+                    // Check for a notification of an approaching collection.
+                    GCNotificationStatus s = GC.WaitForFullGCApproach(1000);
+                    if (s == GCNotificationStatus.Succeeded)
+                    {
+                        //Call event
+
+                        Console.WriteLine("GC is about to begin");
+                        GC.Collect();
+
+                    }
+                    else if (s == GCNotificationStatus.Canceled)
+                    {
+                        // Cancelled the Registration
+                    }
+                    else if (s == GCNotificationStatus.Timeout)
+                    {
+                        // Timeout occurred.
+                    }
+
+                    // Check for a notification of a completed collection.
+                    s = GC.WaitForFullGCComplete(1000);
+                    if (s == GCNotificationStatus.Succeeded)
+                    {
+                        //Call event
+                        Console.WriteLine("GC has ended");
+                        int counter = GC.CollectionCount(2);
+                        Console.WriteLine("GC Collected {0} objects", counter);
+                    }
+                    else if (s == GCNotificationStatus.Canceled)
+                    {
+                        //Cancelled the registration
+                    }
+                    else if (s == GCNotificationStatus.Timeout)
+                    {
+                        // Timeout occurred
+                    }
+
+                    Thread.Sleep(500);
+                }
+
+
+            });
+            startpolling.Start();*/
+
             Form xnaWindow = (Form)Control.FromHandle((this.Window.Handle));
             xnaWindow.GotFocus += new EventHandler(xnaWindow_GotFocus);
             _editor.Show();
@@ -75,9 +155,11 @@ namespace Sandstorm
 
             _orthoCamera.Orientation = Quaternion.Multiply(rot1, rot2);
             _orthoCamera.Type = Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
-            _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera);
+            
 
             _heightMap = new HeightMap(GraphicsDevice, Content);
+
+            _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera, _heightMap);
 
             base.Initialize();
         }
@@ -151,7 +233,7 @@ namespace Sandstorm
             }
 
 
-                _cameraController2.Update(gameTime);
+            _cameraController2.Update(gameTime);
 
             //_orthoCamera.Left(5.1f);
 
@@ -173,7 +255,7 @@ namespace Sandstorm
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _heightMap.Draw(_perspCamera);
-            //_particleSystem.Draw();
+            _particleSystem.Draw();
             GraphicsDevice.Present(null, null, _editor.panel1.Handle);
 
             GraphicsDevice.Clear(Color.Black);

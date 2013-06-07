@@ -30,6 +30,11 @@
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.VideoImporters, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="fx\Billboard.fx">
+      <Name>Billboard</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <Compile Include="fx\effects.fx">
       <Name>effects</Name>
       <Importer>EffectImporter</Importer>
@@ -37,6 +42,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="fx\InstancedModel.fx">
+      <Name>InstancedModel</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <Compile Include="fx\terrain.fx">
       <Name>terrain</Name>
       <Importer>EffectImporter</Importer>
@@ -62,6 +72,23 @@
       <Name>FPSFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="tex\particle.png">
+      <Name>particle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="tex\smoke.png">
+      <Name>smoke</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="tex\smokePNG.png">
+      <Name>smokePNG</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
