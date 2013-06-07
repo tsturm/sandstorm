@@ -255,11 +255,12 @@ namespace Sandstorm
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _heightMap.Draw(_perspCamera);
-            _particleSystem.Draw();
+            _particleSystem.Draw(_perspCamera);
             GraphicsDevice.Present(null, null, _editor.panel1.Handle);
 
             GraphicsDevice.Clear(Color.Black);
             _heightMap.Draw(_orthoCamera);
+            _particleSystem.Draw(_orthoCamera);
             GraphicsDevice.Present(null, null, _beamer.panel1.Handle);
 
             GraphicsDevice.Textures[0] = null;

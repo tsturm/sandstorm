@@ -22,7 +22,6 @@ namespace Sandstorm.ParticleSystem.draw
             DEBUG
         }
 
-        private Camera _camera = null;
         private GraphicsDevice _graphicsDevice = null;
         private ContentManager _contentManager = null;
         private SharedList _sharedList = null;
@@ -108,11 +107,10 @@ namespace Sandstorm.ParticleSystem.draw
             _indexBuffer.SetData(indices.ToArray());
         }
 
-        public Instancing(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, Camera pCamera, SharedList pList)
+        public Instancing(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, SharedList pList)
         {
             // TODO: Complete member initialization
 
-            this._camera = pCamera;
             this._graphicsDevice = pGraphicsDevice;
             this._contentManager = pContentManager;
             this._sharedList = pList;
@@ -123,7 +121,7 @@ namespace Sandstorm.ParticleSystem.draw
         }
 
 
-        void DrawInstances(VertexBuffer vertexBuffer, IndexBuffer indexBuffer, Texture2D pTexture, Vector3[] pInstances)
+        void DrawInstances(Camera pCamera,VertexBuffer vertexBuffer, IndexBuffer indexBuffer, Texture2D pTexture, Vector3[] pInstances)
         {
             if (pInstances.Length == 0)
                 return;
@@ -154,8 +152,8 @@ namespace Sandstorm.ParticleSystem.draw
             _effect.CurrentTechnique = _effect.Techniques["InstancingBB"];
 
             _effect.Parameters["world"].SetValue(Matrix.Identity);
-            _effect.Parameters["view"].SetValue(_camera.ViewMatrix);
-            _effect.Parameters["projection"].SetValue(_camera.ProjMatrix);
+            _effect.Parameters["view"].SetValue(pCamera.ViewMatrix);
+            _effect.Parameters["projection"].SetValue(pCamera.ProjMatrix);
             _effect.Parameters["Texture"].SetValue(_billboardTexture);
             /*_effect.Parameters["alphaTestDirection"].SetValue(1.0f);
             _effect.Parameters["alphaTestThreshold"].SetValue(0.3f);*/
@@ -179,7 +177,7 @@ namespace Sandstorm.ParticleSystem.draw
         }
 
 
-        public void Draw()
+        public void Draw(Camera pCamera)
         {
             Array.Resize(ref _instanceTransforms, _sharedList.Count*2);
 
@@ -201,7 +199,7 @@ namespace Sandstorm.ParticleSystem.draw
                 }
             }//);
 
-            DrawInstances(_vertexBuffer, _indexBuffer, _billboardTexture, _instanceTransforms);
+            DrawInstances(pCamera,_vertexBuffer, _indexBuffer, _billboardTexture, _instanceTransforms);
         }
     }
 }

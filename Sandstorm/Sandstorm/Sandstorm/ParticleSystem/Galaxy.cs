@@ -48,7 +48,7 @@ namespace Sandstorm.ParticleSystem
 
             _heightMap = heightMap;
 
-            _drawEngine = new DrawEngine(pGraphicsDevice, pContentManager, pCamera, _sharedList);
+            _drawEngine = new DrawEngine(pGraphicsDevice, pContentManager, _sharedList);
             _physicEngine = new PhysicEngine(_sharedList, _heightMap);
         }
 
@@ -64,10 +64,10 @@ namespace Sandstorm.ParticleSystem
             _physicEngine.Update(pGameTime);
         }
 
-        public void Draw()
+        public void Draw(Camera pCamera)
         {
-            _physicEngine.Draw();
-            _drawEngine.Draw(_drawEngine.getFPS(), _physicEngine.getFPS());
+            _physicEngine.Draw(pCamera);
+            _drawEngine.Draw(pCamera,_drawEngine.getFPS(), _physicEngine.getFPS());
         }
     }
 }

@@ -71,7 +71,7 @@ namespace Sandstorm.ParticleSystem.physic
             _collisionDetector.checkCollisions();
         }
 
-        public void Draw() //Nothing to draw.. normally
+        public void Draw(Camera pCamera) //Nothing to draw.. normally
         {
             _fpsCounter.Update();
         }
