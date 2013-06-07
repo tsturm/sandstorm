@@ -157,7 +157,7 @@ namespace Sandstorm.ParticleSystem.draw
             _effect.Parameters["Texture"].SetValue(_billboardTexture);
             /*_effect.Parameters["alphaTestDirection"].SetValue(1.0f);
             _effect.Parameters["alphaTestThreshold"].SetValue(0.3f);*/
-            _effect.Parameters["BBSize"].SetValue(_BBSize);
+            _effect.Parameters["BBSize"].SetValue((_state == INSTANCE_MODE.DEBUG) ? _DebugBBSize : _BBSize);
             _effect.Parameters["debug"].SetValue((_state == INSTANCE_MODE.DEBUG) ? true : false);
             
 
