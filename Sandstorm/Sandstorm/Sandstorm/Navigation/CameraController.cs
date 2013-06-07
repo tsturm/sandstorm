@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Sandstorm.ParticleSystem.draw;
 
 namespace Sandstorm
 {
@@ -11,10 +12,13 @@ namespace Sandstorm
         private bool _msw = false;
         private int _scrollWheel;
 
+        private bool _nextMode = false;
+
         public CameraController(Camera pCamera)
         {
             _camera = pCamera;
         }
+
 
         public void Update(GameTime pGameTime)
         {
@@ -102,6 +106,15 @@ namespace Sandstorm
                     else if (keyState.IsKeyDown(Keys.Subtract))
                     {
                         _camera.Zoom(1f);
+                    }
+                    else if (keyState.IsKeyDown(Keys.Space))
+                    {
+                        _nextMode = true;
+                    }
+                    else if (_nextMode)
+                    {
+                        Instancing.nextMode();
+                        _nextMode = false;
                     }
                 }
             }

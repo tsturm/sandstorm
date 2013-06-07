@@ -38,7 +38,7 @@ namespace Sandstorm.ParticleSystem
         virtual
         public void emit()
         {
-            Parallel.For(0, 50, i =>
+            Parallel.For(0, 5, i =>
             {
                 Particle p = Particle.getParticle(this._pos, this._force);
                 p.applyExternalForce(this.getSmallRandomForce());

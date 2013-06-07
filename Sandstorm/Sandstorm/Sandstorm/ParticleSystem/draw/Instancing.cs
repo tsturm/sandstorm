@@ -16,12 +16,17 @@ namespace Sandstorm.ParticleSystem.draw
 {
     class Instancing
     {
+        public enum INSTANCE_MODE
+        {
+            NORMAL,
+            DEBUG
+        }
+
         private Camera _camera = null;
         private GraphicsDevice _graphicsDevice = null;
         private ContentManager _contentManager = null;
         private SharedList _sharedList = null;
-
-
+        
         private DynamicVertexBuffer instanceVertexBuffer = null;
         private Vector3[] _instanceTransforms;        
         private Effect _effect;
@@ -29,14 +34,44 @@ namespace Sandstorm.ParticleSystem.draw
         private IndexBuffer _indexBuffer;           
         private Texture2D _billboardTexture;
 
+        private static float _BBSize = 25.0f;
+        
+        private static float _DebugBBSize = 1.0f;
+        private static INSTANCE_MODE _state = INSTANCE_MODE.NORMAL;
+        private static INSTANCE_MODE _internalstate = INSTANCE_MODE.NORMAL;
+
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
             new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 1),
             new VertexElement(sizeof(float)*3, VertexElementFormat.Vector3, VertexElementUsage.Position, 2)
-        );        
+        );  
+      
+        public static void nextMode()
+        {
+            switch (_state)
+            {
+                case INSTANCE_MODE.NORMAL:
+                    _state = INSTANCE_MODE.DEBUG;
+                    break;
+                case INSTANCE_MODE.DEBUG:
+                    _state = INSTANCE_MODE.NORMAL;
+                    break;
+            }
+        }
 
         private void LoadParticleInstance()
-        {
+        {            
+            float pSize=0;
+            switch (_state)
+            {
+                case INSTANCE_MODE.DEBUG:
+                    pSize = _DebugBBSize;
+                    break;
+                default:
+                    pSize= _BBSize;
+                    break;
+            }
+
             List<BillboardVertex> vertices = new List<BillboardVertex>();
             List<short> indices = new List<short>();
             short baseIndex = (short)0;
@@ -44,19 +79,19 @@ namespace Sandstorm.ParticleSystem.draw
             BillboardVertex vertex = new BillboardVertex();
 
             vertex.Position = new Vector4(1f, 1f, 1f, 1f);
-            vertex.TexCoord = new Vector4(0.0f, 0.0f, -5.0f, 5.0f);
+            vertex.TexCoord = new Vector4(0.0f, 0.0f, -pSize, pSize);
             vertices.Add(vertex);
 
             vertex.Position = new Vector4(1, 1, 1, 1);
-            vertex.TexCoord = new Vector4(1.0f, 0.0f, 5.0f, 5.0f);
+            vertex.TexCoord = new Vector4(1.0f, 0.0f, pSize, pSize);
             vertices.Add(vertex);
 
             vertex.Position = new Vector4(1, 1, 1, 0);
-            vertex.TexCoord = new Vector4(0.0f, 1.0f, -5.0f, -5.0f);
+            vertex.TexCoord = new Vector4(0.0f, 1.0f, -pSize, -pSize);
             vertices.Add(vertex);
 
             vertex.Position = new Vector4(1, 1, 1, 0);
-            vertex.TexCoord = new Vector4(1.0f, 1.0f, 5.0f, -5.0f);
+            vertex.TexCoord = new Vector4(1.0f, 1.0f, pSize, -pSize);
             vertices.Add(vertex);
 
             indices.Add((short)(0 + baseIndex));
@@ -122,8 +157,10 @@ namespace Sandstorm.ParticleSystem.draw
             _effect.Parameters["view"].SetValue(_camera.ViewMatrix);
             _effect.Parameters["projection"].SetValue(_camera.ProjMatrix);
             _effect.Parameters["Texture"].SetValue(_billboardTexture);
-            _effect.Parameters["alphaTestDirection"].SetValue(1.0f);
-            _effect.Parameters["alphaTestThreshold"].SetValue(0.5f);
+            /*_effect.Parameters["alphaTestDirection"].SetValue(1.0f);
+            _effect.Parameters["alphaTestThreshold"].SetValue(0.3f);*/
+            _effect.Parameters["BBSize"].SetValue(_BBSize);
+            _effect.Parameters["debug"].SetValue((_state == INSTANCE_MODE.DEBUG) ? true : false);
             
 
             _graphicsDevice.BlendState = BlendState.AlphaBlend;
@@ -146,6 +183,11 @@ namespace Sandstorm.ParticleSystem.draw
         {
             Array.Resize(ref _instanceTransforms, _sharedList.Count*2);
 
+            if (_internalstate != _state)
+            {
+                _internalstate = _state;
+                LoadParticleInstance();
+            }
             //TODO: Parallelisieren?!
             //Parallel.For(0, _sharedList.Particles.Length, i =>
             int k=0;
