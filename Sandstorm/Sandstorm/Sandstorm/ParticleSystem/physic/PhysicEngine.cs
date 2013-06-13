@@ -29,7 +29,7 @@ namespace Sandstorm.ParticleSystem.physic
             this._heightMap = heightMap;
             _collisionDetector = new CollisionDetector(pList, _heightMap);
 
-            this._forces.Add(new Vector3(0f, -0.03f, 0f));
+            this._forces.Add(new Vector3(0f, -0.015f, 0f));
             this._forces.Add(new Vector3(0f, -0.0f, 0.05f));
         }
 
