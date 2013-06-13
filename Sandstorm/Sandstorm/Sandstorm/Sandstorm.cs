@@ -18,8 +18,8 @@ namespace Sandstorm
     public class Sandstorm : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        Camera _perspCamera;
-        Camera _orthoCamera;
+        public Camera _perspCamera = null;
+        public Camera _orthoCamera = null;
         CameraController _cameraController;
         CameraController _cameraController2;
         HeightMap _heightMap;
@@ -142,26 +142,18 @@ namespace Sandstorm
             _beamer.panel1.Resize += new EventHandler(_beamer_ResizeEnd);
             _editor.panel1.Resize += new EventHandler(_editor_ResizeEnd);
 
-            // Create perspective camera for the editor
-            _perspCamera = new Camera(new Viewport(0, 0, _editor.panel1.Width, _editor.panel1.Height));
-            _perspCamera.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver4);
-            _cameraController = new CameraController(_perspCamera);
-
-            // Create orthographic camera for the beamer
-            _orthoCamera = new Camera(new Viewport(0, 0, _beamer.panel1.Width, _beamer.panel1.Height));
-            //_orthoCamera.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
-            Quaternion rot1 = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
-            Quaternion rot2 = Quaternion.CreateFromAxisAngle(new Vector3(0, 1, 0), MathHelper.Pi);
-
-
-            _orthoCamera.Orientation = Quaternion.Multiply(rot1, rot2);
-            _orthoCamera.Type = Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
 
             _cameraController2 = new CameraController(_orthoCamera);
 
             _heightMap = new HeightMap(GraphicsDevice, Content);
 
-            _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera, _heightMap);
+            _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera, _heightMap); ;
+
+            _orthoCamera = Camera.LoadCamera(Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION, _beamer.panel1.Width, _beamer.panel1.Height);
+            _perspCamera = Camera.LoadCamera(Camera.ProjectionType.PERSPECTIVE_PROJECTION, _editor.panel1.Width, _editor.panel1.Height);
+
+            _cameraController2 = new CameraController(_orthoCamera);
+            _cameraController = new CameraController(_perspCamera);
 
             base.Initialize();
         }
@@ -245,7 +237,7 @@ namespace Sandstorm
             {
                 _heightMap.setData(_kinectSystem.data);
 
-                dirtyhack = false;
+                dirtyhack = true;
             }
             
             base.Update(gameTime);

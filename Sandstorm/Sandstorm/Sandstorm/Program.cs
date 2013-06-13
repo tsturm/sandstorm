@@ -29,6 +29,8 @@ namespace Sandstorm
 
         static void form_Disposed (object sender, EventArgs e)
         {
+            Camera.saveCamera(Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION, game._orthoCamera);
+            //Camera.saveCamera(Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION);
             kinectSystem.StopKinect();
             game.Exit();
         }
