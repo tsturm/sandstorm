@@ -18,9 +18,9 @@ namespace Sandstorm.ParticleSystem.structs
         override
         public void emit()
         {
-            Parallel.For(0, 5, i =>
+            Parallel.For(0, 2, i =>
             {
-                Particle p = Particle.getParticle(this._pos + new Vector3(60 + getRandomFloat(0, 180), 10, -40), new Vector3(0, 0, 0.1f));
+                Particle p = Particle.getParticle(this._pos + new Vector3(-80 + getRandomFloat(0, 360), 0, -100), new Vector3(0, 0, 0.1f));
                 _sharedlist.addParticle(p);
             });
         }

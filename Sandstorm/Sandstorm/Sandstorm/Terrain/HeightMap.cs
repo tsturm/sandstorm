@@ -12,6 +12,7 @@ namespace Sandstorm.Terrain
         GraphicsDevice _graphicsDevice;
         ContentManager _contentManager;
         VertexPositionTexture[] _vertices;
+        Matrix _transform;
         bool ready = true;
         int[] _indices;
 
@@ -22,6 +23,10 @@ namespace Sandstorm.Terrain
         {
             _graphicsDevice = pGraphicsDevice;
             _contentManager = pContentManager;
+
+            _transform = new Matrix();
+
+            _transform = Matrix.CreateScale(1, 1, -1);
 
             _effect = _contentManager.Load<Effect>("fx/terrain");
             Texture2D heightMap = _contentManager.Load<Texture2D>("tex/heightmap");
@@ -73,6 +78,8 @@ namespace Sandstorm.Terrain
             _heightMap.Dispose();
             _heightMap = new Texture2D(_graphicsDevice, 420, 420, false, SurfaceFormat.Vector4);
             _heightMap.SetData(data);
+
+            initHeightData();
         }
 
         public void GenerateHeightField(int pWidth, int pHeight)
@@ -124,7 +131,7 @@ namespace Sandstorm.Terrain
             _effect.CurrentTechnique = _effect.Techniques["Terrain"];
             _effect.Parameters["viewMatrix"].SetValue(pCamera.ViewMatrix);
             _effect.Parameters["projMatrix"].SetValue(pCamera.ProjMatrix);
-            _effect.Parameters["worldMatrix"].SetValue(Matrix.Identity);
+            _effect.Parameters["worldMatrix"].SetValue(_transform);
             _effect.Parameters["heightMap"].SetValue(_heightMap);
 
             foreach (EffectPass pass in _effect.CurrentTechnique.Passes)

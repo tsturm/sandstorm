@@ -27,6 +27,7 @@ namespace Sandstorm
         SandstormBeamer _beamer;
         Galaxy _particleSystem;
         Kinect _kinectSystem;
+        Boolean dirtyhack = true;
 
         public Sandstorm(SandstormEditor editor, SandstormBeamer beamer, Kinect kinectSytem)
         {
@@ -149,13 +150,14 @@ namespace Sandstorm
             // Create orthographic camera for the beamer
             _orthoCamera = new Camera(new Viewport(0, 0, _beamer.panel1.Width, _beamer.panel1.Height));
             //_orthoCamera.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
-            Quaternion rot1 = Quaternion.CreateFromAxisAngle(new Vector3(-1, 0, 0), MathHelper.PiOver2);
+            Quaternion rot1 = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
             Quaternion rot2 = Quaternion.CreateFromAxisAngle(new Vector3(0, 1, 0), MathHelper.Pi);
-            _cameraController2 = new CameraController(_orthoCamera);
+
 
             _orthoCamera.Orientation = Quaternion.Multiply(rot1, rot2);
             _orthoCamera.Type = Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
-            
+
+            _cameraController2 = new CameraController(_orthoCamera);
 
             _heightMap = new HeightMap(GraphicsDevice, Content);
 
@@ -239,9 +241,11 @@ namespace Sandstorm
 
             _particleSystem.Update(gameTime);
             
-            if (null != _kinectSystem.data)
+            if (null != _kinectSystem.data && dirtyhack)
             {
                 _heightMap.setData(_kinectSystem.data);
+
+                dirtyhack = false;
             }
             
             base.Update(gameTime);
