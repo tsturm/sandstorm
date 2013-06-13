@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Kinect.cs" />
-    <Compile Include="ParticleSystem\draw\Instancing.cs" />
+    <Compile Include="Instancing.cs" />
     <Compile Include="ParticleSystem\physic\CollisionDetector.cs" />
     <Compile Include="ParticleSystem\structs\BillboardVertex.cs" />
     <Compile Include="ParticleSystem\structs\Emiter.cs" />

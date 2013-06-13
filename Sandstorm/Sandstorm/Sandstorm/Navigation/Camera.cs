@@ -1,10 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Xml;
+using System.Xml.Serialization;
+using System;
+using System.IO;
+using System.Text;
 
 namespace Sandstorm
 {
+    [Serializable] 
     public class Camera
     {
+        static XmlSerializer _serializer = new XmlSerializer(typeof(Camera));
+
         public enum CameraMode
         {
             CAMERA_MODE_ORBIT,
@@ -17,6 +25,7 @@ namespace Sandstorm
             PERSPECTIVE_PROJECTION,
             ORTHOGRAPHIC_PROJECTION
         }
+        private Camera() { }
 
         private Vector3 WORLD_XAXIS = new Vector3(1f, 0f, 0f);
         private Vector3 WORLD_YAXIS = new Vector3(0f, 1f, 0f);
@@ -262,5 +271,89 @@ namespace Sandstorm
                                                   -Vector3.Dot(_viewMatrix.Up, _eyePos),
                                                   -Vector3.Dot(_viewMatrix.Forward, _eyePos));
         }
+
+
+        public static Camera LoadCamera(ProjectionType pCamera,int width,int height)
+        {
+            switch (pCamera)
+            {
+                case ProjectionType.ORTHOGRAPHIC_PROJECTION:
+                    {
+                        if (File.Exists("ortho.xml"))
+                            return readCamera("ortho.xml");
+                        else
+                        {
+                            // Create orthographic camera for the beamer
+                            Camera c = new Camera(new Viewport(0, 0, width, height));
+                            //_orthoCamera.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
+                            Quaternion rot1 = Quaternion.CreateFromAxisAngle(new Vector3(-1, 0, 0), MathHelper.PiOver2);
+                            Quaternion rot2 = Quaternion.CreateFromAxisAngle(new Vector3(0, 1, 0), MathHelper.Pi);
+
+                            c.Orientation = Quaternion.Multiply(rot1, rot2);
+                            c.Type = Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
+                            return c;
+                        }
+                        break;
+                    }
+                case ProjectionType.PERSPECTIVE_PROJECTION:
+                    {
+                        if (File.Exists("persp.xml"))
+                            return readCamera("persp.xml");
+                        else
+                        {
+                            // Create perspective camera for the editor
+                            Camera c = new Camera(new Viewport(0, 0, width, height));
+                            c.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver4);
+                            return c;
+                        }
+                        break;
+                    }
+                default:
+                    break;
+            }
+            return null;
+        }
+
+        private static Camera readCamera(string filename)
+        {
+            FileStream fs = new FileStream(filename, FileMode.Open);
+            XmlReader reader = XmlReader.Create(fs);
+
+            // Declare an object variable of the type to be deserialized.
+            Camera i;
+
+            // Use the Deserialize method to restore the object's state.
+            i = (Camera)_serializer.Deserialize(reader);
+            fs.Close();
+            return i;
+        }
+        private static void writeCamera(string filename,Camera c)
+        {
+            Stream fs = new FileStream(filename, FileMode.Create);
+            XmlWriter writer = new XmlTextWriter(fs, Encoding.Unicode);
+            // Serialize using the XmlTextWriter.
+            _serializer.Serialize(writer, c);
+            writer.Close();
+        }
+        public static void saveCamera(ProjectionType pCamera,Camera c)
+        {
+            switch (pCamera)
+            {
+                case ProjectionType.ORTHOGRAPHIC_PROJECTION:
+                    {
+                        writeCamera("ortho.xml", c);
+                    }
+                    break;
+                case ProjectionType.PERSPECTIVE_PROJECTION:
+                    {
+                        writeCamera("persp.xml", c);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
+
+
 }
