@@ -168,7 +168,7 @@ namespace SandstormKinect
             {
 
                 m_GrabDepthFrameThread.Abort();
-                this.sensor.Stop();
+               // this.sensor.Stop();
                 this.sensor.Dispose();
             }
         }
@@ -189,7 +189,7 @@ namespace SandstormKinect
                 {
                     depthValid = false;
 
-                    using (DepthImageFrame depthFrame = this.sensor.DepthStream.OpenNextFrame(33))
+                    using (DepthImageFrame depthFrame = this.sensor.DepthStream.OpenNextFrame(30))
                     {
                         if (depthFrame != null)
                         {
@@ -222,12 +222,12 @@ namespace SandstormKinect
                     }
 
                     //fire event 
-                    if (this.SandstormKinectDepth != null) { this.SandstormKinectDepth(this, new SandstormKinectEvent(myDepthArray)); }
+                    if (this.SandstormKinectDepth != null) { this.SandstormKinectDepth(this, new SandstormKinectEvent(myDepthArray, this.sensor.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight)); }
                 }
             }
             catch (ThreadAbortException ax)
             {
-                Debug.WriteLine("GrabDepthFrameThread Aborted {0}");
+                Debug.WriteLine("GrabDepthFrameThread Aborted {0}", ax);
             }
             catch (Exception ex)
             {
