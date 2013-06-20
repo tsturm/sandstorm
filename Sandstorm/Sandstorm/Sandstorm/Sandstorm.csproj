@@ -81,8 +81,11 @@
     <Compile Include="ParticleSystem\draw\Instancing.cs" />
     <Compile Include="ParticleSystem\physic\CollisionDetector.cs" />
     <Compile Include="ParticleSystem\structs\BillboardVertex.cs" />
-    <Compile Include="ParticleSystem\structs\Emiter.cs" />
-    <Compile Include="ParticleSystem\structs\LinearEmiter.cs" />
+    <Compile Include="ParticleSystem\structs\Emiter\Emiter.cs" />
+    <Compile Include="ParticleSystem\structs\Forces\Force.cs" />
+    <Compile Include="ParticleSystem\structs\Forces\Gravity.cs" />
+    <Compile Include="ParticleSystem\structs\Forces\Wind.cs" />
+    <Compile Include="ParticleSystem\structs\Emiter\LinearEmiter.cs" />
     <Compile Include="ParticleSystem\structs\ObjectPool.cs" />
     <Compile Include="SandstormBeamer.cs">
       <SubType>Form</SubType>
@@ -101,7 +104,7 @@
     <Compile Include="ParticleSystem\Galaxy.cs" />
     <Compile Include="ParticleSystem\draw\DrawEngine.cs" />
     <Compile Include="ParticleSystem\structs\FPSCounter.cs" />
-    <Compile Include="ParticleSystem\structs\Particle.cs" />
+    <Compile Include="ParticleSystem\structs\Particle\Particle.cs" />
     <Compile Include="ParticleSystem\physic\PhysicEngine.cs" />
     <Compile Include="ParticleSystem\structs\SharedList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

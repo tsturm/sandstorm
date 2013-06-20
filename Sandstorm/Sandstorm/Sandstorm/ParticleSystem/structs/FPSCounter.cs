@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
+
 namespace Sandstorm.ParticleSystem.structs
 {
     class FPSCounter
