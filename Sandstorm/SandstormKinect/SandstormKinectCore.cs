@@ -189,7 +189,7 @@ namespace SandstormKinect
                 {
                     depthValid = false;
 
-                    using (DepthImageFrame depthFrame = this.sensor.DepthStream.OpenNextFrame(30))
+                    using (DepthImageFrame depthFrame = this.sensor.DepthStream.OpenNextFrame(0))
                     {
                         if (depthFrame != null)
                         {
@@ -200,29 +200,34 @@ namespace SandstormKinect
                     
                     if (depthValid)
                     {
-                        for (int i=0; i< this.DepthPixels.Count(); i++)
+                        for (int i = 0; i < this.DepthPixels.Count(); i++)
                         {
-                            if (firstFlag)
-                            {
-                                myPrevDepthArray[i] = this.DepthPixels[i].Depth;
-                                myDepthArray[i] = this.DepthPixels[i].Depth;
-                            }
-                            else
-                            {
-                                myPrevDepthArray[i] = myDepthArray[i];
-                                myDepthArray[i] = this.DepthPixels[i].Depth;
-                            }
+                            myDepthArray[i] = this.DepthPixels[i].Depth;
+                            //if (firstFlag)
+                            //{
+                            //    myPrevDepthArray[i] = this.DepthPixels[i].Depth;
+                            //    myDepthArray[i] = this.DepthPixels[i].Depth;
+                            //}
+                            //else
+                            //{
+                            //    myPrevDepthArray[i] = myDepthArray[i];
+                            //    myDepthArray[i] = this.DepthPixels[i].Depth;
+                            //}
                         }
 
                         //build diff
 
 
 
-                        depthValid = false;
+                        depthValid = false; //fire event 
+                        if (this.SandstormKinectDepth != null) 
+                        { 
+                            this.SandstormKinectDepth(this, new SandstormKinectEvent(myDepthArray, this.sensor.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight)); 
+                        }
                     }
 
-                    //fire event 
-                    if (this.SandstormKinectDepth != null) { this.SandstormKinectDepth(this, new SandstormKinectEvent(myDepthArray, this.sensor.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight)); }
+                    System.Threading.Thread.Sleep(10000);
+                   
                 }
             }
             catch (ThreadAbortException ax)

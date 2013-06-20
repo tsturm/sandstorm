@@ -164,6 +164,7 @@ namespace Sandstorm
 
         void _kinectSystem_SandstormKinectDepth(object sender, SandstormKinectEvent e)
         {
+            Console.WriteLine("Event");
             this.eventBuffer = e;
         }
 
