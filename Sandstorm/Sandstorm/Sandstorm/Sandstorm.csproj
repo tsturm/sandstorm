@@ -77,7 +77,6 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Kinect.cs" />
     <Compile Include="ParticleSystem\draw\Instancing.cs" />
     <Compile Include="ParticleSystem\physic\CollisionDetector.cs" />
     <Compile Include="ParticleSystem\structs\BillboardVertex.cs" />
@@ -120,6 +119,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SandstormKinect\SandstormKinect.csproj">
+      <Project>{5531CED4-3CCB-403F-B23C-3DF4616A441D}</Project>
+      <Name>SandstormKinect</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SandstormContent\SandstormContent.contentproj">
       <Name>SandstormContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>

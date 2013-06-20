@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using SandstormKinect;
 
 
 namespace Sandstorm
@@ -26,12 +27,13 @@ namespace Sandstorm
         SandstormEditor _editor;
         SandstormBeamer _beamer;
         Galaxy _particleSystem;
-        Kinect _kinectSystem;
-        Boolean dirtyhack = true;
+        SandstormKinectCore _kinectSystem;
+        SandstormKinectEvent eventBuffer = null;
 
-        public Sandstorm(SandstormEditor editor, SandstormBeamer beamer, Kinect kinectSytem)
+        public Sandstorm(SandstormEditor editor, SandstormBeamer beamer, SandstormKinectCore kinectSystem)
         {
-            _kinectSystem = kinectSytem;
+            
+            _kinectSystem = kinectSystem;
             _editor = editor;
             _beamer = beamer;
             Mouse.WindowHandle = _editor.Handle;            
@@ -131,7 +133,9 @@ namespace Sandstorm
             _editor.Show();
             _beamer.Show();
 
+            _kinectSystem.SandstormKinectDepth += new EventHandler<SandstormKinectEvent>(_kinectSystem_SandstormKinectDepth);
             _kinectSystem.StartKinect();
+       
 
             graphics.PreferredBackBufferWidth = _editor.panel1.Width;
             graphics.PreferredBackBufferHeight = _editor.panel1.Height;
@@ -156,6 +160,11 @@ namespace Sandstorm
             _cameraController = new CameraController(_perspCamera);
 
             base.Initialize();
+        }
+
+        void _kinectSystem_SandstormKinectDepth(object sender, SandstormKinectEvent e)
+        {
+            this.eventBuffer = e;
         }
 
         void xnaWindow_GotFocus(object sender, EventArgs e)
@@ -227,19 +236,18 @@ namespace Sandstorm
             }
 
 
+            if (_heightMap != null && eventBuffer != null)
+            {
+                _heightMap.setData(eventBuffer.DepthImage, eventBuffer.Width, eventBuffer.Height);
+                eventBuffer = null;
+            }
+
             _cameraController2.Update(gameTime);
 
             //_orthoCamera.Left(5.1f);
 
             _particleSystem.Update(gameTime);
-            
-            if (null != _kinectSystem.data && dirtyhack)
-            {
-                _heightMap.setData(_kinectSystem.data);
-
-                dirtyhack = true;
-            }
-            
+                       
             base.Update(gameTime);
         }
 

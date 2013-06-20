@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using SandstormKinect;
 
 namespace Sandstorm.Terrain
 {
@@ -13,8 +14,8 @@ namespace Sandstorm.Terrain
         ContentManager _contentManager;
         VertexPositionTexture[] _vertices;
         Matrix _transform;
-        bool ready = true;
         int[] _indices;
+        
 
         float[,] _heightData;
         Vector3[,] _normals;
@@ -69,7 +70,7 @@ namespace Sandstorm.Terrain
                 }
         }
 
-        public void setData(Vector4[] data)
+        public void setData(short[] data, int width, int height)
         {
             _graphicsDevice.Textures[0] = null;
             _graphicsDevice.Textures[1] = null;
@@ -77,7 +78,34 @@ namespace Sandstorm.Terrain
             _graphicsDevice.Textures[3] = null;
             _heightMap.Dispose();
             _heightMap = new Texture2D(_graphicsDevice, 420, 420, false, SurfaceFormat.Vector4);
-            _heightMap.SetData(data);
+
+            //parse depthimage to vector
+            Vector4[] myVector = new Vector4[420 * 420];
+            
+            for (int idx=0, y = 30; y < height - 30; y++)
+            {
+                for (int x = 110; x < width - 110; x++, idx++)
+                {
+                    short myActualPixel = (short)(data[y * width + x] - 1000);
+                    if (myActualPixel > 0 && myActualPixel <= 230)
+                    {
+                        //validen Bildpunkt gefunden
+                        myVector[idx].X = (float)-(((float)myActualPixel / 230f) - 1);
+                        myVector[idx].Y = (float)-(((float)myActualPixel / 230f) - 1);
+                        myVector[idx].Z = (float)-(((float)myActualPixel / 230f) - 1);
+                        myVector[idx].W = 1f;
+                    }
+                    else
+                    {
+                        myVector[idx].X = 0f;
+                        myVector[idx].Y = 0f;
+                        myVector[idx].Z = 0f;
+                        myVector[idx].W = 1f;
+                    }
+                }
+            }
+            // set data
+            _heightMap.SetData(myVector);
 
             initHeightData();
         }
