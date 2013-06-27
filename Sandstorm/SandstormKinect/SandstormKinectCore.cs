@@ -180,8 +180,8 @@ namespace SandstormKinect
         {
             bool firstFlag = true;
             bool depthValid = false;
-            double myDiffSum = 0;
-            int diffThreshold = (this.sensor.DepthStream.FrameWidth*this.sensor.DepthStream.FrameHeight) * 2;
+
+            double diffThreshold = 10; //(this.sensor.DepthStream.FrameWidth*this.sensor.DepthStream.FrameHeight) * 5;
             short[] myDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
             short[] myPrevDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
   
@@ -190,6 +190,7 @@ namespace SandstormKinect
                 while (true)
                 {
                     depthValid = false;
+                    double myDiffSum = 0;
 
                     using (DepthImageFrame depthFrame = this.sensor.DepthStream.OpenNextFrame(0))
                     {
@@ -214,16 +215,16 @@ namespace SandstormKinect
                             //{
                                 myPrevDepthArray[i] = myDepthArray[i];
                                 myDepthArray[i] = this.DepthPixels[i].Depth;
-                                myDiffSum += (double)myPrevDepthArray[i] - (double)myDepthArray[i];
+                                myDiffSum += Math.Abs( (double)myPrevDepthArray[i] - (double)myDepthArray[i]);
 
                             //}
                         }
 
                         //send event for changed depth image
-                        if (this.SandstormKinectDepth != null && Math.Abs(myDiffSum) > diffThreshold)
+                        if (this.SandstormKinectDepth != null && (myDiffSum / (640 * 480)) > diffThreshold)
                         {
                             this.SandstormKinectDepth(this, new SandstormKinectEvent(myDepthArray, this.sensor.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight));
-                            Debug.WriteLine("event sent, diff-operator = {0}", Math.Abs(myDiffSum));
+                            Debug.WriteLine("event sent, diff-operator = {0}", (Math.Abs(myDiffSum)/ (640*480)));
                         }
 
                         depthValid = false;

@@ -139,7 +139,7 @@ namespace Sandstorm.ParticleSystem
                 Vector3 f = Force;
                 f.Y = 0;
                 Force = f;
-                applyTemporalExternalForce(new Vector3(0, 0.1f, 0));
+                applyTemporalExternalForce(new Vector3(0, 1f, 0));
                 applyFriction();
                 
             }

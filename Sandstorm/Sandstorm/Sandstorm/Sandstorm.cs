@@ -239,6 +239,7 @@ namespace Sandstorm
 
             if (_heightMap != null && eventBuffer != null)
             {
+
                 _heightMap.setData(eventBuffer.DepthImage, eventBuffer.Width, eventBuffer.Height);
                 eventBuffer = null;
             }
