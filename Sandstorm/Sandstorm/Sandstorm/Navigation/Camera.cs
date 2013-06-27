@@ -293,7 +293,6 @@ namespace Sandstorm
                             c.Type = Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
                             return c;
                         }
-                        break;
                     }
                 case ProjectionType.PERSPECTIVE_PROJECTION:
                     {
@@ -306,7 +305,6 @@ namespace Sandstorm
                             c.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver4);
                             return c;
                         }
-                        break;
                     }
                 default:
                     break;

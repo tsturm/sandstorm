@@ -14,6 +14,7 @@ namespace Sandstorm
         public SandstormBeamer()
         {
             InitializeComponent();
+            //CheckForIllegalCrossThreadCalls = false;
         }
 
         private void panel1_DoubleClick(object sender, EventArgs e)

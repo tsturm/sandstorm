@@ -1,4 +1,5 @@
 using System;
+using SandstormKinect;
 
 namespace Sandstorm
 {
@@ -6,7 +7,7 @@ namespace Sandstorm
     static class Program
     {
         static Sandstorm game;
-        static Kinect kinectSystem;
+        static SandstormKinectCore kinectSystem;
 
         /// <summary>
         /// The main entry point for the application.
@@ -19,7 +20,7 @@ namespace Sandstorm
             SandstormBeamer beamer = new SandstormBeamer();
             beamer.Disposed += new EventHandler(form_Disposed);
 
-            kinectSystem = new Kinect();
+            kinectSystem = new SandstormKinectCore();
 
             using (game = new Sandstorm(editor, beamer, kinectSystem))
             {

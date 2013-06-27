@@ -66,7 +66,7 @@ namespace Sandstorm.ParticleSystem
 
         public void Draw(Camera pCamera)
         {
-            _physicEngine.Draw(pCamera);
+            _physicEngine.Draw();
             _drawEngine.Draw(pCamera,_drawEngine.getFPS(), _physicEngine.getFPS());
         }
     }

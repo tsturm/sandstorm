@@ -24,6 +24,7 @@ namespace Sandstorm
         public SandstormEditor()
         {
             InitializeComponent();
+            //CheckForIllegalCrossThreadCalls = false;
         }
 
         private void panel1_Click(object sender, EventArgs e)

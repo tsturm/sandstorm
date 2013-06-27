@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Sandstorm.ParticleSystem.structs;
+using Sandstorm.Terrain;
 
 namespace Sandstorm.ParticleSystem
 {
@@ -14,9 +15,10 @@ namespace Sandstorm.ParticleSystem
         private Vector3 _oldpos;
         private Vector3 _force;
         private Vector3 _oldforce;
-        static float _friction = 0.8f;//=0 -> no friction bounces like a Ball, =1 -> sticky like hell 
-        static float _radius = 0.2f;
-        static float _flexibitity = 0.8f;
+        private Vector3 _tmpforce;
+        static float _friction = 0.1f;//=0 -> no friction bounces like a Ball, =1 -> sticky like hell 
+        static float _radius = 2.5f;
+        static float _flexibitity = 0.9f;
 
         public Vector3 Pos
         {
@@ -38,6 +40,11 @@ namespace Sandstorm.ParticleSystem
         {
             get { return _oldforce; }
             set { _oldforce = value; }
+        }
+        public Vector3 TmpForce
+        {
+            get { return _tmpforce; }
+            set { _tmpforce = value; }
         }
 
         public float Radius
@@ -63,11 +70,19 @@ namespace Sandstorm.ParticleSystem
         {
             this.OldPos = Pos;
             this.Pos += this.Force;
+            this.Pos += this.TmpForce;
+            this.TmpForce = new Vector3(0, 0, 0);
+            _oldforce = _force + _tmpforce;
         }
 
         public void applyExternalForce(Vector3 pForce)
         {
             this.Force += pForce;
+        }
+
+        public void applyTemporalExternalForce(Vector3 pForce)
+        {
+            this.TmpForce += pForce;
         }
 
         override public string ToString()
@@ -92,13 +107,15 @@ namespace Sandstorm.ParticleSystem
         {
             if (checkCollision(p2))
             {
-                _oldforce = _force;
                 Vector3 p2normal = this.Pos - p2.Pos;
                 p2normal.Normalize();
                 reflect(p2normal);
+
+                applyTemporalExternalForce((p2normal * (1 / (this.Radius + p2.Radius))) * (1 - _flexibitity));
+                
+                applyExternalForce(p2.OldForce / 2);
+
                 applyFriction();
-                applyExternalForce((p2normal * (1 / (this.Radius + p2.Radius))) * (1 - _flexibitity));
-                applyExternalForce(p2.OldForce);
             }
         }
 
@@ -106,6 +123,26 @@ namespace Sandstorm.ParticleSystem
         {
             foreach (Particle p in p2)
                 collide(p);
+        }
+
+        public bool checkCollision(HeightMap hm)
+        {
+            return Pos.Y < hm.getHeightData(Pos.X, Pos.Z) + Radius + 1;
+        }
+
+        public void collide(HeightMap hm)
+        {
+            if (checkCollision(hm))
+            {
+                Vector3 normal = hm.getNormal(Pos.X, Pos.Z);
+                reflect(normal);
+                Vector3 f = Force;
+                f.Y = 0;
+                Force = f;
+                applyTemporalExternalForce(new Vector3(0, 0.1f, 0));
+                applyFriction();
+                
+            }
         }
 
         public void reflect(Vector3 normal)

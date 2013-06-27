@@ -96,6 +96,13 @@ namespace Sandstorm.ParticleSystem.physic
                     }
                 }
             });
+            Parallel.ForEach(_particleList.getParticles(), p =>
+            {
+                if (p != null)
+                {
+                    p.collide(_heightMap);
+                }
+            });
         }
     }
 }
