@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using SandstormKinect;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace Sandstorm.Terrain
 {
@@ -17,6 +18,7 @@ namespace Sandstorm.Terrain
         VertexPositionTexture[] _vertices;
         Matrix _transform;
         int[] _indices;
+        private Object updateLock = new Object();
         
 
         float[,] _heightData = new float[512, 512];
@@ -53,94 +55,99 @@ namespace Sandstorm.Terrain
             //initHeightData();
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
         private void setFinishedData(Texture2D pTex, float[,] pHeightData, Vector3[,] pNormals)
         {
-            _graphicsDevice.Textures[0] = null;
-            _graphicsDevice.Textures[1] = null;
-            _graphicsDevice.Textures[2] = null;
-            _graphicsDevice.Textures[3] = null;
-            _heightMap.Dispose();
+            lock (this.updateLock)
+            {
+                _graphicsDevice.Textures[0] = null;
+                _graphicsDevice.Textures[1] = null;
+                _graphicsDevice.Textures[2] = null;
+                _graphicsDevice.Textures[3] = null;
+                _heightMap.Dispose();
 
-            _heightMap = pTex;
+                _heightMap = pTex;
 
-            _heightData = pHeightData;
+                _heightData = pHeightData;
 
-            _normals = pNormals;
+                _normals = pNormals;
+            }
         }
 
         Thread myThread = null;
-        [MethodImpl(MethodImplOptions.Synchronized)]
         public void setData(short[] data, int width, int height)
         {
            // width = height = 420;
-            if (myThread != null)
-                myThread.Abort();
-
-            myThread = new Thread(delegate()
+            if (myThread == null)
             {
-                //parse depthimage to vector
-                Vector4[] myVector = new Vector4[420 * 420];
-
-                for (int idx = 0, y = 30; y < height - 30; y++)
+                myThread = new Thread(delegate()
                 {
-                    for (int x = 110; x < width - 110; x++, idx++)
+                    Debug.WriteLine("Start:" + System.Environment.TickCount);
+
+                    Texture2D heightMap = new Texture2D(_graphicsDevice, 420, 420, false, SurfaceFormat.Vector4);
+
+                    Vector4[] myVector = new Vector4[420 * 420];
+                    float[,] heightData = new float[420, 420];
+                    Vector3[,] normals = new Vector3[420, 420];
+
                     {
-                        short myActualPixel = (short)(data[y * width + x] - 1000);
-                        if (myActualPixel > 0 && myActualPixel <= 230)
+                        Debug.WriteLine("StartHeight:" + System.Environment.TickCount);
+                        int tWidth = width;
+                        int tHeight = height;
+                        //parse depthimage to vector
+
+                        short myActualPixel;
+                        for (int idx = 0, y = 30; y < tHeight - 30; y++)
                         {
-                            //validen Bildpunkt gefunden
-                            myVector[idx].X = (float)-(((float)myActualPixel / 230f) - 1);
-                            myVector[idx].Y = (float)-(((float)myActualPixel / 230f) - 1);
-                            myVector[idx].Z = (float)-(((float)myActualPixel / 230f) - 1);
-                            myVector[idx].W = 1f;
+                            for (int x = 110; x < tWidth - 110; x++, idx++)
+                            {
+                                myActualPixel = (short)(data[y * tWidth + x] - 1000);
+                                if (myActualPixel > 0 && myActualPixel <= 230)
+                                {
+                                    //validen Bildpunkt gefunden
+                                    myVector[idx].X = (float)-(((float)myActualPixel / 230f) - 1);
+                                    myVector[idx].Y = (float)-(((float)myActualPixel / 230f) - 1);
+                                    myVector[idx].Z = (float)-(((float)myActualPixel / 230f) - 1);
+                                    myVector[idx].W = 1f;
+                                }
+                                else
+                                {
+                                    myVector[idx].X = 0f;
+                                    myVector[idx].Y = 0f;
+                                    myVector[idx].Z = 0f;
+                                    myVector[idx].W = 1f;
+                                }
+                                heightData[x-110, y-30] = myVector[idx].Y*100;
+                            }
                         }
-                        else
+                        Debug.WriteLine("EndHeight:" + System.Environment.TickCount);
+                    }
+                    {
+                        int tWidth = 420;
+                        int tHeight = 420;
+                        for (int x = 0; x < tWidth - 1; x++)
                         {
-                            myVector[idx].X = 0f;
-                            myVector[idx].Y = 0f;
-                            myVector[idx].Z = 0f;
-                            myVector[idx].W = 1f;
+                            for (int y = 0; y < tHeight - 1; y++)
+                            {
+                                Vector3 v = new Vector3(x, heightData[x, y], y);
+                                Vector3 v1 = new Vector3(x + 1, heightData[x + 1, y], y);
+                                Vector3 v2 = new Vector3(x, heightData[x, y + 1], y + 1);
+                                Vector3 normal = Vector3.Cross(v - v1, v - v2);
+                                normal.Normalize();
+                                normals[x, y] = -1 * normal;
+                            }
                         }
                     }
-                }
+                    heightMap.SetData(myVector);
 
-                width = height = 420;
+                    Debug.WriteLine("End:" + System.Environment.TickCount);
+                    setFinishedData(heightMap, heightData, normals);
+                    Debug.WriteLine("Finished:" + System.Environment.TickCount);
+                    myThread = null;
+                });
 
-                // set data
-                Texture2D heightMap = new Texture2D(_graphicsDevice, 420, 420, false, SurfaceFormat.Vector4);
-                heightMap.SetData(myVector);
-
-                float[,] heightData = new float[width, height];
-
-                for (int x = 0; x < width; x++)
-                {
-                    for (int y = 0; y < height; y++)
-                    {
-                        heightData[x, y] = clacHeight(heightMap, x - (width / 2), y - (height / 2));
-                    }
-                }
-
-                Vector3[,] normals = new Vector3[width, height];
-
-                for (int x = 0; x < width - 1; x++)
-                {
-                    for (int y = 0; y < height - 1; y++)
-                    {
-                        Vector3 v = new Vector3(x, heightData[x, y], y);
-                        Vector3 v1 = new Vector3(x + 1, heightData[x + 1, y], y);
-                        Vector3 v2 = new Vector3(x, heightData[x, y + 1], y + 1);
-                        Vector3 normal = Vector3.Cross(v - v1, v - v2);
-                        normal.Normalize();
-                        normals[x, y] = -1 * normal;
-                    }
-                }
-
-                setFinishedData(heightMap, heightData, normals);
-            });
-
-            myThread.Name = "Heigmap-Updater";
-            myThread.Start();
+                myThread.Name = "Heigmap-Updater";
+                myThread.Start();
+            }
 
         }
 
@@ -184,30 +191,33 @@ namespace Sandstorm.Terrain
 
         public void Draw(Camera pCamera)
         {
-            RasterizerState rs = new RasterizerState();
-            rs.CullMode = CullMode.None;
-            //rs.FillMode = FillMode.WireFrame;
-            _graphicsDevice.RasterizerState = rs;
-            _graphicsDevice.DepthStencilState = DepthStencilState.Default;
-
-            _effect.CurrentTechnique = _effect.Techniques["Terrain"];
-            _effect.Parameters["viewMatrix"].SetValue(pCamera.ViewMatrix);
-            _effect.Parameters["projMatrix"].SetValue(pCamera.ProjMatrix);
-            _effect.Parameters["worldMatrix"].SetValue(_transform);
-            _effect.Parameters["heightMap"].SetValue(_heightMap);
-
-            foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+            lock (this.updateLock)
             {
-                pass.Apply();
+                RasterizerState rs = new RasterizerState();
+                rs.CullMode = CullMode.None;
+                //rs.FillMode = FillMode.WireFrame;
+                _graphicsDevice.RasterizerState = rs;
+                _graphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-                _graphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList,
-                                                         _vertices,
-                                                         0,
-                                                         _vertices.Length,
-                                                         _indices,
-                                                         0,
-                                                         _indices.Length / 3,
-                                                         VertexPositionTexture.VertexDeclaration);
+                _effect.CurrentTechnique = _effect.Techniques["Terrain"];
+                _effect.Parameters["viewMatrix"].SetValue(pCamera.ViewMatrix);
+                _effect.Parameters["projMatrix"].SetValue(pCamera.ProjMatrix);
+                _effect.Parameters["worldMatrix"].SetValue(_transform);
+                _effect.Parameters["heightMap"].SetValue(_heightMap);
+
+                foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+
+                    _graphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList,
+                                                             _vertices,
+                                                             0,
+                                                             _vertices.Length,
+                                                             _indices,
+                                                             0,
+                                                             _indices.Length / 3,
+                                                             VertexPositionTexture.VertexDeclaration);
+                }
             }
         }
         public float getHeight(int x, int y)
@@ -222,7 +232,7 @@ namespace Sandstorm.Terrain
             {
                 return _heightData[(int)(xpos), (int)(ypos)];
             }
-            return 100000;
+            return 0;
         }
 
         public float getHeightData(float x, float y)
@@ -257,7 +267,7 @@ namespace Sandstorm.Terrain
             return new Vector3(0, 1, 0);
         }
 
-        private float clacHeight(Texture2D pTex,int x, int y)
+        /*private float clacHeight(Texture2D pTex,int x, int y)
         {
             int xpos = (int)x + (_heightMap.Width / 2);
             int ypos = (int)y + (_heightMap.Height / 2);
@@ -278,8 +288,8 @@ namespace Sandstorm.Terrain
                     retrievedColor.Length);
                 return ((retrievedColor[0].X) * 100);
             }
-            return 100000;
-        }
+            return 0;
+        }*/
 
         public int getWidth()
         {

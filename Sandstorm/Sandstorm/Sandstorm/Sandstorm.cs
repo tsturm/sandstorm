@@ -166,6 +166,7 @@ namespace Sandstorm
         {
             Console.WriteLine("Event");
             this.eventBuffer = e;
+            _heightMap.setData(eventBuffer.DepthImage, eventBuffer.Width, eventBuffer.Height);
         }
 
         void xnaWindow_GotFocus(object sender, EventArgs e)
@@ -235,15 +236,7 @@ namespace Sandstorm
             {
                 _cameraController.Update(gameTime);
             }
-
-
-            if (_heightMap != null && eventBuffer != null)
-            {
-
-                _heightMap.setData(eventBuffer.DepthImage, eventBuffer.Width, eventBuffer.Height);
-                eventBuffer = null;
-            }
-
+            
             _cameraController2.Update(gameTime);
 
             //_orthoCamera.Left(5.1f);
