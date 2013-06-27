@@ -188,7 +188,7 @@ namespace Sandstorm.Terrain
             {
                 return _heightData[(int)(xpos), (int)(ypos)];
             }
-            return 100000;
+            return 0;
         }
 
         public float getHeightData(float x, float y)
@@ -244,7 +244,7 @@ namespace Sandstorm.Terrain
                     retrievedColor.Length);
                 return ((retrievedColor[0].X) * 100);
             }
-            return 100000;
+            return 0;
         }
 
         public int getWidth()

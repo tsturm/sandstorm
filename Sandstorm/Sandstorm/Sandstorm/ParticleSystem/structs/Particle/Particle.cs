@@ -16,8 +16,8 @@ namespace Sandstorm.ParticleSystem
         private Vector3 _force;
         private Vector3 _oldforce;
         private Vector3 _tmpforce;
-        static float _friction = 0.1f;//=0 -> no friction bounces like a Ball, =1 -> sticky like hell 
-        static float _radius = 2.5f;
+        static float _friction = 0.2f;//=0 -> no friction bounces like a Ball, =1 -> sticky like hell 
+        static float _radius = 0.5f;
         static float _flexibitity = 0.9f;
 
         public Vector3 Pos
@@ -127,7 +127,12 @@ namespace Sandstorm.ParticleSystem
 
         public bool checkCollision(HeightMap hm)
         {
-            return Pos.Y < hm.getHeightData(Pos.X, Pos.Z) + Radius + 1;
+            return Pos.Y < calcDistance(hm) + 1;
+        }
+
+        public float calcDistance(HeightMap hm)
+        {
+            return hm.getHeightData(Pos.X, Pos.Z) + Radius;
         }
 
         public void collide(HeightMap hm)
@@ -139,7 +144,7 @@ namespace Sandstorm.ParticleSystem
                 Vector3 f = Force;
                 f.Y = 0;
                 Force = f;
-                applyTemporalExternalForce(new Vector3(0, 0.1f, 0));
+                applyTemporalExternalForce(normal);//new Vector3(0, 0.1f, 0));
                 applyFriction();
                 
             }
@@ -156,11 +161,6 @@ namespace Sandstorm.ParticleSystem
                 friction = _friction;
             _force *= 1 - friction;
         }
-
-        /*internal Particle Clone()
-        {
-            return new Particle(_pos, _force);
-        }*/
 
     }
 }
