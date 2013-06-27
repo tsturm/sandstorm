@@ -180,6 +180,8 @@ namespace SandstormKinect
         {
             bool firstFlag = true;
             bool depthValid = false;
+            double myDiffSum = 0;
+            int diffThreshold = (this.sensor.DepthStream.FrameWidth*this.sensor.DepthStream.FrameHeight) * 15;
             short[] myDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
             short[] myPrevDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
   
@@ -189,7 +191,7 @@ namespace SandstormKinect
                 {
                     depthValid = false;
 
-                    using (DepthImageFrame depthFrame = this.sensor.DepthStream.OpenNextFrame(33))
+                    using (DepthImageFrame depthFrame = this.sensor.DepthStream.OpenNextFrame(0))
                     {
                         if (depthFrame != null)
                         {
@@ -206,23 +208,30 @@ namespace SandstormKinect
                             {
                                 myPrevDepthArray[i] = this.DepthPixels[i].Depth;
                                 myDepthArray[i] = this.DepthPixels[i].Depth;
+                                firstFlag = false;
                             }
                             else
                             {
                                 myPrevDepthArray[i] = myDepthArray[i];
                                 myDepthArray[i] = this.DepthPixels[i].Depth;
+                                myDiffSum += (double)myPrevDepthArray[i] - (double)myDepthArray[i];
+
                             }
                         }
 
-                        //build diff
-
-
+                        //send event for changed depth image
+                        if (this.SandstormKinectDepth != null && Math.Abs(myDiffSum) > diffThreshold)
+                        {
+                            this.SandstormKinectDepth(this, new SandstormKinectEvent(myDepthArray));
+                            Debug.WriteLine("event sent, diff-operator = {0}", Math.Abs(myDiffSum));
+                        }
 
                         depthValid = false;
+                        System.Threading.Thread.Sleep(1000);
                     }
 
                     //fire event 
-                    if (this.SandstormKinectDepth != null) { this.SandstormKinectDepth(this, new SandstormKinectEvent(myDepthArray)); }
+                    
                 }
             }
             catch (ThreadAbortException ax)
