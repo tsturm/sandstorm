@@ -26,6 +26,11 @@ namespace Sandstorm.ParticleSystem
         private ContentManager _contentManager;
         private HeightMap _heightMap;
 
+        public int NumberOfParticles
+        {
+            get { return _sharedList.Count; }
+        }
+
         public Galaxy(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, Camera pCamera, HeightMap heightMap)
         {
             /*_emiters.Add(new Emiter(new Vector3(50f, 100f, 50f), new Vector3(-0.5f, 0f, -0.5f), _sharedList));

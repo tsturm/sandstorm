@@ -63,14 +63,14 @@ namespace Sandstorm.ParticleSystem.draw
 
 
 
-            _spriteBatch.Begin();
-            String s = string.Format("Particles={0}, DrawEngineFPS={1}, PhysicEngineFPS={2} Grafik={3}", _sharedList.Count, pFPSDraw, pFPSPhysic, _graphicsDevice.Adapter.Description);
+            //_spriteBatch.Begin();
+            //String s = string.Format("Particles={0}, DrawEngineFPS={1}, PhysicEngineFPS={2} Grafik={3}", _sharedList.Count, pFPSDraw, pFPSPhysic, _graphicsDevice.Adapter.Description);
 
-            Vector2 screenSize = new Vector2(_graphicsDevice.Viewport.Height, _graphicsDevice.Viewport.Width);
-            Vector2 pos = _font.MeasureString(s);
+            //Vector2 screenSize = new Vector2(_graphicsDevice.Viewport.Height, _graphicsDevice.Viewport.Width);
+            //Vector2 pos = _font.MeasureString(s);
 
-            _spriteBatch.DrawString(_font, s, new Vector2(0, 0), Color.White);
-            _spriteBatch.End();
+            //_spriteBatch.DrawString(_font, s, new Vector2(0, 0), Color.White);
+            //_spriteBatch.End();
         }
     }
 }
