@@ -20,6 +20,7 @@ namespace Sandstorm
 
         public event EventHandler<TerrainArgs> TerrainHeightChanged;
         public event EventHandler<TerrainArgs> TerrainColorChanged;
+        public event EventHandler<TerrainArgs> TerrainContoursChanged;
 
         public Viewport ViewPort
         {
@@ -159,11 +160,28 @@ namespace Sandstorm
                 handler(this, args);
             }
         }
+
+        private void contours_Changed(object sender, EventArgs e)
+        {
+            contourSpacing.Enabled = contours.Checked;
+
+            EventHandler<TerrainArgs> handler = TerrainContoursChanged;
+
+            if (handler != null)
+            {
+                TerrainArgs args = new TerrainArgs();
+                args.DisplayContours = contours.Checked;
+                args.ContourSpacing = (float)Convert.ToDouble(contourSpacing.Value);
+                handler(this, args);
+            }
+        }
     }
 
     public class TerrainArgs : EventArgs
     {
         public int Height { get; set; }
+        public bool DisplayContours { get; set; }
+        public float ContourSpacing { get; set; }
         public Vector4 Color0 { get; set; }
         public Vector4 Color1 { get; set; }
         public Vector4 Color2 { get; set; }

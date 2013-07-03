@@ -35,16 +35,19 @@
             this.FPSLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.contours = new System.Windows.Forms.CheckBox();
+            this.contourSpacing = new System.Windows.Forms.NumericUpDown();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.shapeContainer1 = new Microsoft.VisualBasic.PowerPacks.ShapeContainer();
+            this.color1 = new Microsoft.VisualBasic.PowerPacks.RectangleShape();
+            this.color3 = new Microsoft.VisualBasic.PowerPacks.RectangleShape();
+            this.color2 = new Microsoft.VisualBasic.PowerPacks.RectangleShape();
+            this.color0 = new Microsoft.VisualBasic.PowerPacks.RectangleShape();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.terrainHeight = new System.Windows.Forms.NumericUpDown();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.shapeContainer1 = new Microsoft.VisualBasic.PowerPacks.ShapeContainer();
-            this.color0 = new Microsoft.VisualBasic.PowerPacks.RectangleShape();
-            this.color2 = new Microsoft.VisualBasic.PowerPacks.RectangleShape();
-            this.color3 = new Microsoft.VisualBasic.PowerPacks.RectangleShape();
-            this.color1 = new Microsoft.VisualBasic.PowerPacks.RectangleShape();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -53,9 +56,11 @@
             this.statusStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.contourSpacing)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.terrainHeight)).BeginInit();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -127,6 +132,7 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage1.Controls.Add(this.groupBox3);
             this.tabPage1.Controls.Add(this.groupBox2);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
@@ -135,6 +141,119 @@
             this.tabPage1.Size = new System.Drawing.Size(213, 486);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Terrain";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.contours);
+            this.groupBox3.Controls.Add(this.contourSpacing);
+            this.groupBox3.Location = new System.Drawing.Point(7, 61);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(200, 72);
+            this.groupBox3.TabIndex = 3;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Terrain Contour Spacing";
+            // 
+            // contours
+            // 
+            this.contours.AutoSize = true;
+            this.contours.Checked = true;
+            this.contours.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.contours.Location = new System.Drawing.Point(6, 20);
+            this.contours.Name = "contours";
+            this.contours.Size = new System.Drawing.Size(105, 17);
+            this.contours.TabIndex = 2;
+            this.contours.Text = "Display Contours";
+            this.contours.UseVisualStyleBackColor = true;
+            this.contours.CheckedChanged += new System.EventHandler(this.contours_Changed);
+            // 
+            // contourSpacing
+            // 
+            this.contourSpacing.DecimalPlaces = 1;
+            this.contourSpacing.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.contourSpacing.Location = new System.Drawing.Point(6, 42);
+            this.contourSpacing.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.contourSpacing.Name = "contourSpacing";
+            this.contourSpacing.Size = new System.Drawing.Size(189, 20);
+            this.contourSpacing.TabIndex = 1;
+            this.contourSpacing.Value = new decimal(new int[] {
+            45,
+            0,
+            0,
+            65536});
+            this.contourSpacing.ValueChanged += new System.EventHandler(this.contours_Changed);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.shapeContainer1);
+            this.groupBox2.Location = new System.Drawing.Point(7, 139);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(200, 64);
+            this.groupBox2.TabIndex = 2;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Terrain Color";
+            // 
+            // shapeContainer1
+            // 
+            this.shapeContainer1.Location = new System.Drawing.Point(3, 16);
+            this.shapeContainer1.Margin = new System.Windows.Forms.Padding(0);
+            this.shapeContainer1.Name = "shapeContainer1";
+            this.shapeContainer1.Shapes.AddRange(new Microsoft.VisualBasic.PowerPacks.Shape[] {
+            this.color1,
+            this.color3,
+            this.color2,
+            this.color0});
+            this.shapeContainer1.Size = new System.Drawing.Size(194, 45);
+            this.shapeContainer1.TabIndex = 0;
+            this.shapeContainer1.TabStop = false;
+            // 
+            // color1
+            // 
+            this.color1.BackColor = System.Drawing.Color.White;
+            this.color1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(133)))), ((int)(((byte)(8)))));
+            this.color1.FillStyle = Microsoft.VisualBasic.PowerPacks.FillStyle.Solid;
+            this.color1.Location = new System.Drawing.Point(57, 5);
+            this.color1.Name = "color1";
+            this.color1.Size = new System.Drawing.Size(30, 30);
+            this.color1.Click += new System.EventHandler(this.color1_Click);
+            // 
+            // color3
+            // 
+            this.color3.BackColor = System.Drawing.Color.White;
+            this.color3.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(179)))), ((int)(((byte)(43)))), ((int)(((byte)(0)))));
+            this.color3.FillStyle = Microsoft.VisualBasic.PowerPacks.FillStyle.Solid;
+            this.color3.Location = new System.Drawing.Point(155, 5);
+            this.color3.Name = "color3";
+            this.color3.Size = new System.Drawing.Size(30, 30);
+            this.color3.Click += new System.EventHandler(this.color3_Click);
+            // 
+            // color2
+            // 
+            this.color2.BackColor = System.Drawing.Color.White;
+            this.color2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(217)))), ((int)(((byte)(87)))));
+            this.color2.FillStyle = Microsoft.VisualBasic.PowerPacks.FillStyle.Solid;
+            this.color2.Location = new System.Drawing.Point(105, 5);
+            this.color2.Name = "color2";
+            this.color2.Size = new System.Drawing.Size(30, 30);
+            this.color2.Click += new System.EventHandler(this.color2_Click);
+            // 
+            // color0
+            // 
+            this.color0.BackColor = System.Drawing.Color.White;
+            this.color0.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(167)))));
+            this.color0.FillGradientColor = System.Drawing.Color.Black;
+            this.color0.FillStyle = Microsoft.VisualBasic.PowerPacks.FillStyle.Solid;
+            this.color0.Location = new System.Drawing.Point(8, 5);
+            this.color0.Name = "color0";
+            this.color0.Size = new System.Drawing.Size(30, 30);
+            this.color0.Click += new System.EventHandler(this.lowColor_Click);
             // 
             // groupBox1
             // 
@@ -183,71 +302,6 @@
             this.tabPage3.Text = "Paticles";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.shapeContainer1);
-            this.groupBox2.Location = new System.Drawing.Point(6, 61);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(200, 64);
-            this.groupBox2.TabIndex = 2;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Terrain Color";
-            // 
-            // shapeContainer1
-            // 
-            this.shapeContainer1.Location = new System.Drawing.Point(3, 16);
-            this.shapeContainer1.Margin = new System.Windows.Forms.Padding(0);
-            this.shapeContainer1.Name = "shapeContainer1";
-            this.shapeContainer1.Shapes.AddRange(new Microsoft.VisualBasic.PowerPacks.Shape[] {
-            this.color1,
-            this.color3,
-            this.color2,
-            this.color0});
-            this.shapeContainer1.Size = new System.Drawing.Size(194, 45);
-            this.shapeContainer1.TabIndex = 0;
-            this.shapeContainer1.TabStop = false;
-            // 
-            // color0
-            // 
-            this.color0.BackColor = System.Drawing.Color.White;
-            this.color0.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(167)))));
-            this.color0.FillGradientColor = System.Drawing.Color.Black;
-            this.color0.FillStyle = Microsoft.VisualBasic.PowerPacks.FillStyle.Solid;
-            this.color0.Location = new System.Drawing.Point(8, 5);
-            this.color0.Name = "color0";
-            this.color0.Size = new System.Drawing.Size(30, 30);
-            this.color0.Click += new System.EventHandler(this.lowColor_Click);
-            // 
-            // color2
-            // 
-            this.color2.BackColor = System.Drawing.Color.White;
-            this.color2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(217)))), ((int)(((byte)(87)))));
-            this.color2.FillStyle = Microsoft.VisualBasic.PowerPacks.FillStyle.Solid;
-            this.color2.Location = new System.Drawing.Point(105, 5);
-            this.color2.Name = "color2";
-            this.color2.Size = new System.Drawing.Size(30, 30);
-            this.color2.Click += new System.EventHandler(this.color2_Click);
-            // 
-            // color3
-            // 
-            this.color3.BackColor = System.Drawing.Color.White;
-            this.color3.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(179)))), ((int)(((byte)(43)))), ((int)(((byte)(0)))));
-            this.color3.FillStyle = Microsoft.VisualBasic.PowerPacks.FillStyle.Solid;
-            this.color3.Location = new System.Drawing.Point(155, 5);
-            this.color3.Name = "color3";
-            this.color3.Size = new System.Drawing.Size(30, 30);
-            this.color3.Click += new System.EventHandler(this.color3_Click);
-            // 
-            // color1
-            // 
-            this.color1.BackColor = System.Drawing.Color.White;
-            this.color1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(133)))), ((int)(((byte)(8)))));
-            this.color1.FillStyle = Microsoft.VisualBasic.PowerPacks.FillStyle.Solid;
-            this.color1.Location = new System.Drawing.Point(57, 5);
-            this.color1.Name = "color1";
-            this.color1.Size = new System.Drawing.Size(30, 30);
-            this.color1.Click += new System.EventHandler(this.color1_Click);
-            // 
             // SandstormEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -267,9 +321,12 @@
             this.statusStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.contourSpacing)).EndInit();
+            this.groupBox2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.terrainHeight)).EndInit();
-            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -293,5 +350,8 @@
         private Microsoft.VisualBasic.PowerPacks.RectangleShape color2;
         private Microsoft.VisualBasic.PowerPacks.RectangleShape color0;
         private Microsoft.VisualBasic.PowerPacks.RectangleShape color1;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox contours;
+        private System.Windows.Forms.NumericUpDown contourSpacing;
     }
 }

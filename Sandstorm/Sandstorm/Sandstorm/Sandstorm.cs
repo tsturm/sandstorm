@@ -40,6 +40,7 @@ namespace Sandstorm
             _beamer = beamer;
             _editor.TerrainHeightChanged += _editor_TerrainHeight_Changed;
             _editor.TerrainColorChanged += _editor_TerrainColor_Changed;
+            _editor.TerrainContoursChanged += _editor_TerrainContour_Changed;
             Mouse.WindowHandle = _editor.Handle;            
             graphics = new GraphicsDeviceManager(this);
             graphics.PreparingDeviceSettings += new System.EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings); 
@@ -218,6 +219,12 @@ namespace Sandstorm
             _heightMap._color3 = e.Color3;
         }
 
+        void _editor_TerrainContour_Changed(object sender, TerrainArgs e)
+        {
+            _heightMap._displayContours = e.DisplayContours;
+            _heightMap._contourSpacing = e.ContourSpacing;
+        }
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -278,7 +285,7 @@ namespace Sandstorm
 
             GraphicsDevice.Clear(Color.Black);
             _heightMap.Draw(_orthoCamera);
-            _particleSystem.Draw(_orthoCamera);
+            //_particleSystem.Draw(_orthoCamera);
             GraphicsDevice.Present(null, null, _beamer.panel1.Handle);
 
             GraphicsDevice.Textures[0] = null;

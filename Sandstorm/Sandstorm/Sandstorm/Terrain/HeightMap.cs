@@ -20,6 +20,8 @@ namespace Sandstorm.Terrain
         int[] _indices;
         private Object updateLock = new Object();
         public float _heightScale = 100.0f;
+        public float _contourSpacing = 4.5f;
+        public bool _displayContours = true;
 
         public Vector4 _color0 = new Vector4(0.0f, 0.0f, 0.65f, 1.0f);
         public Vector4 _color1 = new Vector4(0.2f, 0.52f, 0.03f, 1.0f);
@@ -215,6 +217,8 @@ namespace Sandstorm.Terrain
                 _effect.Parameters["color1"].SetValue(_color1);
                 _effect.Parameters["color2"].SetValue(_color2);
                 _effect.Parameters["color3"].SetValue(_color3);
+                _effect.Parameters["contourSpacing"].SetValue(_contourSpacing);
+                _effect.Parameters["displayContours"].SetValue(_displayContours);
 
                 foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {
