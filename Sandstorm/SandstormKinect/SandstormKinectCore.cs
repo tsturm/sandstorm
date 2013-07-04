@@ -164,12 +164,19 @@ namespace SandstormKinect
         /// </summary>
         public void StopKinect()
         {
-            if (null != this.sensor)
+            try
             {
+                if (null != this.sensor)
+                {
 
-                m_GrabDepthFrameThread.Abort();
-                this.sensor.Stop();
-                this.sensor.Dispose();
+                    m_GrabDepthFrameThread.Abort();
+                    this.sensor.Stop();
+                  /*  this.sensor.Dispose();*/
+                }
+            }
+            catch (ThreadAbortException ex)
+            {
+                Debug.WriteLine("GrabDepthFrameThread Error {0}", ex);
             }
         }
 
@@ -228,7 +235,7 @@ namespace SandstormKinect
                         }
 
                         depthValid = false;
-                        System.Threading.Thread.Sleep(1000);
+                     //   System.Threading.Thread.Sleep(1000);
                     }
 
                     //fire event 
@@ -237,7 +244,7 @@ namespace SandstormKinect
             }
             catch (ThreadAbortException ax)
             {
-                Debug.WriteLine("GrabDepthFrameThread Aborted {0}");
+                Debug.WriteLine("GrabDepthFrameThread Aborted {0}",ax);
             }
             catch (Exception ex)
             {
