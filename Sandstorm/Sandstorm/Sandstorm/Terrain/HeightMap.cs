@@ -19,6 +19,14 @@ namespace Sandstorm.Terrain
         Matrix _transform;
         int[] _indices;
         private Object updateLock = new Object();
+        public float _heightScale = 100.0f;
+        public float _contourSpacing = 4.5f;
+        public bool _displayContours = true;
+
+        public Vector4 _color0 = new Vector4(0.0f, 0.0f, 0.65f, 1.0f);
+        public Vector4 _color1 = new Vector4(0.2f, 0.52f, 0.03f, 1.0f);
+        public Vector4 _color2 = new Vector4(0.9f, 0.85f, 0.34f, 1.0f);
+        public Vector4 _color3 = new Vector4(0.7f, 0.17f, 0.0f, 1.0f);
         
 
         float[,] _heightData = new float[512, 512];
@@ -42,10 +50,10 @@ namespace Sandstorm.Terrain
 
             for (int i = 0; i < heightMapData.Length; i++)
             {
-                heightMapData2[i].X = ((heightMapData[i].R / 255f) + 1f) / 2f;
-                heightMapData2[i].Y = ((heightMapData[i].G / 255f) + 1f) / 2f;
-                heightMapData2[i].Z = ((heightMapData[i].B / 255f) + 1f) / 2f;
-                heightMapData2[i].W = ((heightMapData[i].A / 255f) + 1f) / 2f;
+                heightMapData2[i].X = heightMapData[i].R / 255f;
+                heightMapData2[i].Y = heightMapData[i].G / 255f;
+                heightMapData2[i].Z = heightMapData[i].B / 255f;
+                heightMapData2[i].W = 1.0f;
             }
 
             _heightMap = new Texture2D(_graphicsDevice, heightMap.Width, heightMap.Height, false, SurfaceFormat.Vector4);
@@ -116,7 +124,7 @@ namespace Sandstorm.Terrain
                                     myVector[idx].Z = 0f;
                                     myVector[idx].W = 1f;
                                 }
-                                heightData[x-110, y-30] = myVector[idx].Y*100;
+                                heightData[x - 110, y - 30] = myVector[idx].Y * _heightScale;
                             }
                         }
                         Debug.WriteLine("EndHeight:" + System.Environment.TickCount);
@@ -204,6 +212,13 @@ namespace Sandstorm.Terrain
                 _effect.Parameters["projMatrix"].SetValue(pCamera.ProjMatrix);
                 _effect.Parameters["worldMatrix"].SetValue(_transform);
                 _effect.Parameters["heightMap"].SetValue(_heightMap);
+                _effect.Parameters["heightScale"].SetValue(_heightScale);
+                _effect.Parameters["color0"].SetValue(_color0);
+                _effect.Parameters["color1"].SetValue(_color1);
+                _effect.Parameters["color2"].SetValue(_color2);
+                _effect.Parameters["color3"].SetValue(_color3);
+                _effect.Parameters["contourSpacing"].SetValue(_contourSpacing);
+                _effect.Parameters["displayContours"].SetValue(_displayContours);
 
                 foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {

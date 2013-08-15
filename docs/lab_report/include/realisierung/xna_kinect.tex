@@ -1,0 +1,28 @@
+% !TEX root = ../report.tex
+\section{XNA Game Studio 4.0 + Kinect SDK}
+\begin{Spacing}{\mylinespace}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=300px]{graphics/xna.png}
+\end{figure}
+
+Für die Interaktion mit der \textit{Kinect}-Kamera und der Darstellung der Landschaft und des Partikelsystems haben wir uns für das \textit{XNA Game Studio 4.0} und das Kinect SDK von \textit{Microsoft} entschieden. Das \textit{XNA Game Studio} ist eine Programmierumgebung die auf \textit{Visual Studio} basiert und zur Entwicklung von Spielen für \textit{Windows-Phone}, \textit{XBox 360} und \textit{Windows}-basierten Computern entworfen wurde. Bestandteil des \textit{XNA Game Studio} ist das \textit{XNA Framework}, welches mehrere auf dem \textit{.Net-Framwork} basierende Bibliotheken vereint und eine sehr einfache und angenehme Schnittstelle zu diesen bereitstellt.
+\\\\
+Dazu gehören:
+
+\begin{description}
+	\item[DirectX] \hfill \\
+	DirectX ist eine API für hochperformante Multimedia-Anwendungen und kommt meist bei der Hardware-beschleunigten Darstellung von 2D- und 3D-Grafiken zum Einsatz. 
+	\item[XInput] \hfill \\
+	XInput ist eine API zur Verarbeitung von Benutzereingaben über Maus, Tastatur und den \textit{XBox 360} Kontroller.
+	\item[XACT] \hfill \\
+	XACT(Microsoft Cross-Platform Audio Creation Tool) stellt einfache Schnittstellen zur Audiowiedergabe und der Verknüpfung von Sounds an bestimmte Ereignissen bereit.
+\end{description}
+
+In unserer Implementierung wird ausschließlich DirectX für die Darstellung und XInput für die Verarbeitung der Benutzereingaben genutzt. Zudem kommt zusätzlich das \textit{Kinect SDK} zur Ansteuerung der \textit{Kinect}-Kamera zum Einsatz, welches auch auf dem \textit{.Net-Framework} basiert und sich dadurch nahtlos und ohne weitere Anpassungen in das System integrieren lässt.
+
+\end{Spacing}
+\newpage
+\clearpage
+%% End Of Doc

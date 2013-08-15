@@ -29,6 +29,8 @@ namespace Sandstorm
         Galaxy _particleSystem;
         SandstormKinectCore _kinectSystem;
         SandstormKinectEvent eventBuffer = null;
+        Stopwatch _stopWatch = new Stopwatch();
+        FPSCounter _fpsCounter = new FPSCounter();
 
         public Sandstorm(SandstormEditor editor, SandstormBeamer beamer, SandstormKinectCore kinectSystem)
         {
@@ -36,6 +38,9 @@ namespace Sandstorm
             _kinectSystem = kinectSystem;
             _editor = editor;
             _beamer = beamer;
+            _editor.TerrainHeightChanged += _editor_TerrainHeight_Changed;
+            _editor.TerrainColorChanged += _editor_TerrainColor_Changed;
+            _editor.TerrainContoursChanged += _editor_TerrainContour_Changed;
             Mouse.WindowHandle = _editor.Handle;            
             graphics = new GraphicsDeviceManager(this);
             graphics.PreparingDeviceSettings += new System.EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings); 
@@ -201,6 +206,25 @@ namespace Sandstorm
             _perspCamera.Viewport = new Viewport(0, 0, _editor.panel1.Width, _editor.panel1.Height);
         }
 
+        void _editor_TerrainHeight_Changed(object sender, TerrainArgs e)
+        {
+            _heightMap._heightScale = (float) e.Height;
+        }
+
+        void _editor_TerrainColor_Changed(object sender, TerrainArgs e)
+        {
+            _heightMap._color0 = e.Color0;
+            _heightMap._color1 = e.Color1;
+            _heightMap._color2 = e.Color2;
+            _heightMap._color3 = e.Color3;
+        }
+
+        void _editor_TerrainContour_Changed(object sender, TerrainArgs e)
+        {
+            _heightMap._displayContours = e.DisplayContours;
+            _heightMap._contourSpacing = e.ContourSpacing;
+        }
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -252,6 +276,8 @@ namespace Sandstorm
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            _fpsCounter.Measure();
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _heightMap.Draw(_perspCamera);
             _particleSystem.Draw(_perspCamera);
@@ -259,10 +285,13 @@ namespace Sandstorm
 
             GraphicsDevice.Clear(Color.Black);
             _heightMap.Draw(_orthoCamera);
-            _particleSystem.Draw(_orthoCamera);
+            //_particleSystem.Draw(_orthoCamera);
             GraphicsDevice.Present(null, null, _beamer.panel1.Handle);
 
             GraphicsDevice.Textures[0] = null;
+
+            _editor.FPS = _fpsCounter.getFrames();
+            _editor.Particles = _particleSystem.NumberOfParticles;
         }
     }
 }
