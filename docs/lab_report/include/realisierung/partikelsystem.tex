@@ -2,8 +2,27 @@
 \section{Partikelsystem}
 \begin{Spacing}{\mylinespace}
 
-wie ist das partikelsystem gebaut\\
-was kann das ding\\
+Es gibt verschiedene Möglichkeiten ein Partikelsystem zu realisieren.
+In unserem Anwendungsfall haben wir uns dafür entschieden Visualisierung und Physik zu trennen.
+Dies führt dazu, das es möglich ist, ohne große Abhängigkeiten voneinander parallel zu entwickeln.
+
+\subsection{Die Physik (Physik-Engine)}
+Damit die Partikel möglichst realitätsgetreu sich durch die Szene bewegen, benötigt der Computer die Information wie sich die entsprechenden Partikel verhalten sollen.
+Dies bedeutet das physikalische Gesetze auf mathematische Funktionen abgebildet werden müssen.
+Durch diese Abbildung werden die Bewegungsabläufe der Partikel gesteuert.
+Um die Echtzeitfähigkeit des Systems sicher zu stellen müssen meist die Abbildungen (Gesetze) durch ein paar Tricks vereinfacht werden um Rechenkraft zu sparen.
+
+Die Physik-Engine hat genau diese Aufgaben; Sie bewegt die Partikel durch den Raum, erkennt Kollisionen und bildet Gesetzte der \ref{Reflektion} ab.
+Durch die hohe Unabhängigkeit von den einzelnen Partikeln eignet sich eine GPU besonders gut zum berechnen entsprechender Gesetze.
+Wir haben uns dennoch im aktuellen Projektstatus dazu entschieden die Berechnungen auf der CPU durchzuführen.
+Der Grund hierfür liegt in der Problematik das es nicht möglich ist Berechnungen welche auf der GPU stattfinden genauer zu untersuchen bzw. zu Debuggen.
+
+\subsection{Der Renderer (Draw-Engine)}
+Der Renderer ist der zweite Teil unseres Partikelsystems. Seine Aufgabe liegt darin, für jedes einzelnes Partikel die Eigenschaften (Farbe,Kraft,Größe,...) für den Benutzer zu visualisieren.
+Hierbei wird lediglich lesend auf den vorhandene Datenbestand zugegriffen.
+Auch hier ist eine hohe Parallelität möglich, denn jedes Partikel stellt eine unabhängige Einheit dar.
+Somit ist es möglich mit Hilfe von DirektX einen Shader für die GPU zu schreiben. 
+Dieser erlaubt es, das alle Shader-Units der GPU zusammen an einem Frame arbeiten. 
 
 \end{Spacing}
 \newpage
