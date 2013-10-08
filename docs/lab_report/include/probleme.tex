@@ -1,0 +1,22 @@
+% !TEX root = ../report.tex
+\chapter{Probleme}
+	\begin{Spacing}{\mylinespace}
+	\section{Echtzeitfähigkeit}
+	
+		Leider besitzt die derzeitige Ausarbeitung diverse kleinere Probleme, welche die Echtzeitfähigkeit des Systems gefährden.
+		Diverse teile von Berechnungen werden noch wie in \ref{physik} beschrieben auf der CPU ausgeführt, während der Teil der Visualisierung bereits auf die GPU portiert wurde.
+		Dies führt zu erheblichen Performanceproblemen, denn es muss bei jeder Physikberechnung (jeden Frame), die Partikeldaten zwischen GPU und CPU kopiert und synchronisiert werden.
+	\section{Darstellung}
+		Die Darstellung stellte sich um Laufe des Projektes als schwieriger heraus als vorher angedacht.
+		Hierbei kann man die Probleme auf welche wir gestoßen sind grob in Hard- und Softwareprobleme unterscheiden.
+		\subsection{Hardware}
+			Trotz das wir einen Beamer von einem Grafiklabor der Hochschule zur Verfügung gestellt bekommen haben, bemerkten wir bereits bei ersten Tests, das ein großer Farbunterschied zwischen Beamer und
+			Monitor vorhanden ist. Leider scheint das Spektrum unseres Beamers sehr begrenzt zu sein, so das wir einen Farbunterschied zwischen weiß und gelb kaum wahrnehmen können.		
+		\subsection{Software}
+			Durch die physikalische Gegebenheit das Kinekt und Beamer sich an unterschiedlichen Orten befinden, entsteht bei der Projektion zusätzlich zur Verzerrung auch noch das Problem der Verschiebung.
+			Die Kalibrierung stellte sich somit schwieriger heraus als bisher gedacht, deshalb wurden aus zeitlichen Gründen der Fokus auf Aufgaben gesetzt um schnellstmöglich eine lauffähige Version zu erstellen.
+	
+\end{Spacing}
+\newpage
+\clearpage
+%% End Of Doc
