@@ -2,7 +2,7 @@
 \section{Das Terrain}
 \begin{Spacing}{\mylinespace}
 
-Nachdem das Grundgerüst der Anwendung stand, wir die Kinect Kamera eingebunden hatten und wir mit Hilfe unseres Kamerasystem in der 3D Szene navigieren konnten, ging es daran uns um die Umsetzung der Terraindarstellung zu kümmern.
+Nachdem das Grundgerüst der Anwendung stand und wir die Kinect Kamera erfolgreich eingebunden hatten ging es daran uns um die Umsetzung der Terraindarstellung zu kümmern.
 
 \subsection{Die Grundgeometrie}
 Als Grundgeometrie für die Darstellung unseres Terrains erzeugen wir ein flaches reguläres Gitter, dass in der X-Z-Ebene aufgespannt ist (s. Abbildung \ref{fig:grid}). Die Größe und die Anzahl der Unterteilungen des Gitters wurde variabel gestaltet, um im späteren Verlauf der Entwicklung, einfacher unterschiedliche Konfiguration zu testen. 
@@ -46,7 +46,7 @@ Entschieden haben wir uns letztendlich für den zweiten Ansatz, da er das weitau
 \end{figure}
 
 \subsection{Die Darstellung}
-Nachdem nun die Grundgeometrie erzeugt, die Höhendaten vor verarbeitet an die GPU übertragen und die Y-Position der Vertices manipuliert wurden, können wir unser Terrain endlich nun darstellen. Einheitlich eingefärbt, bekommen wir allerdings ein Ergebnis dass nicht wirklich an eine Landschaft erinnert (s. Abbildung \ref{fig:singleColor}). 
+Nachdem nun die Grundgeometrie erzeugt, die Höhendaten vor verarbeitet an die GPU übertragen und die Y-Position der Vertices manipuliert wurden, können wir nun unser Terrain endlich darstellen. Einheitlich eingefärbt, bekommen wir allerdings ein Ergebnis dass nicht wirklich an eine Landschaft erinnert (s. Abbildung \ref{fig:singleColor}). 
 
 \begin{figure}[h!]
 	\centering
