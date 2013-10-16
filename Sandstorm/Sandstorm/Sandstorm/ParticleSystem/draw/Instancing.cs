@@ -16,6 +16,7 @@ namespace Sandstorm.ParticleSystem.draw
 {
     class Instancing
     {
+        Texture2D _particlePositions;
         public enum INSTANCE_MODE
         {
             NORMAL,
@@ -41,8 +42,7 @@ namespace Sandstorm.ParticleSystem.draw
 
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
-            new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 1),
-            new VertexElement(sizeof(float)*3, VertexElementFormat.Vector3, VertexElementUsage.Position, 2)
+            new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 1)
         );  
       
         public static void nextMode()
@@ -109,37 +109,43 @@ namespace Sandstorm.ParticleSystem.draw
 
         public Instancing(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, SharedList pList)
         {
-            // TODO: Complete member initialization
-
             this._graphicsDevice = pGraphicsDevice;
             this._contentManager = pContentManager;
             this._sharedList = pList;
-            _effect = _contentManager.Load<Effect>("fx/InstancedModel");
+            _effect = _contentManager.Load<Effect>("fx/particleDrawer");
             _billboardTexture = _contentManager.Load<Texture2D>("tex/smoke"); 
 
             LoadParticleInstance();
+            _particlePositions = new Texture2D(_graphicsDevice, 10, 10, false, SurfaceFormat.Vector4);
         }
 
 
-        void DrawInstances(Camera pCamera,VertexBuffer vertexBuffer, IndexBuffer indexBuffer, Texture2D pTexture, Vector3[] pInstances)
+        void DrawInstances(Camera pCamera, VertexBuffer vertexBuffer, IndexBuffer indexBuffer, Texture2D pTexture, Vector3[] pInstances)
         {
             if (pInstances.Length == 0)
                 return;
 
             // If we have more instances than room in our vertex buffer, grow it to the neccessary size.
-            if ((instanceVertexBuffer == null) ||
-                (pInstances.Length > instanceVertexBuffer.VertexCount))
+            if ((instanceVertexBuffer == null) || (pInstances.Length > instanceVertexBuffer.VertexCount))
             {
                 if (instanceVertexBuffer != null)
                     instanceVertexBuffer.Dispose();
 
                 instanceVertexBuffer = new DynamicVertexBuffer(_graphicsDevice, _instanceVertexDeclaration,
-                                                               pInstances.Length, BufferUsage.WriteOnly);
+                                                               10*10, BufferUsage.None);
             }
+            
+            Vector2[] iVertex = new Vector2[10 * 10]; //Position auf 
 
-            // Transfer the latest instance transform matrices into the instanceVertexBuffer.
-            instanceVertexBuffer.SetData(pInstances, 0, pInstances.Length, SetDataOptions.Discard);
-                      
+            for (int x = 0; x < 10; x++)
+                for (int y = 0; y < 10; y++)
+                {
+                    iVertex[x * 10 + y].X = x;
+                    iVertex[x * 10 + y].Y = y;
+                }
+
+            instanceVertexBuffer.SetData(iVertex, 0, iVertex.Length, SetDataOptions.Discard);
+
             // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
              _graphicsDevice.SetVertexBuffers(
                         new VertexBufferBinding(vertexBuffer,0,0),
@@ -151,10 +157,34 @@ namespace Sandstorm.ParticleSystem.draw
             // Set up the instance rendering effect.
             _effect.CurrentTechnique = _effect.Techniques["InstancingBB"];
 
+
+
+            Vector4[] myVector = new Vector4[10 * 10];
+
+            Random r = new Random();
+            for (int x = 0; x < 10; x++)
+                for (int y = 0; y < 10; y++)
+                {
+                    if (x == 9 && y == 9)
+                    {
+                        myVector[x * 10 + y].X = (float)r.NextDouble() * 100f;
+                        myVector[x * 10 + y].Y = (float)r.NextDouble() * 100f;
+                        // myVector[x * 100 + y].Z = 1.0f;
+                    }
+                    else
+                    {
+                        myVector[x * 10 + y].X = x*10f;
+                        myVector[x * 10 + y].Y = y*10f;
+                        //myVector[x * 100 + y].Z = 1.0f;
+                    }
+                }
+            _particlePositions.SetData(myVector);
+
             _effect.Parameters["world"].SetValue(Matrix.Identity);
             _effect.Parameters["view"].SetValue(pCamera.ViewMatrix);
             _effect.Parameters["projection"].SetValue(pCamera.ProjMatrix);
             _effect.Parameters["Texture"].SetValue(_billboardTexture);
+            _effect.Parameters["positionMap"].SetValue(_particlePositions);
             /*_effect.Parameters["alphaTestDirection"].SetValue(1.0f);
             _effect.Parameters["alphaTestThreshold"].SetValue(0.3f);*/
             _effect.Parameters["BBSize"].SetValue((_state == INSTANCE_MODE.DEBUG) ? _DebugBBSize : _BBSize);
@@ -172,8 +202,10 @@ namespace Sandstorm.ParticleSystem.draw
                 pass.Apply();
                 _graphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0,
                                                                vertexBuffer.VertexCount, 0,
-                                                               indexBuffer.IndexCount / 3, pInstances.Length);
+                                                               indexBuffer.IndexCount / 3, 10*10);
             }
+
+
         }
 
 
