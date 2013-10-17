@@ -118,8 +118,7 @@ VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 
 	//input.iPosition.y += BBSize; //offset damit bb über ebene schwebt
 
-	float4 realPosition = tex2Dlod ( positionSampler, float4(input.iPosition.x, input.iPosition.y,0,0));
-
+	float4 realPosition = tex2Dlod ( positionSampler, float4(input.iPosition.x, input.iPosition.y,0,0));	
 	float3 pos = realPosition.xyz + (offset.x * xAxis) + (offset.y * yAxis);
 
 	output.Position = mul(float4(pos, 1.0f), worldViewProjection);
@@ -138,7 +137,7 @@ VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 		}*/
 	}
 	
-	output.Color = float4(input.iPosition.x,0.0f,0.0f,1.0f);//normalize(float4(pos,0.5f-abs(pos.y))); //alte einfaerbung
+	//output.Color = float4(input.iPosition.x,0.0f,0.0f,1.0f);//normalize(float4(pos,0.5f-abs(pos.y))); //alte einfaerbung
 
     return output;
 }

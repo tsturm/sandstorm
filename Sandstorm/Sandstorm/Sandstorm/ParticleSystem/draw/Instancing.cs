@@ -40,6 +40,8 @@ namespace Sandstorm.ParticleSystem.draw
         private static INSTANCE_MODE _state = INSTANCE_MODE.NORMAL;
         private static INSTANCE_MODE _internalstate = INSTANCE_MODE.NORMAL;
 
+        private static int _squareSize = 10;
+
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
             new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 1)
@@ -119,32 +121,37 @@ namespace Sandstorm.ParticleSystem.draw
             _particlePositions = new Texture2D(_graphicsDevice, 10, 10, false, SurfaceFormat.Vector4);
         }
 
+        void InitInstanceVertexBuffer(Vector2[] pPositions)
+        {
+            // If we have more instances than room in our vertex buffer, grow it to the neccessary size.
+            if ((instanceVertexBuffer == null) || (pPositions.Length > instanceVertexBuffer.VertexCount))
+            {
+                if (instanceVertexBuffer != null)
+                    instanceVertexBuffer.Dispose();
+
+                instanceVertexBuffer = new DynamicVertexBuffer(_graphicsDevice, _instanceVertexDeclaration,
+                                                               pPositions.Length, BufferUsage.None);
+            }
+
+            instanceVertexBuffer.SetData(pPositions, 0, pPositions.Length, SetDataOptions.Discard);
+        }
 
         void DrawInstances(Camera pCamera, VertexBuffer vertexBuffer, IndexBuffer indexBuffer, Texture2D pTexture, Vector3[] pInstances)
         {
             if (pInstances.Length == 0)
                 return;
 
-            // If we have more instances than room in our vertex buffer, grow it to the neccessary size.
-            if ((instanceVertexBuffer == null) || (pInstances.Length > instanceVertexBuffer.VertexCount))
-            {
-                if (instanceVertexBuffer != null)
-                    instanceVertexBuffer.Dispose();
 
-                instanceVertexBuffer = new DynamicVertexBuffer(_graphicsDevice, _instanceVertexDeclaration,
-                                                               10*10, BufferUsage.None);
-            }
-            
-            Vector2[] iVertex = new Vector2[10 * 10]; //Position auf 
+            Vector2[] iVertex = new Vector2[_squareSize * _squareSize]; //Position auf 
 
-            for (int x = 0; x < 10; x++)
-                for (int y = 0; y < 10; y++)
+            for (int x = 0; x < _squareSize; x++)
+                for (int y = 0; y < _squareSize; y++)
                 {
-                    iVertex[x * 10 + y].X = (float)(x)/10.0f;
-                    iVertex[x * 10 + y].Y = (float)(y)/10.0f;
+                    iVertex[x * _squareSize + y].X = (float)(x) / _squareSize;
+                    iVertex[x * _squareSize + y].Y = (float)(y) / _squareSize;
                 }
 
-            instanceVertexBuffer.SetData(iVertex, 0, iVertex.Length, SetDataOptions.Discard);
+            InitInstanceVertexBuffer(iVertex);
 
             // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
              _graphicsDevice.SetVertexBuffers(
@@ -157,16 +164,14 @@ namespace Sandstorm.ParticleSystem.draw
             // Set up the instance rendering effect.
             _effect.CurrentTechnique = _effect.Techniques["InstancingBB"];
 
-
-
-            Vector4[] myVector = new Vector4[10 * 10];
+            Vector4[] myVector = new Vector4[_squareSize * _squareSize];
 
             Random r = new Random();
-            for (int x = 0; x < 10; x++)
-                for (int y = 0; y < 10; y++)
+            for (int x = 0; x < _squareSize; x++)
+                for (int y = 0; y < _squareSize; y++)
                 {
-                    myVector[x * 10 + y].X = x*10.0f;
-                    myVector[x * 10 + y].Y = y*10.0f;
+                    myVector[x * _squareSize + y].X = x * 10.0f;
+                    myVector[x * _squareSize + y].Y = y * 10.0f;
                 }
             _particlePositions.SetData(myVector);
 
@@ -192,7 +197,7 @@ namespace Sandstorm.ParticleSystem.draw
                 pass.Apply();
                 _graphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0,
                                                                vertexBuffer.VertexCount, 0,
-                                                               indexBuffer.IndexCount / 3, 10*10);
+                                                               indexBuffer.IndexCount / 3, _squareSize * _squareSize );
             }
 
 
