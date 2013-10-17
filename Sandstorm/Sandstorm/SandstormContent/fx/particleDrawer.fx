@@ -103,14 +103,28 @@ float4 RGBtoHSV(in float3 RGB)
 VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 {
     VertexShaderOutput output;
-	float4x4 worldViewProjection = mul(mul(world, view), projection);
 	
-	float2 offset = input.TextureCoordinate.zw;
+	//TODO: short statt vector2
 
+	//position Particle
+	//int x = floor(input.iPosition/4);
+	//int y = input.iPosition%4;
+
+	//float posX = 1.0f;
+	//float posY = 0.25*y;
+	
+	
+	float posX = input.iPosition.x;
+	float posY = input.iPosition.y;
+
+	float4 realPosition = tex2Dlod ( positionSampler, float4(posX,posY,0,0));	
+
+
+	//position Billboard
+	float4x4 worldViewProjection = mul(mul(world, view), projection);	
+	float2 offset = input.TextureCoordinate.zw;
 	float3 xAxis = float3(view._11, view._21, view._31);
 	float3 yAxis = float3(view._12, view._22, view._32);
-
-	float4 realPosition = tex2Dlod ( positionSampler, float4(input.iPosition.x, input.iPosition.y,0,0));	
 	float3 pos = realPosition.xyz + (offset.x * xAxis) + (offset.y * yAxis);
 
 	output.Position = mul(float4(pos, 1.0f), worldViewProjection);
@@ -122,12 +136,12 @@ VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 		/*float l = length(input.iForce);
 		if(l > 2.0f)
 		{
-			col.x = col.x+lerp(0.0f,0.3f,1/l);//
+			col.x = col.x+lerp(0.0f,0.3f,1/l);
 			output.Color = HSVtoRGB(col);
 		}*/
 	}
 	
-	output.Color = float4(input.iPosition.x,input.iPosition.y,0.0f,1.0f);//normalize(float4(pos,0.5f-abs(pos.y))); //alte einfaerbung
+	output.Color = float4(posX,posY,0.0f,1.0f);//normalize(float4(pos,0.5f-abs(pos.y))); //alte einfaerbung
 
     return output;
 }

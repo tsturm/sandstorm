@@ -8,7 +8,7 @@ namespace Sandstorm.ParticleSystem
 {
     public class SharedList
     {
-        public static int _maxCount = 5000;
+        public static int _maxCount = 1;
 
         private static readonly ObjectPool<Particle> _freeParticles = new ObjectPool<Particle>(_maxCount);
         private Particle[] _particles = new Particle[_maxCount];

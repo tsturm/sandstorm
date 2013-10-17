@@ -16,6 +16,7 @@ namespace Sandstorm.ParticleSystem.draw
 {
     class Instancing
     {
+
         Texture2D _particlePositions;
         public enum INSTANCE_MODE
         {
@@ -28,7 +29,6 @@ namespace Sandstorm.ParticleSystem.draw
         private SharedList _sharedList = null;
         
         private DynamicVertexBuffer instanceVertexBuffer = null;
-        private Vector3[] _instanceTransforms;        
         private Effect _effect;
         private VertexBuffer _vertexBuffer;
         private IndexBuffer _indexBuffer;           
@@ -40,7 +40,7 @@ namespace Sandstorm.ParticleSystem.draw
         private static INSTANCE_MODE _state = INSTANCE_MODE.NORMAL;
         private static INSTANCE_MODE _internalstate = INSTANCE_MODE.NORMAL;
 
-        private static int _squareSize = 8;
+        private static int _squareSize = 512;
 
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
@@ -130,6 +130,11 @@ namespace Sandstorm.ParticleSystem.draw
                     iVertex[x * _squareSize + y].Y = (float)(y) / _squareSize;
                 }
 
+            /*for (int i = 0; i < _squareSize * _squareSize; i++)
+            {
+                iVertex[i] = 1.0f*i;
+            }*/
+
             InitInstanceVertexBuffer(iVertex);
 
 
@@ -143,6 +148,7 @@ namespace Sandstorm.ParticleSystem.draw
                     myVector[x * _squareSize + y].Y = y * 10f;
                 }
             _particlePositions.SetData(myVector);
+
         }
 
         void InitInstanceVertexBuffer(Vector2[] pPositions)
@@ -160,16 +166,28 @@ namespace Sandstorm.ParticleSystem.draw
             instanceVertexBuffer.SetData(pPositions, 0, pPositions.Length, SetDataOptions.Discard);
         }
 
-        void DrawInstances(Camera pCamera, VertexBuffer vertexBuffer, IndexBuffer indexBuffer, Texture2D pTexture, Vector3[] pInstances)
+        RenderTarget2D lastRenderTarget = null;
+        RenderTarget2D renderTarget = null;
+        public RenderTarget2D Draw(Camera pCamera, RenderTarget2D pTarget)
         {
+            if (_internalstate != _state)
+            {
+                _internalstate = _state;
+                LoadParticleInstance();
+            }
+            
+            renderTarget = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+            _graphicsDevice.SetRenderTarget(renderTarget);
+
+            // _graphicsDevice.Clear(Color.White);
 
             // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
-             _graphicsDevice.SetVertexBuffers(
-                        new VertexBufferBinding(vertexBuffer,0,0),
-                        new VertexBufferBinding(instanceVertexBuffer, 0, 1)
-            );
+            _graphicsDevice.SetVertexBuffers(
+                       new VertexBufferBinding(_vertexBuffer, 0, 0),
+                       new VertexBufferBinding(instanceVertexBuffer, 0, 1)
+           );
 
-            _graphicsDevice.Indices = indexBuffer;
+            _graphicsDevice.Indices = _indexBuffer;
 
             // Set up the instance rendering effect.
             _effect.CurrentTechnique = _effect.Techniques["InstancingBB"];
@@ -184,7 +202,7 @@ namespace Sandstorm.ParticleSystem.draw
             _effect.Parameters["alphaTestThreshold"].SetValue(0.3f);*/
             _effect.Parameters["BBSize"].SetValue((_state == INSTANCE_MODE.DEBUG) ? _DebugBBSize : _BBSize);
             _effect.Parameters["debug"].SetValue((_state == INSTANCE_MODE.DEBUG) ? true : false);
-            
+
 
             _graphicsDevice.BlendState = BlendState.AlphaBlend;
             _graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
@@ -196,23 +214,12 @@ namespace Sandstorm.ParticleSystem.draw
             {
                 pass.Apply();
                 _graphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0,
-                                                               vertexBuffer.VertexCount, 0,
-                                                               indexBuffer.IndexCount / 3, _squareSize * _squareSize );
+                                                               _vertexBuffer.VertexCount, 0,
+                                                               _indexBuffer.IndexCount / 3, _squareSize * _squareSize);
             }
 
-
-        }
-
-
-        public void Draw(Camera pCamera)
-        {
-            if (_internalstate != _state)
-            {
-                _internalstate = _state;
-                LoadParticleInstance();
-            }
-
-            DrawInstances(pCamera,_vertexBuffer, _indexBuffer, _billboardTexture, _instanceTransforms);
+            lastRenderTarget = renderTarget;
+            return lastRenderTarget;
         }
     }
 }

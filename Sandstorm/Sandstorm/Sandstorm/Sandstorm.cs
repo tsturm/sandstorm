@@ -31,6 +31,17 @@ namespace Sandstorm
         SandstormKinectEvent eventBuffer = null;
         Stopwatch _stopWatch = new Stopwatch();
         FPSCounter _fpsCounter = new FPSCounter();
+        
+        RenderTarget2D _renderTarget = null;
+        SpriteBatch _spriteBatch = null;
+
+        public struct RENDERINDEX
+        {
+            public static int BEAMER_HEIGHT = 0;
+            public static int BEAMER_PARTICLES = 1;
+            public static int PC_HEIGHT = 2;
+            public static int PC_PARTICLES = 3;
+        }
 
         public Sandstorm(SandstormEditor editor, SandstormBeamer beamer, SandstormKinectCore kinectSystem)
         {
@@ -165,6 +176,7 @@ namespace Sandstorm
             _cameraController = new CameraController(_perspCamera);
 
             base.Initialize();
+            
         }
 
         void _kinectSystem_SandstormKinectDepth(object sender, SandstormKinectEvent e)
@@ -270,6 +282,40 @@ namespace Sandstorm
             base.Update(gameTime);
         }
 
+
+        void RenderIt(Camera pCamera,IntPtr pHandle)
+        {
+            _renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+
+            GraphicsDevice.SetRenderTarget(_renderTarget);
+
+            //Clear Screen
+            if (pCamera == _perspCamera)
+            {
+                GraphicsDevice.Clear(Color.CornflowerBlue);
+            }
+            else
+                GraphicsDevice.Clear(Color.Black);
+
+
+            //Draw Heightmap
+            _heightMap.Draw(pCamera, _renderTarget);
+
+            //Draw Particles
+            RenderTarget2D particles = _particleSystem.Draw(pCamera, _renderTarget);
+
+            //Render Targets zeichnen
+            GraphicsDevice.SetRenderTarget(null);
+
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(_renderTarget, new Vector2(0, 0), Color.White);
+            _spriteBatch.Draw(particles, new Vector2(0, 0), Color.White);
+            _spriteBatch.End();
+
+            GraphicsDevice.Present(null, null, pHandle);//_editor.panel1.Handle);
+        }
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -278,16 +324,10 @@ namespace Sandstorm
         {
             _fpsCounter.Measure();
 
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            _heightMap.Draw(_perspCamera);
-            _particleSystem.Draw(_perspCamera);
-            GraphicsDevice.Present(null, null, _editor.panel1.Handle);
 
-            GraphicsDevice.Clear(Color.Black);
-            _heightMap.Draw(_orthoCamera);
-            //_particleSystem.Draw(_orthoCamera);
-            GraphicsDevice.Present(null, null, _beamer.panel1.Handle);
-
+            RenderIt(_perspCamera, _editor.panel1.Handle);
+           // RenderIt(_orthoCamera, _beamer.panel1.Handle);
+            
             GraphicsDevice.Textures[0] = null;
 
             _editor.FPS = _fpsCounter.getFrames();

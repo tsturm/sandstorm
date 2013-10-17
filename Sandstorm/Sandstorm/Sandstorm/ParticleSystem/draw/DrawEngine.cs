@@ -45,32 +45,21 @@ namespace Sandstorm.ParticleSystem.draw
             return _fpsCounter.getFrames();
         }
 
-        
-        public void Draw(Camera pCamera,int pFPSDraw,int pFPSPhysic) //Draw all Particles
+
+        public RenderTarget2D Draw(Camera pCamera, RenderTarget2D pTarget, int pFPSDraw, int pFPSPhysic) //Draw all Particles
         {
             _fpsCounter.Update();
-
-
-
+            
             //Draw Particles
             RasterizerState prevRasterizerState = _graphicsDevice.RasterizerState;
             BlendState prevBlendState = _graphicsDevice.BlendState;
-            
-            _instancing.Draw(pCamera);
+
+           RenderTarget2D ret = _instancing.Draw(pCamera,pTarget);
 
             _graphicsDevice.BlendState = prevBlendState;
             _graphicsDevice.RasterizerState = prevRasterizerState;
 
-
-
-            //_spriteBatch.Begin();
-            //String s = string.Format("Particles={0}, DrawEngineFPS={1}, PhysicEngineFPS={2} Grafik={3}", _sharedList.Count, pFPSDraw, pFPSPhysic, _graphicsDevice.Adapter.Description);
-
-            //Vector2 screenSize = new Vector2(_graphicsDevice.Viewport.Height, _graphicsDevice.Viewport.Width);
-            //Vector2 pos = _font.MeasureString(s);
-
-            //_spriteBatch.DrawString(_font, s, new Vector2(0, 0), Color.White);
-            //_spriteBatch.End();
+            return ret;
         }
     }
 }
