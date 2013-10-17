@@ -116,7 +116,7 @@ VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 	float3 xAxis = float3(view._11, view._21, view._31);
 	float3 yAxis = float3(view._12, view._22, view._32);
 
-	input.iPosition.y += BBSize; //offset damit bb über ebene schwebt
+	//input.iPosition.y += BBSize; //offset damit bb über ebene schwebt
 
 	float4 realPosition = tex2Dlod ( positionSampler, float4(input.iPosition.x, input.iPosition.y,0,0));
 
@@ -138,7 +138,7 @@ VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 		}*/
 	}
 	
-	//output.Color = normalize(float4(pos,0.5f-abs(pos.y))); //alte einfaerbung
+	output.Color = float4(input.iPosition.x,0.0f,0.0f,1.0f);//normalize(float4(pos,0.5f-abs(pos.y))); //alte einfaerbung
 
     return output;
 }

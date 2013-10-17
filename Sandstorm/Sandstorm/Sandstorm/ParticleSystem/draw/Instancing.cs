@@ -140,8 +140,8 @@ namespace Sandstorm.ParticleSystem.draw
             for (int x = 0; x < 10; x++)
                 for (int y = 0; y < 10; y++)
                 {
-                    iVertex[x * 10 + y].X = x;
-                    iVertex[x * 10 + y].Y = y;
+                    iVertex[x * 10 + y].X = (float)(x)/10.0f;
+                    iVertex[x * 10 + y].Y = (float)(y)/10.0f;
                 }
 
             instanceVertexBuffer.SetData(iVertex, 0, iVertex.Length, SetDataOptions.Discard);
@@ -149,7 +149,7 @@ namespace Sandstorm.ParticleSystem.draw
             // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
              _graphicsDevice.SetVertexBuffers(
                         new VertexBufferBinding(vertexBuffer,0,0),
-                        new VertexBufferBinding(instanceVertexBuffer, 0, 2)
+                        new VertexBufferBinding(instanceVertexBuffer, 0, 1)
             );
 
             _graphicsDevice.Indices = indexBuffer;
@@ -165,18 +165,8 @@ namespace Sandstorm.ParticleSystem.draw
             for (int x = 0; x < 10; x++)
                 for (int y = 0; y < 10; y++)
                 {
-                    if (x == 9 && y == 9)
-                    {
-                        myVector[x * 10 + y].X = (float)r.NextDouble() * 100f;
-                        myVector[x * 10 + y].Y = (float)r.NextDouble() * 100f;
-                        // myVector[x * 100 + y].Z = 1.0f;
-                    }
-                    else
-                    {
-                        myVector[x * 10 + y].X = x*10f;
-                        myVector[x * 10 + y].Y = y*10f;
-                        //myVector[x * 100 + y].Z = 1.0f;
-                    }
+                    myVector[x * 10 + y].X = x*10.0f;
+                    myVector[x * 10 + y].Y = y*10.0f;
                 }
             _particlePositions.SetData(myVector);
 
