@@ -40,7 +40,7 @@ namespace Sandstorm.ParticleSystem.draw
         private static INSTANCE_MODE _state = INSTANCE_MODE.NORMAL;
         private static INSTANCE_MODE _internalstate = INSTANCE_MODE.NORMAL;
 
-        private static int _squareSize = 10;
+        private static int _squareSize = 8;
 
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
@@ -118,7 +118,31 @@ namespace Sandstorm.ParticleSystem.draw
             _billboardTexture = _contentManager.Load<Texture2D>("tex/smoke"); 
 
             LoadParticleInstance();
-            _particlePositions = new Texture2D(_graphicsDevice, 10, 10, false, SurfaceFormat.Vector4);
+            _particlePositions = new Texture2D(_graphicsDevice, _squareSize, _squareSize, false, SurfaceFormat.Vector4);
+
+
+            Vector2[] iVertex = new Vector2[_squareSize * _squareSize]; //Position auf 
+
+            for (int x = 0; x < _squareSize; x++)
+                for (int y = 0; y < _squareSize; y++)
+                {
+                    iVertex[x * _squareSize + y].X = (float)(x) / _squareSize;
+                    iVertex[x * _squareSize + y].Y = (float)(y) / _squareSize;
+                }
+
+            InitInstanceVertexBuffer(iVertex);
+
+
+            Vector4[] myVector = new Vector4[_squareSize * _squareSize];
+
+            Random r = new Random();
+            for (int x = 0; x < _squareSize; x++)
+                for (int y = 0; y < _squareSize; y++)
+                {
+                    myVector[x * _squareSize + y].X = x * 10f;
+                    myVector[x * _squareSize + y].Y = y * 10f;
+                }
+            _particlePositions.SetData(myVector);
         }
 
         void InitInstanceVertexBuffer(Vector2[] pPositions)
@@ -138,20 +162,6 @@ namespace Sandstorm.ParticleSystem.draw
 
         void DrawInstances(Camera pCamera, VertexBuffer vertexBuffer, IndexBuffer indexBuffer, Texture2D pTexture, Vector3[] pInstances)
         {
-            if (pInstances.Length == 0)
-                return;
-
-
-            Vector2[] iVertex = new Vector2[_squareSize * _squareSize]; //Position auf 
-
-            for (int x = 0; x < _squareSize; x++)
-                for (int y = 0; y < _squareSize; y++)
-                {
-                    iVertex[x * _squareSize + y].X = (float)(x) / _squareSize;
-                    iVertex[x * _squareSize + y].Y = (float)(y) / _squareSize;
-                }
-
-            InitInstanceVertexBuffer(iVertex);
 
             // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
              _graphicsDevice.SetVertexBuffers(
@@ -164,16 +174,6 @@ namespace Sandstorm.ParticleSystem.draw
             // Set up the instance rendering effect.
             _effect.CurrentTechnique = _effect.Techniques["InstancingBB"];
 
-            Vector4[] myVector = new Vector4[_squareSize * _squareSize];
-
-            Random r = new Random();
-            for (int x = 0; x < _squareSize; x++)
-                for (int y = 0; y < _squareSize; y++)
-                {
-                    myVector[x * _squareSize + y].X = x * 10.0f;
-                    myVector[x * _squareSize + y].Y = y * 10.0f;
-                }
-            _particlePositions.SetData(myVector);
 
             _effect.Parameters["world"].SetValue(Matrix.Identity);
             _effect.Parameters["view"].SetValue(pCamera.ViewMatrix);
@@ -206,25 +206,11 @@ namespace Sandstorm.ParticleSystem.draw
 
         public void Draw(Camera pCamera)
         {
-            Array.Resize(ref _instanceTransforms, _sharedList.Count*2);
-
             if (_internalstate != _state)
             {
                 _internalstate = _state;
                 LoadParticleInstance();
             }
-            //TODO: Parallelisieren?!
-            //Parallel.For(0, _sharedList.Particles.Length, i =>
-            int k=0;
-            for(int i=0; i < _sharedList.Particles.Length;i++)
-            {
-                Particle p = _sharedList.Particles[i];
-                if (p != null)
-                {
-                    _instanceTransforms[k++] = p.Pos;
-                    _instanceTransforms[k++] = p.Force;
-                }
-            }//);
 
             DrawInstances(pCamera,_vertexBuffer, _indexBuffer, _billboardTexture, _instanceTransforms);
         }

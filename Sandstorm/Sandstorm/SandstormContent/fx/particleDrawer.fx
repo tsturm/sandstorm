@@ -102,21 +102,13 @@ float4 RGBtoHSV(in float3 RGB)
 
 VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 {
-	//float4 pos = tex2D(positionSampler, input.TextureCoordinate.zw);
-
     VertexShaderOutput output;
 	float4x4 worldViewProjection = mul(mul(world, view), projection);
 	
-
-
-//	float2 offset = tex2Dlod(positionSampler, uv);
 	float2 offset = input.TextureCoordinate.zw;
-
 
 	float3 xAxis = float3(view._11, view._21, view._31);
 	float3 yAxis = float3(view._12, view._22, view._32);
-
-	//input.iPosition.y += BBSize; //offset damit bb über ebene schwebt
 
 	float4 realPosition = tex2Dlod ( positionSampler, float4(input.iPosition.x, input.iPosition.y,0,0));	
 	float3 pos = realPosition.xyz + (offset.x * xAxis) + (offset.y * yAxis);
@@ -124,8 +116,6 @@ VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 	output.Position = mul(float4(pos, 1.0f), worldViewProjection);
 	output.TextureCoordinate = input.TextureCoordinate.xy;
 	output.Color = float4(1,1,1,1);//float4(1,1,1, saturate(length(input.iForce)));	
-
-	float3 col = float3(0.0f,1.0f,1.0f);//green
 
 	if(debug)
 	{
@@ -137,7 +127,7 @@ VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 		}*/
 	}
 	
-	//output.Color = float4(input.iPosition.x,0.0f,0.0f,1.0f);//normalize(float4(pos,0.5f-abs(pos.y))); //alte einfaerbung
+	output.Color = float4(input.iPosition.x,input.iPosition.y,0.0f,1.0f);//normalize(float4(pos,0.5f-abs(pos.y))); //alte einfaerbung
 
     return output;
 }
