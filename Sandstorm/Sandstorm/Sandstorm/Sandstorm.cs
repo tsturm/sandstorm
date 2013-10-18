@@ -326,7 +326,7 @@ namespace Sandstorm
 
 
             RenderIt(_perspCamera, _editor.panel1.Handle);
-           // RenderIt(_orthoCamera, _beamer.panel1.Handle);
+            RenderIt(_orthoCamera, _beamer.panel1.Handle);
             
             GraphicsDevice.Textures[0] = null;
 

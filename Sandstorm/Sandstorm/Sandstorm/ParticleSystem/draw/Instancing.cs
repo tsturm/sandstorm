@@ -40,7 +40,7 @@ namespace Sandstorm.ParticleSystem.draw
         private static INSTANCE_MODE _state = INSTANCE_MODE.NORMAL;
         private static INSTANCE_MODE _internalstate = INSTANCE_MODE.NORMAL;
 
-        private static int _squareSize = 512;
+        private static int _squareSize = 16;
 
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
@@ -179,7 +179,7 @@ namespace Sandstorm.ParticleSystem.draw
             renderTarget = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
             _graphicsDevice.SetRenderTarget(renderTarget);
 
-            // _graphicsDevice.Clear(Color.White);
+            _graphicsDevice.Clear(Color.Transparent);
 
             // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
             _graphicsDevice.SetVertexBuffers(
