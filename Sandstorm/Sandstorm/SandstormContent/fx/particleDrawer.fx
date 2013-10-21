@@ -116,10 +116,10 @@ VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 	
 	float posX = input.iPosition.x;
 	float posY = input.iPosition.y;
-
+	
 	float4 realPosition = tex2Dlod ( positionSampler, float4(posX,posY,0,0));	
-
-
+	
+	
 	//position Billboard
 	float4x4 worldViewProjection = mul(mul(world, view), projection);	
 	float2 offset = input.TextureCoordinate.zw;
@@ -152,6 +152,21 @@ void PixelShaderFunction(VertexShaderOutput input, out float4 outColor : COLOR)
 }
 
 
+
+VertexShaderOutput PhysikVertexShader(VertexShaderInput input)
+{
+    VertexShaderOutput output;
+	
+	output.Position = float4(1,1,1,1);
+	output.TextureCoordinate = float2(1,1);;
+	output.Color = float4(1,1,1,1);
+    return output;
+}
+void PhysikShaderFunction(VertexShaderOutput input, out float4 outColor : COLOR)                    
+{
+	outColor = float4(1.0f,1.0f,1.0f,1.0f);
+}
+
 // Hardware instancing technique.
 technique InstancingBB
 {
@@ -160,4 +175,10 @@ technique InstancingBB
         VertexShader = compile vs_3_0 InstancingBBVertexShader();
         PixelShader = compile ps_3_0 PixelShaderFunction();
     }
+	
+   /* pass P1 //Physik
+    {
+        VertexShader = compile vs_3_0 PhysikVertexShader();
+        PixelShader = compile ps_3_0 PhysikShaderFunction();
+    }*/
 }

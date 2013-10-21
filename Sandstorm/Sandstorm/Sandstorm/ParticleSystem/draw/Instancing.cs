@@ -40,7 +40,7 @@ namespace Sandstorm.ParticleSystem.draw
         private static INSTANCE_MODE _state = INSTANCE_MODE.NORMAL;
         private static INSTANCE_MODE _internalstate = INSTANCE_MODE.NORMAL;
 
-        private static int _squareSize = 16;
+        private static int _squareSize = 512;
 
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
@@ -166,8 +166,10 @@ namespace Sandstorm.ParticleSystem.draw
             instanceVertexBuffer.SetData(pPositions, 0, pPositions.Length, SetDataOptions.Discard);
         }
 
-        RenderTarget2D lastRenderTarget = null;
-        RenderTarget2D renderTarget = null;
+        RenderTarget2D renderTarget1 = null;
+        RenderTarget2D renderTarget2 = null;
+        int k = 0;
+        RenderTarget2D curTarget = null;
         public RenderTarget2D Draw(Camera pCamera, RenderTarget2D pTarget)
         {
             if (_internalstate != _state)
@@ -175,9 +177,14 @@ namespace Sandstorm.ParticleSystem.draw
                 _internalstate = _state;
                 LoadParticleInstance();
             }
-            
-            renderTarget = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
-            _graphicsDevice.SetRenderTarget(renderTarget);
+
+            if (renderTarget1 == null)
+                renderTarget1 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);        
+            if (renderTarget2 == null)
+                renderTarget2 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+
+            curTarget = ((k++)%2==0) ? renderTarget1 : renderTarget2;
+            _graphicsDevice.SetRenderTarget(curTarget);
 
             _graphicsDevice.Clear(Color.Transparent);
 
@@ -191,8 +198,7 @@ namespace Sandstorm.ParticleSystem.draw
 
             // Set up the instance rendering effect.
             _effect.CurrentTechnique = _effect.Techniques["InstancingBB"];
-
-
+            
             _effect.Parameters["world"].SetValue(Matrix.Identity);
             _effect.Parameters["view"].SetValue(pCamera.ViewMatrix);
             _effect.Parameters["projection"].SetValue(pCamera.ProjMatrix);
@@ -218,8 +224,7 @@ namespace Sandstorm.ParticleSystem.draw
                                                                _indexBuffer.IndexCount / 3, _squareSize * _squareSize);
             }
 
-            lastRenderTarget = renderTarget;
-            return lastRenderTarget;
+            return curTarget;
         }
     }
 }

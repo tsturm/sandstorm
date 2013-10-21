@@ -285,7 +285,11 @@ namespace Sandstorm
 
         void RenderIt(Camera pCamera,IntPtr pHandle)
         {
-            _renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+            if (_renderTarget == null)
+            {
+                _renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+                Console.Out.WriteLine("test!");
+            }
 
             GraphicsDevice.SetRenderTarget(_renderTarget);
 
@@ -330,8 +334,8 @@ namespace Sandstorm
             
             GraphicsDevice.Textures[0] = null;
 
-            _editor.FPS = _fpsCounter.getFrames();
             _editor.Particles = _particleSystem.NumberOfParticles;
+            _editor.FPS = _fpsCounter.getFrames();
         }
     }
 }
