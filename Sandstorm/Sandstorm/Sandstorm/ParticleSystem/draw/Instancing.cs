@@ -27,7 +27,6 @@ namespace Sandstorm.ParticleSystem.draw
         private SharedList _sharedList = null;
         
         private DynamicVertexBuffer instanceVertexBuffer = null;
-        private Vector3[] _instanceTransforms;        
         private Effect _effect;
         private VertexBuffer _vertexBuffer;
         private IndexBuffer _indexBuffer;           
@@ -41,8 +40,7 @@ namespace Sandstorm.ParticleSystem.draw
 
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
-            new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 1),
-            new VertexElement(sizeof(float)*3, VertexElementFormat.Vector3, VertexElementUsage.Position, 2)
+            new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 1)
         );  
       
         public static void nextMode()
@@ -109,57 +107,87 @@ namespace Sandstorm.ParticleSystem.draw
 
         public Instancing(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, SharedList pList)
         {
-            // TODO: Complete member initialization
-
             this._graphicsDevice = pGraphicsDevice;
             this._contentManager = pContentManager;
             this._sharedList = pList;
-            _effect = _contentManager.Load<Effect>("fx/InstancedModel");
-            _billboardTexture = _contentManager.Load<Texture2D>("tex/smoke"); 
+            _effect = _contentManager.Load<Effect>("fx/particleDrawer");
+            _billboardTexture = _contentManager.Load<Texture2D>("tex/smoke");
 
             LoadParticleInstance();
+
+            Vector2[] iVertex = new Vector2[SharedList.SquareSize * SharedList.SquareSize]; //Position auf 
+
+            for (int x = 0; x < SharedList.SquareSize; x++)
+                for (int y = 0; y < SharedList.SquareSize; y++)
+                {
+                    iVertex[x * SharedList.SquareSize + y].X = (float)(x) / SharedList.SquareSize;
+                    iVertex[x * SharedList.SquareSize + y].Y = (float)(y) / SharedList.SquareSize;
+                }
+
+
+            InitInstanceVertexBuffer(iVertex);
+
+
         }
 
-
-        void DrawInstances(Camera pCamera,VertexBuffer vertexBuffer, IndexBuffer indexBuffer, Texture2D pTexture, Vector3[] pInstances)
+        void InitInstanceVertexBuffer(Vector2[] pPositions)
         {
-            if (pInstances.Length == 0)
-                return;
-
             // If we have more instances than room in our vertex buffer, grow it to the neccessary size.
-            if ((instanceVertexBuffer == null) ||
-                (pInstances.Length > instanceVertexBuffer.VertexCount))
+            if ((instanceVertexBuffer == null) || (pPositions.Length > instanceVertexBuffer.VertexCount))
             {
                 if (instanceVertexBuffer != null)
                     instanceVertexBuffer.Dispose();
 
                 instanceVertexBuffer = new DynamicVertexBuffer(_graphicsDevice, _instanceVertexDeclaration,
-                                                               pInstances.Length, BufferUsage.WriteOnly);
+                                                               pPositions.Length, BufferUsage.None);
             }
 
-            // Transfer the latest instance transform matrices into the instanceVertexBuffer.
-            instanceVertexBuffer.SetData(pInstances, 0, pInstances.Length, SetDataOptions.Discard);
-                      
-            // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
-             _graphicsDevice.SetVertexBuffers(
-                        new VertexBufferBinding(vertexBuffer,0,0),
-                        new VertexBufferBinding(instanceVertexBuffer, 0, 2)
-            );
+            instanceVertexBuffer.SetData(pPositions, 0, pPositions.Length, SetDataOptions.Discard);
+        }
 
-            _graphicsDevice.Indices = indexBuffer;
+        RenderTarget2D renderTarget1 = null;
+        RenderTarget2D renderTarget2 = null;
+        int k = 0;
+        RenderTarget2D curTarget = null;
+        public RenderTarget2D Draw(Camera pCamera)
+        {
+            if (_internalstate != _state)
+            {
+                _internalstate = _state;
+                LoadParticleInstance();
+            }
+
+            if (renderTarget1 == null)
+                renderTarget1 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, _graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);        
+            if (renderTarget2 == null)
+                renderTarget2 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, _graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+
+            curTarget = ((k++)%2==0) ? renderTarget1 : renderTarget2;
+            _graphicsDevice.SetRenderTarget(curTarget);
+
+            _graphicsDevice.Clear(Color.Transparent);
+
+            // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
+            _graphicsDevice.SetVertexBuffers(
+                       new VertexBufferBinding(_vertexBuffer, 0, 0),
+                       new VertexBufferBinding(instanceVertexBuffer, 0, 1)
+           );
+            
+            _graphicsDevice.Indices = _indexBuffer;
 
             // Set up the instance rendering effect.
             _effect.CurrentTechnique = _effect.Techniques["InstancingBB"];
-
+            
             _effect.Parameters["world"].SetValue(Matrix.Identity);
             _effect.Parameters["view"].SetValue(pCamera.ViewMatrix);
             _effect.Parameters["projection"].SetValue(pCamera.ProjMatrix);
             _effect.Parameters["Texture"].SetValue(_billboardTexture);
+            _effect.Parameters["positionMap"].SetValue(_sharedList.ParticlePositions);
             /*_effect.Parameters["alphaTestDirection"].SetValue(1.0f);
             _effect.Parameters["alphaTestThreshold"].SetValue(0.3f);*/
             _effect.Parameters["BBSize"].SetValue((_state == INSTANCE_MODE.DEBUG) ? _DebugBBSize : _BBSize);
             _effect.Parameters["debug"].SetValue((_state == INSTANCE_MODE.DEBUG) ? true : false);
-            
+
 
             _graphicsDevice.BlendState = BlendState.AlphaBlend;
             _graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
@@ -171,35 +199,11 @@ namespace Sandstorm.ParticleSystem.draw
             {
                 pass.Apply();
                 _graphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0,
-                                                               vertexBuffer.VertexCount, 0,
-                                                               indexBuffer.IndexCount / 3, pInstances.Length);
+                                                               _vertexBuffer.VertexCount, 0,
+                                                               _indexBuffer.IndexCount / 3, SharedList.SquareSize * SharedList.SquareSize);
             }
-        }
 
-
-        public void Draw(Camera pCamera)
-        {
-            Array.Resize(ref _instanceTransforms, _sharedList.Count*2);
-
-            if (_internalstate != _state)
-            {
-                _internalstate = _state;
-                LoadParticleInstance();
-            }
-            //TODO: Parallelisieren?!
-            //Parallel.For(0, _sharedList.Particles.Length, i =>
-            int k=0;
-            for(int i=0; i < _sharedList.Particles.Length;i++)
-            {
-                Particle p = _sharedList.Particles[i];
-                if (p != null)
-                {
-                    _instanceTransforms[k++] = p.Pos;
-                    _instanceTransforms[k++] = p.Force;
-                }
-            }//);
-
-            DrawInstances(pCamera,_vertexBuffer, _indexBuffer, _billboardTexture, _instanceTransforms);
+            return curTarget;
         }
     }
 }

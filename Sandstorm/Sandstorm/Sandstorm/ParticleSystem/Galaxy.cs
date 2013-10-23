@@ -17,7 +17,7 @@ namespace Sandstorm.ParticleSystem
     {
         private DrawEngine _drawEngine = null; //Draw-Engine
         private PhysicEngine _physicEngine = null; //PhysicEngine
-        public SharedList _sharedList = new SharedList(); //SharedList of Particles
+        public SharedList _sharedList = null; //SharedList of Particles
 
         private List<Emiter> _emiters = new List<Emiter>();
 
@@ -28,11 +28,12 @@ namespace Sandstorm.ParticleSystem
 
         public int NumberOfParticles
         {
-            get { return _sharedList.Count; }
+            get { return SharedList.SquareSize*SharedList.SquareSize; }
         }
 
-        public Galaxy(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, Camera pCamera, HeightMap heightMap)
+        public Galaxy(GraphicsDevice pGraphicsDevice, SharedList pSharedList,ContentManager pContentManager, Camera pCamera, HeightMap heightMap)
         {
+            _sharedList = pSharedList;
             /*_emiters.Add(new Emiter(new Vector3(50f, 100f, 50f), new Vector3(-0.5f, 0f, -0.5f), _sharedList));
 
             _emiters.Add(new Emiter(new Vector3(0f, 100f, 0f), new Vector3(1.0f, 5f, 1.0f), _sharedList));
@@ -54,25 +55,25 @@ namespace Sandstorm.ParticleSystem
             _heightMap = heightMap;
 
             _drawEngine = new DrawEngine(pGraphicsDevice, pContentManager, _sharedList);
-            _physicEngine = new PhysicEngine(_sharedList, _heightMap);
+            _physicEngine = new PhysicEngine(pGraphicsDevice, pContentManager, _sharedList,_heightMap);
         }
 
 
         public void Update(GameTime pGameTime)
         {
-            foreach (Emiter e in _emiters)
+         /*   foreach (Emiter e in _emiters)
             {
                 //for(int i=0;i<100;i++)
                     e.emit();
-            }
+            }*/
             _drawEngine.Update(pGameTime);
             _physicEngine.Update(pGameTime);
         }
 
-        public void Draw(Camera pCamera)
+        public RenderTarget2D Draw(Camera pCamera)
         {
             _physicEngine.Draw();
-            _drawEngine.Draw(pCamera,_drawEngine.getFPS(), _physicEngine.getFPS());
+            return _drawEngine.Draw(pCamera, _drawEngine.getFPS(), _physicEngine.getFPS());
         }
     }
 }

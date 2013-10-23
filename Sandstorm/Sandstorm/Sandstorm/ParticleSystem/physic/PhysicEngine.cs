@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework;
 using Sandstorm.ParticleSystem.structs;
 using Sandstorm.Terrain;
 using Sandstorm.ParticleSystem.structs.Forces;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace Sandstorm.ParticleSystem.physic
 {
@@ -24,8 +26,22 @@ namespace Sandstorm.ParticleSystem.physic
 
         private CollisionDetector _collisionDetector;
 
-        public PhysicEngine(SharedList pList, HeightMap heightMap)
+        private GraphicsDevice _graphicsDevice = null;
+        private ContentManager _contentManager = null;
+        private VertexBuffer _vertexBuffer = null;
+        private Effect _effect;
+
+        private IndexBuffer _indexBuffer = null;
+
+        private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
+        (
+            new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 0)
+        );  
+
+        public PhysicEngine(GraphicsDevice pGraphicsDevice, ContentManager pContentManager,SharedList pList, HeightMap heightMap)
         {
+            this._graphicsDevice = pGraphicsDevice;
+            this._contentManager = pContentManager;
             this._sharedList = pList;
             this._heightMap = heightMap;
             _collisionDetector = new CollisionDetector(pList, _heightMap);
@@ -33,13 +49,47 @@ namespace Sandstorm.ParticleSystem.physic
             this._forces.Add(new Gravity());
             //this._forces.Add(new Force(new Vector3(-0.00f, -0.0f, 0.1f)));
             this._forces.Add(new Wind(new Vector3(-0.0f, -0.0f, -0.1f), heightMap));
+
+
+            
+            Vector2[] iVertex = new Vector2[SharedList.SquareSize * SharedList.SquareSize]; //Position auf 
+
+            for (int x = 0; x < SharedList.SquareSize; x++)
+                for (int y = 0; y < SharedList.SquareSize; y++)
+                {
+                    iVertex[x * SharedList.SquareSize + y].X = (float)(x) / SharedList.SquareSize;
+                    iVertex[x * SharedList.SquareSize + y].Y = (float)(y) / SharedList.SquareSize;
+                }
+
+
+            InitInstanceVertexBuffer(iVertex);
+
+
         }
+
+        void InitInstanceVertexBuffer(Vector2[] pPositions)
+        {
+            // If we have more instances than room in our vertex buffer, grow it to the neccessary size.
+            if ((_vertexBuffer == null))
+            {
+                if (_vertexBuffer != null)
+                    _vertexBuffer.Dispose();
+
+                _vertexBuffer = new VertexBuffer(_graphicsDevice, _instanceVertexDeclaration,
+                                                               pPositions.Length, BufferUsage.None);
+            }
+
+            _vertexBuffer.SetData(pPositions);
+        }
+
 
         public void Update(GameTime pGameTime) //Update physic
         {
-            moveParticles();
+            _effect = _contentManager.Load<Effect>("fx/Physik");
+
+    /*        moveParticles();
             _collisionDetector.checkCollisions();
-            applyForces();
+            applyForces();*/
             
         }
 
@@ -68,8 +118,72 @@ namespace Sandstorm.ParticleSystem.physic
             });
         }
 
+
+        double KreisPos = 0;
+        int offset = 0;
         public void Draw() //Nothing to draw.. normally
         {
+            Texture2D pos = _sharedList.ParticlePositions;
+            Vector4[] data = new Vector4[SharedList.SquareSize * SharedList.SquareSize];
+            pos.GetData<Vector4>(data);
+
+            for (int i = 0; i < SharedList.SquareSize; i++)
+                for (int j = 0; j < SharedList.SquareSize; j++)
+                {
+                    int index = i * SharedList.SquareSize + j;
+                    //data[i].X = ;
+                    //data[i].Y += 1.0f;
+                    data[index].Y = (float)(50.00f * Math.Sin(((j + offset) % SharedList.SquareSize )* KreisPos));
+                }
+           
+            KreisPos = 0.2f;
+            offset += 1;
+            pos.SetData(data);
+
+
+            /*RenderTarget2D renderTarget1 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, _graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
+            _graphicsDevice.SetRenderTarget(renderTarget1);
+
+            _graphicsDevice.Clear(Color.Transparent);
+
+
+            _graphicsDevice.SetVertexBuffers(
+                       new VertexBufferBinding(_vertexBuffer, 0, 0)
+           );
+
+
+
+            
+            List<short> indices = new List<short>();
+            for(int i=0; i < 100;i++)
+                indices.Add((short)(0));
+
+            _indexBuffer = new IndexBuffer(_graphicsDevice, IndexElementSize.SixteenBits, indices.Count, BufferUsage.WriteOnly);
+
+            _indexBuffer.SetData(indices.ToArray());
+
+            _graphicsDevice.Indices = _indexBuffer;
+            _effect.CurrentTechnique = _effect.Techniques["Physik"];
+
+            _effect.Parameters["positionMap"].SetValue(_sharedList.ParticlePositions);
+
+            _graphicsDevice.BlendState = BlendState.AlphaBlend;
+            _graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
+            _graphicsDevice.RasterizerState = RasterizerState.CullNone;
+
+
+            // Draw all the instance copies in a single call.
+            foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                _graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, _vertexBuffer.VertexCount, 0, _vertexBuffer.VertexCount / 3);
+            }
+
+
+            _sharedList.ParticlePositions = renderTarget1;
+
+            _graphicsDevice.SetRenderTarget(null);*/
+
             _fpsCounter.Update();
         }
 

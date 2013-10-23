@@ -197,7 +197,7 @@ namespace Sandstorm.Terrain
 
         }
 
-        public void Draw(Camera pCamera)
+        public void Draw(Camera pCamera, RenderTarget2D pTarget)
         {
             lock (this.updateLock)
             {

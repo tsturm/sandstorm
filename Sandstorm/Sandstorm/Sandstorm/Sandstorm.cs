@@ -31,6 +31,18 @@ namespace Sandstorm
         SandstormKinectEvent eventBuffer = null;
         Stopwatch _stopWatch = new Stopwatch();
         FPSCounter _fpsCounter = new FPSCounter();
+        
+        RenderTarget2D _renderTarget = null;
+        SpriteBatch _spriteBatch = null;
+        SharedList _sharedList = null;
+
+        public struct RENDERINDEX
+        {
+            public static int BEAMER_HEIGHT = 0;
+            public static int BEAMER_PARTICLES = 1;
+            public static int PC_HEIGHT = 2;
+            public static int PC_PARTICLES = 3;
+        }
 
         public Sandstorm(SandstormEditor editor, SandstormBeamer beamer, SandstormKinectCore kinectSystem)
         {
@@ -82,57 +94,6 @@ namespace Sandstorm
         /// </summary>
         protected override void Initialize()
         {
-          /*  GC.RegisterForFullGCNotification(1, 1);
-            
-            // Start a thread using WaitForFullGCProc.
-            Thread startpolling = new Thread(() =>
-            {
-                while (true)
-                {
-                    // Check for a notification of an approaching collection.
-                    GCNotificationStatus s = GC.WaitForFullGCApproach(1000);
-                    if (s == GCNotificationStatus.Succeeded)
-                    {
-                        //Call event
-
-                        Console.WriteLine("GC is about to begin");
-                        GC.Collect();
-
-                    }
-                    else if (s == GCNotificationStatus.Canceled)
-                    {
-                        // Cancelled the Registration
-                    }
-                    else if (s == GCNotificationStatus.Timeout)
-                    {
-                        // Timeout occurred.
-                    }
-
-                    // Check for a notification of a completed collection.
-                    s = GC.WaitForFullGCComplete(1000);
-                    if (s == GCNotificationStatus.Succeeded)
-                    {
-                        //Call event
-                        Console.WriteLine("GC has ended");
-                        int counter = GC.CollectionCount(2);
-                        Console.WriteLine("GC Collected {0} objects", counter);
-                    }
-                    else if (s == GCNotificationStatus.Canceled)
-                    {
-                        //Cancelled the registration
-                    }
-                    else if (s == GCNotificationStatus.Timeout)
-                    {
-                        // Timeout occurred
-                    }
-
-                    Thread.Sleep(500);
-                }
-
-
-            });
-            startpolling.Start();*/
-
             Form xnaWindow = (Form)Control.FromHandle((this.Window.Handle));
             xnaWindow.GotFocus += new EventHandler(xnaWindow_GotFocus);
             _editor.Show();
@@ -147,6 +108,7 @@ namespace Sandstorm
             graphics.PreferMultiSampling = true;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
+            _sharedList = SharedList.getInstance(GraphicsDevice);
 
             _beamer.panel1.Resize += new EventHandler(_beamer_ResizeEnd);
             _editor.panel1.Resize += new EventHandler(_editor_ResizeEnd);
@@ -156,7 +118,7 @@ namespace Sandstorm
 
             _heightMap = new HeightMap(GraphicsDevice, Content);
 
-            _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera, _heightMap); ;
+            _particleSystem = new Galaxy(GraphicsDevice,_sharedList, Content, _perspCamera, _heightMap); ;
 
             _orthoCamera = Camera.LoadCamera(Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION, _beamer.panel1.Width, _beamer.panel1.Height);
             _perspCamera = Camera.LoadCamera(Camera.ProjectionType.PERSPECTIVE_PROJECTION, _editor.panel1.Width, _editor.panel1.Height);
@@ -165,6 +127,7 @@ namespace Sandstorm
             _cameraController = new CameraController(_perspCamera);
 
             base.Initialize();
+            
         }
 
         void _kinectSystem_SandstormKinectDepth(object sender, SandstormKinectEvent e)
@@ -270,6 +233,46 @@ namespace Sandstorm
             base.Update(gameTime);
         }
 
+
+        void RenderIt(Camera pCamera,IntPtr pHandle)
+        {
+            if (_renderTarget == null)
+            {
+                _renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+                Console.Out.WriteLine("test!");
+            }
+
+            GraphicsDevice.SetRenderTarget(_renderTarget);
+
+            //Clear Screen
+            if (pCamera == _perspCamera)
+            {
+                GraphicsDevice.Clear(Color.CornflowerBlue);
+            }
+            else
+                GraphicsDevice.Clear(Color.Black);
+
+
+            //Draw Heightmap
+            _heightMap.Draw(pCamera, _renderTarget);
+
+            //Draw Particles
+            RenderTarget2D particles = _particleSystem.Draw(pCamera);
+
+            //Render Targets zeichnen
+            GraphicsDevice.SetRenderTarget(null);
+
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                SamplerState.LinearClamp, DepthStencilState.DepthRead,
+                RasterizerState.CullNone);
+            _spriteBatch.Draw(_renderTarget, new Vector2(0, 0), Color.White);
+            _spriteBatch.Draw(particles, new Vector2(0, 0), Color.White);
+            _spriteBatch.End();
+
+            GraphicsDevice.Present(null, null, pHandle);//_editor.panel1.Handle);
+        }
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -278,20 +281,14 @@ namespace Sandstorm
         {
             _fpsCounter.Measure();
 
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            _heightMap.Draw(_perspCamera);
-            _particleSystem.Draw(_perspCamera);
-            GraphicsDevice.Present(null, null, _editor.panel1.Handle);
 
-            GraphicsDevice.Clear(Color.Black);
-            _heightMap.Draw(_orthoCamera);
-            //_particleSystem.Draw(_orthoCamera);
-            GraphicsDevice.Present(null, null, _beamer.panel1.Handle);
+            RenderIt(_perspCamera, _editor.panel1.Handle);
+            /*RenderIt(_orthoCamera, _beamer.panel1.Handle);
+            
+            GraphicsDevice.Textures[0] = null;*/
 
-            GraphicsDevice.Textures[0] = null;
-
-            _editor.FPS = _fpsCounter.getFrames();
             _editor.Particles = _particleSystem.NumberOfParticles;
+            _editor.FPS = _fpsCounter.getFrames();
         }
     }
 }

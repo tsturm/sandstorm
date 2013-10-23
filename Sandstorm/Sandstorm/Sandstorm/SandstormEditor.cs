@@ -15,8 +15,8 @@ namespace Sandstorm
     public partial class SandstormEditor : Form
     {
         private Viewport _viewPort;
-        private float _fps;
-        private int _particles;
+        private float _fps = 0;
+        private int _particles = 0;
 
         public event EventHandler<TerrainArgs> TerrainHeightChanged;
         public event EventHandler<TerrainArgs> TerrainColorChanged;
