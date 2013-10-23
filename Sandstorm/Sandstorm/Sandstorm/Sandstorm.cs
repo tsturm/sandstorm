@@ -34,6 +34,7 @@ namespace Sandstorm
         
         RenderTarget2D _renderTarget = null;
         SpriteBatch _spriteBatch = null;
+        SharedList _sharedList = null;
 
         public struct RENDERINDEX
         {
@@ -93,57 +94,6 @@ namespace Sandstorm
         /// </summary>
         protected override void Initialize()
         {
-          /*  GC.RegisterForFullGCNotification(1, 1);
-            
-            // Start a thread using WaitForFullGCProc.
-            Thread startpolling = new Thread(() =>
-            {
-                while (true)
-                {
-                    // Check for a notification of an approaching collection.
-                    GCNotificationStatus s = GC.WaitForFullGCApproach(1000);
-                    if (s == GCNotificationStatus.Succeeded)
-                    {
-                        //Call event
-
-                        Console.WriteLine("GC is about to begin");
-                        GC.Collect();
-
-                    }
-                    else if (s == GCNotificationStatus.Canceled)
-                    {
-                        // Cancelled the Registration
-                    }
-                    else if (s == GCNotificationStatus.Timeout)
-                    {
-                        // Timeout occurred.
-                    }
-
-                    // Check for a notification of a completed collection.
-                    s = GC.WaitForFullGCComplete(1000);
-                    if (s == GCNotificationStatus.Succeeded)
-                    {
-                        //Call event
-                        Console.WriteLine("GC has ended");
-                        int counter = GC.CollectionCount(2);
-                        Console.WriteLine("GC Collected {0} objects", counter);
-                    }
-                    else if (s == GCNotificationStatus.Canceled)
-                    {
-                        //Cancelled the registration
-                    }
-                    else if (s == GCNotificationStatus.Timeout)
-                    {
-                        // Timeout occurred
-                    }
-
-                    Thread.Sleep(500);
-                }
-
-
-            });
-            startpolling.Start();*/
-
             Form xnaWindow = (Form)Control.FromHandle((this.Window.Handle));
             xnaWindow.GotFocus += new EventHandler(xnaWindow_GotFocus);
             _editor.Show();
@@ -158,6 +108,7 @@ namespace Sandstorm
             graphics.PreferMultiSampling = true;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
+            _sharedList = SharedList.getInstance(GraphicsDevice);
 
             _beamer.panel1.Resize += new EventHandler(_beamer_ResizeEnd);
             _editor.panel1.Resize += new EventHandler(_editor_ResizeEnd);
@@ -167,7 +118,7 @@ namespace Sandstorm
 
             _heightMap = new HeightMap(GraphicsDevice, Content);
 
-            _particleSystem = new Galaxy(GraphicsDevice, Content, _perspCamera, _heightMap); ;
+            _particleSystem = new Galaxy(GraphicsDevice,_sharedList, Content, _perspCamera, _heightMap); ;
 
             _orthoCamera = Camera.LoadCamera(Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION, _beamer.panel1.Width, _beamer.panel1.Height);
             _perspCamera = Camera.LoadCamera(Camera.ProjectionType.PERSPECTIVE_PROJECTION, _editor.panel1.Width, _editor.panel1.Height);
@@ -287,7 +238,7 @@ namespace Sandstorm
         {
             if (_renderTarget == null)
             {
-                _renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+                _renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
                 Console.Out.WriteLine("test!");
             }
 
@@ -306,13 +257,15 @@ namespace Sandstorm
             _heightMap.Draw(pCamera, _renderTarget);
 
             //Draw Particles
-            RenderTarget2D particles = _particleSystem.Draw(pCamera, _renderTarget);
+            RenderTarget2D particles = _particleSystem.Draw(pCamera);
 
             //Render Targets zeichnen
             GraphicsDevice.SetRenderTarget(null);
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                SamplerState.LinearClamp, DepthStencilState.DepthRead,
+                RasterizerState.CullNone);
             _spriteBatch.Draw(_renderTarget, new Vector2(0, 0), Color.White);
             _spriteBatch.Draw(particles, new Vector2(0, 0), Color.White);
             _spriteBatch.End();
@@ -330,9 +283,9 @@ namespace Sandstorm
 
 
             RenderIt(_perspCamera, _editor.panel1.Handle);
-            RenderIt(_orthoCamera, _beamer.panel1.Handle);
+            /*RenderIt(_orthoCamera, _beamer.panel1.Handle);
             
-            GraphicsDevice.Textures[0] = null;
+            GraphicsDevice.Textures[0] = null;*/
 
             _editor.Particles = _particleSystem.NumberOfParticles;
             _editor.FPS = _fpsCounter.getFrames();

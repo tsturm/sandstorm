@@ -46,7 +46,7 @@ namespace Sandstorm.ParticleSystem.draw
         }
 
 
-        public RenderTarget2D Draw(Camera pCamera, RenderTarget2D pTarget, int pFPSDraw, int pFPSPhysic) //Draw all Particles
+        public RenderTarget2D Draw(Camera pCamera, int pFPSDraw, int pFPSPhysic) //Draw all Particles
         {
             _fpsCounter.Update();
             
@@ -54,7 +54,7 @@ namespace Sandstorm.ParticleSystem.draw
             RasterizerState prevRasterizerState = _graphicsDevice.RasterizerState;
             BlendState prevBlendState = _graphicsDevice.BlendState;
 
-           RenderTarget2D ret = _instancing.Draw(pCamera,pTarget);
+           RenderTarget2D ret = _instancing.Draw(pCamera);
 
             _graphicsDevice.BlendState = prevBlendState;
             _graphicsDevice.RasterizerState = prevRasterizerState;

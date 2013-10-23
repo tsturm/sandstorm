@@ -16,8 +16,6 @@ namespace Sandstorm.ParticleSystem.draw
 {
     class Instancing
     {
-
-        Texture2D _particlePositions;
         public enum INSTANCE_MODE
         {
             NORMAL,
@@ -39,8 +37,6 @@ namespace Sandstorm.ParticleSystem.draw
         private static float _DebugBBSize = 1.0f;
         private static INSTANCE_MODE _state = INSTANCE_MODE.NORMAL;
         private static INSTANCE_MODE _internalstate = INSTANCE_MODE.NORMAL;
-
-        private static int _squareSize = 512;
 
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
@@ -115,39 +111,22 @@ namespace Sandstorm.ParticleSystem.draw
             this._contentManager = pContentManager;
             this._sharedList = pList;
             _effect = _contentManager.Load<Effect>("fx/particleDrawer");
-            _billboardTexture = _contentManager.Load<Texture2D>("tex/smoke"); 
+            _billboardTexture = _contentManager.Load<Texture2D>("tex/smoke");
 
             LoadParticleInstance();
-            _particlePositions = new Texture2D(_graphicsDevice, _squareSize, _squareSize, false, SurfaceFormat.Vector4);
 
+            Vector2[] iVertex = new Vector2[SharedList.SquareSize * SharedList.SquareSize]; //Position auf 
 
-            Vector2[] iVertex = new Vector2[_squareSize * _squareSize]; //Position auf 
-
-            for (int x = 0; x < _squareSize; x++)
-                for (int y = 0; y < _squareSize; y++)
+            for (int x = 0; x < SharedList.SquareSize; x++)
+                for (int y = 0; y < SharedList.SquareSize; y++)
                 {
-                    iVertex[x * _squareSize + y].X = (float)(x) / _squareSize;
-                    iVertex[x * _squareSize + y].Y = (float)(y) / _squareSize;
+                    iVertex[x * SharedList.SquareSize + y].X = (float)(x) / SharedList.SquareSize;
+                    iVertex[x * SharedList.SquareSize + y].Y = (float)(y) / SharedList.SquareSize;
                 }
 
-            /*for (int i = 0; i < _squareSize * _squareSize; i++)
-            {
-                iVertex[i] = 1.0f*i;
-            }*/
 
             InitInstanceVertexBuffer(iVertex);
 
-
-            Vector4[] myVector = new Vector4[_squareSize * _squareSize];
-
-            Random r = new Random();
-            for (int x = 0; x < _squareSize; x++)
-                for (int y = 0; y < _squareSize; y++)
-                {
-                    myVector[x * _squareSize + y].X = x * 10f;
-                    myVector[x * _squareSize + y].Y = y * 10f;
-                }
-            _particlePositions.SetData(myVector);
 
         }
 
@@ -170,7 +149,7 @@ namespace Sandstorm.ParticleSystem.draw
         RenderTarget2D renderTarget2 = null;
         int k = 0;
         RenderTarget2D curTarget = null;
-        public RenderTarget2D Draw(Camera pCamera, RenderTarget2D pTarget)
+        public RenderTarget2D Draw(Camera pCamera)
         {
             if (_internalstate != _state)
             {
@@ -179,9 +158,9 @@ namespace Sandstorm.ParticleSystem.draw
             }
 
             if (renderTarget1 == null)
-                renderTarget1 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);        
+                renderTarget1 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, _graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);        
             if (renderTarget2 == null)
-                renderTarget2 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+                renderTarget2 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, _graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
 
             curTarget = ((k++)%2==0) ? renderTarget1 : renderTarget2;
             _graphicsDevice.SetRenderTarget(curTarget);
@@ -193,7 +172,7 @@ namespace Sandstorm.ParticleSystem.draw
                        new VertexBufferBinding(_vertexBuffer, 0, 0),
                        new VertexBufferBinding(instanceVertexBuffer, 0, 1)
            );
-
+            
             _graphicsDevice.Indices = _indexBuffer;
 
             // Set up the instance rendering effect.
@@ -203,7 +182,7 @@ namespace Sandstorm.ParticleSystem.draw
             _effect.Parameters["view"].SetValue(pCamera.ViewMatrix);
             _effect.Parameters["projection"].SetValue(pCamera.ProjMatrix);
             _effect.Parameters["Texture"].SetValue(_billboardTexture);
-            _effect.Parameters["positionMap"].SetValue(_particlePositions);
+            _effect.Parameters["positionMap"].SetValue(_sharedList.ParticlePositions);
             /*_effect.Parameters["alphaTestDirection"].SetValue(1.0f);
             _effect.Parameters["alphaTestThreshold"].SetValue(0.3f);*/
             _effect.Parameters["BBSize"].SetValue((_state == INSTANCE_MODE.DEBUG) ? _DebugBBSize : _BBSize);
@@ -221,7 +200,7 @@ namespace Sandstorm.ParticleSystem.draw
                 pass.Apply();
                 _graphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0,
                                                                _vertexBuffer.VertexCount, 0,
-                                                               _indexBuffer.IndexCount / 3, _squareSize * _squareSize);
+                                                               _indexBuffer.IndexCount / 3, SharedList.SquareSize * SharedList.SquareSize);
             }
 
             return curTarget;
