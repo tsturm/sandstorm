@@ -28,6 +28,7 @@ namespace Sandstorm.ParticleSystem.physic
         private ContentManager _contentManager = null;
         private VertexBuffer _vertexBuffer = null;
         private Effect _effect;
+        private RenderTarget2D renderTarget1 = null;
 
         private IndexBuffer _indexBuffer = null;
 
@@ -62,7 +63,11 @@ namespace Sandstorm.ParticleSystem.physic
 
             InitInstanceVertexBuffer(iVertex);
 
+            _effect = _contentManager.Load<Effect>("fx/Physik");
 
+
+            renderTarget1 = new RenderTarget2D(_graphicsDevice,512, 512, false, SurfaceFormat.Vector4, DepthFormat.None);
+            
         }
 
         void InitInstanceVertexBuffer(Vector2[] pPositions)
@@ -83,8 +88,7 @@ namespace Sandstorm.ParticleSystem.physic
 
         public void Update(GameTime pGameTime) //Update physic
         {
-            _effect = _contentManager.Load<Effect>("fx/Physik");
-
+            
     /*        moveParticles();
             _collisionDetector.checkCollisions();
             applyForces();*/
@@ -139,7 +143,6 @@ namespace Sandstorm.ParticleSystem.physic
             pos.SetData(data);*/
 
 
-           /* RenderTarget2D renderTarget1 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, _graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
             _graphicsDevice.SetRenderTarget(renderTarget1);
 
             _graphicsDevice.Clear(Color.Transparent);
@@ -165,22 +168,20 @@ namespace Sandstorm.ParticleSystem.physic
 
             _effect.Parameters["positionMap"].SetValue(_sharedList.ParticlePositions);
 
-            _graphicsDevice.BlendState = BlendState.AlphaBlend;
+            _graphicsDevice.BlendState = BlendState.Opaque;
             _graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
             _graphicsDevice.RasterizerState = RasterizerState.CullNone;
 
-
-            // Draw all the instance copies in a single call.
             foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                _graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, _vertexBuffer.VertexCount, 0, _vertexBuffer.VertexCount / 3);
+                //_graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, _vertexBuffer.VertexCount, 0, _vertexBuffer.VertexCount / 3);
             }
 
 
             _sharedList.ParticlePositions = renderTarget1;
 
-            _graphicsDevice.SetRenderTarget(null);*/
+            _graphicsDevice.SetRenderTarget(null);
         }
     }
 }
