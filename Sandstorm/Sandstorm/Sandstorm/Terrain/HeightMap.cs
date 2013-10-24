@@ -27,15 +27,27 @@ namespace Sandstorm.Terrain
         public Vector4 _color1 = new Vector4(0.2f, 0.52f, 0.03f, 1.0f);
         public Vector4 _color2 = new Vector4(0.9f, 0.85f, 0.34f, 1.0f);
         public Vector4 _color3 = new Vector4(0.7f, 0.17f, 0.0f, 1.0f);
+
         
 
         float[,] _heightData = new float[512, 512];
         Vector3[,] _normals = new Vector3[512, 512];
 
-        public HeightMap(GraphicsDevice pGraphicsDevice, ContentManager pContentManager)
+        RenderTarget2D _targetMain = null;
+        RenderTarget2D _targetNormal = null;
+        RenderTargetBinding[] _bindings = null;
+
+        public HeightMap(GraphicsDevice pGraphicsDevice, ContentManager pContentManager,RenderTarget2D pTargetMain,RenderTarget2D pTargetNormal)
         {
             _graphicsDevice = pGraphicsDevice;
             _contentManager = pContentManager;
+            _targetNormal = pTargetNormal;
+            _targetMain = pTargetMain;
+            
+            _bindings = new RenderTargetBinding[] {
+                    new RenderTargetBinding(_targetMain),
+                    new RenderTargetBinding(_targetNormal)
+            };
 
             _transform = new Matrix();
 
@@ -197,9 +209,9 @@ namespace Sandstorm.Terrain
 
         }
 
-        public void Draw(Camera pCamera, RenderTarget2D pTarget)
+        public void Draw(Camera pCamera)
         {
-            lock (this.updateLock)
+           // lock (this.updateLock)
             {
                 RasterizerState rs = new RasterizerState();
                 rs.CullMode = CullMode.None;
@@ -235,6 +247,8 @@ namespace Sandstorm.Terrain
                 }
             }
         }
+
+
         public float getHeight(int x, int y)
         {
             int xpos = (int)x + (_heightMap.Width / 2);

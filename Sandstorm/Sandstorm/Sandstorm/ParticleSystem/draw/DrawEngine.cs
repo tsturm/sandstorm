@@ -18,7 +18,6 @@ namespace Sandstorm.ParticleSystem.draw
         private ContentManager _contentManager = null;
         private SharedList _sharedList = null;
 
-        private FPSCounter _fpsCounter = new FPSCounter();        
         private SpriteBatch _spriteBatch = null;
         private SpriteFont _font = null;
         
@@ -39,27 +38,17 @@ namespace Sandstorm.ParticleSystem.draw
         public void Update(GameTime pGameTime) //Update DrawEngine
         {
         }
-
-        public int getFPS()
-        {
-            return _fpsCounter.getFrames();
-        }
-
-
-        public RenderTarget2D Draw(Camera pCamera, int pFPSDraw, int pFPSPhysic) //Draw all Particles
-        {
-            _fpsCounter.Update();
-            
+        
+        public void Draw(Camera pCamera) //Draw all Particles
+        {            
             //Draw Particles
             RasterizerState prevRasterizerState = _graphicsDevice.RasterizerState;
             BlendState prevBlendState = _graphicsDevice.BlendState;
 
-           RenderTarget2D ret = _instancing.Draw(pCamera);
+            _instancing.Draw(pCamera);
 
             _graphicsDevice.BlendState = prevBlendState;
-            _graphicsDevice.RasterizerState = prevRasterizerState;
-
-            return ret;
+            _graphicsDevice.RasterizerState = prevRasterizerState;            
         }
     }
 }

@@ -10,6 +10,16 @@ namespace Sandstorm
 {
     public class FPSCounter
     {
+        private static FPSCounter instance = null;
+        public static FPSCounter getInstance()
+        {
+            if (instance == null)
+                instance = new FPSCounter();
+            return instance;
+        }
+
+        private FPSCounter() { }
+
         Stopwatch _sw = new Stopwatch();
         int _total_frames = 0;
         int _lastupdate = 0;
@@ -43,11 +53,12 @@ namespace Sandstorm
             else
             {
                 TimeSpan ts = _sw.Elapsed;
-                currentMilliSec += ts.TotalMilliseconds - prevMilliSec;
-                prevMilliSec = ts.TotalMilliseconds;
+                currentMilliSec = ts.TotalMilliseconds - prevMilliSec;
+               
                 _fpsCount += 1;
                 if (currentMilliSec >= 1000.0f)
                 {
+                    prevMilliSec = ts.TotalMilliseconds;
                     _fps = _fpsCount;
                     _fpsCount = 0;
                     currentMilliSec = 0;

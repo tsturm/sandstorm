@@ -30,11 +30,13 @@ namespace Sandstorm
         SandstormKinectCore _kinectSystem;
         SandstormKinectEvent eventBuffer = null;
         Stopwatch _stopWatch = new Stopwatch();
-        FPSCounter _fpsCounter = new FPSCounter();
-        
-        RenderTarget2D _renderTarget = null;
+
+        RenderTarget2D _renderTargetMain = null;
+        RenderTarget2D _renderTargetNormal = null;
+        RenderTarget2D _renderTargetPosition = null;
         SpriteBatch _spriteBatch = null;
         SharedList _sharedList = null;
+        FPSCounter _fpsCounter = FPSCounter.getInstance();
 
         public struct RENDERINDEX
         {
@@ -114,11 +116,6 @@ namespace Sandstorm
             _editor.panel1.Resize += new EventHandler(_editor_ResizeEnd);
 
 
-            _cameraController2 = new CameraController(_orthoCamera);
-
-            _heightMap = new HeightMap(GraphicsDevice, Content);
-
-            _particleSystem = new Galaxy(GraphicsDevice,_sharedList, Content, _perspCamera, _heightMap); ;
 
             _orthoCamera = Camera.LoadCamera(Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION, _beamer.panel1.Width, _beamer.panel1.Height);
             _perspCamera = Camera.LoadCamera(Camera.ProjectionType.PERSPECTIVE_PROJECTION, _editor.panel1.Width, _editor.panel1.Height);
@@ -126,8 +123,15 @@ namespace Sandstorm
             _cameraController2 = new CameraController(_orthoCamera);
             _cameraController = new CameraController(_perspCamera);
 
+            _renderTargetMain = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+            _renderTargetNormal = new RenderTarget2D(GraphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4, DepthFormat.None);
+            _renderTargetPosition = new RenderTarget2D(GraphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4, DepthFormat.None);
+
+            _heightMap = new HeightMap(GraphicsDevice, Content, _renderTargetMain,_renderTargetNormal);
+            _particleSystem = new Galaxy(GraphicsDevice, _sharedList, Content, _perspCamera, _heightMap);
+
             base.Initialize();
-            
+
         }
 
         void _kinectSystem_SandstormKinectDepth(object sender, SandstormKinectEvent e)
@@ -228,7 +232,7 @@ namespace Sandstorm
 
             //_orthoCamera.Left(5.1f);
 
-            _particleSystem.Update(gameTime);
+         //   _particleSystem.Update(gameTime);
                        
             base.Update(gameTime);
         }
@@ -236,14 +240,6 @@ namespace Sandstorm
 
         void RenderIt(Camera pCamera,IntPtr pHandle)
         {
-            if (_renderTarget == null)
-            {
-                _renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-                Console.Out.WriteLine("test!");
-            }
-
-            GraphicsDevice.SetRenderTarget(_renderTarget);
-
             //Clear Screen
             if (pCamera == _perspCamera)
             {
@@ -254,23 +250,23 @@ namespace Sandstorm
 
 
             //Draw Heightmap
-            _heightMap.Draw(pCamera, _renderTarget);
+            _heightMap.Draw(pCamera);
 
             //Draw Particles
-            RenderTarget2D particles = _particleSystem.Draw(pCamera);
+            _particleSystem.Draw(pCamera);
 
             //Render Targets zeichnen
-            GraphicsDevice.SetRenderTarget(null);
+        //    GraphicsDevice.SetRenderTarget(null);
 
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            /*_spriteBatch = new SpriteBatch(GraphicsDevice);
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
-                SamplerState.LinearClamp, DepthStencilState.DepthRead,
+                SamplerState.LinearClamp, DepthStencilState.Default,
                 RasterizerState.CullNone);
-            _spriteBatch.Draw(_renderTarget, new Vector2(0, 0), Color.White);
+          //  _spriteBatch.Draw(_renderTargetMain, new Vector2(0, 0), Color.White);
             _spriteBatch.Draw(particles, new Vector2(0, 0), Color.White);
-            _spriteBatch.End();
+            _spriteBatch.End();*/
 
-            GraphicsDevice.Present(null, null, pHandle);//_editor.panel1.Handle);
+            GraphicsDevice.Present(null, null, pHandle);
         }
 
         /// <summary>
@@ -283,12 +279,13 @@ namespace Sandstorm
 
 
             RenderIt(_perspCamera, _editor.panel1.Handle);
-            /*RenderIt(_orthoCamera, _beamer.panel1.Handle);
+            RenderIt(_orthoCamera, _beamer.panel1.Handle);
             
-            GraphicsDevice.Textures[0] = null;*/
+            GraphicsDevice.Textures[0] = null;
 
-            _editor.Particles = _particleSystem.NumberOfParticles;
-            _editor.FPS = _fpsCounter.getFrames();
+            //_editor.Particles = _particleSystem.NumberOfParticles;
+            //_editor.FPS = _fpsCounter.getFrames();
+            Debug.WriteLine(_fpsCounter.getFrames());
         }
     }
 }

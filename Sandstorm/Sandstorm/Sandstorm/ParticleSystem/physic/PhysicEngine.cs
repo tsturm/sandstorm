@@ -18,8 +18,6 @@ namespace Sandstorm.ParticleSystem.physic
     class PhysicEngine
     {
         private SharedList _sharedList = null;
-        private FPSCounter _fpsCounter = new FPSCounter();
-
         private List<Force> _forces = new List<Force>();
 
         private HeightMap _heightMap;
@@ -123,7 +121,7 @@ namespace Sandstorm.ParticleSystem.physic
         int offset = 0;
         public void Draw() //Nothing to draw.. normally
         {
-            Texture2D pos = _sharedList.ParticlePositions;
+          /*  Texture2D pos = _sharedList.ParticlePositions;
             Vector4[] data = new Vector4[SharedList.SquareSize * SharedList.SquareSize];
             pos.GetData<Vector4>(data);
 
@@ -138,10 +136,10 @@ namespace Sandstorm.ParticleSystem.physic
            
             KreisPos = 0.2f;
             offset += 1;
-            pos.SetData(data);
+            pos.SetData(data);*/
 
 
-            /*RenderTarget2D renderTarget1 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, _graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
+           /* RenderTarget2D renderTarget1 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, _graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
             _graphicsDevice.SetRenderTarget(renderTarget1);
 
             _graphicsDevice.Clear(Color.Transparent);
@@ -183,13 +181,6 @@ namespace Sandstorm.ParticleSystem.physic
             _sharedList.ParticlePositions = renderTarget1;
 
             _graphicsDevice.SetRenderTarget(null);*/
-
-            _fpsCounter.Update();
-        }
-
-        public int getFPS()
-        {
-            return _fpsCounter.getFrames();
         }
     }
 }

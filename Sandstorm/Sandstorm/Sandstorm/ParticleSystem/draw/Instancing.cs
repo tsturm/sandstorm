@@ -145,27 +145,13 @@ namespace Sandstorm.ParticleSystem.draw
             instanceVertexBuffer.SetData(pPositions, 0, pPositions.Length, SetDataOptions.Discard);
         }
 
-        RenderTarget2D renderTarget1 = null;
-        RenderTarget2D renderTarget2 = null;
-        int k = 0;
-        RenderTarget2D curTarget = null;
-        public RenderTarget2D Draw(Camera pCamera)
+        public void Draw(Camera pCamera)
         {
             if (_internalstate != _state)
             {
                 _internalstate = _state;
                 LoadParticleInstance();
             }
-
-            if (renderTarget1 == null)
-                renderTarget1 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, _graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);        
-            if (renderTarget2 == null)
-                renderTarget2 = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight, false, _graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-
-            curTarget = ((k++)%2==0) ? renderTarget1 : renderTarget2;
-            _graphicsDevice.SetRenderTarget(curTarget);
-
-            _graphicsDevice.Clear(Color.Transparent);
 
             // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
             _graphicsDevice.SetVertexBuffers(
@@ -202,8 +188,6 @@ namespace Sandstorm.ParticleSystem.draw
                                                                _vertexBuffer.VertexCount, 0,
                                                                _indexBuffer.IndexCount / 3, SharedList.SquareSize * SharedList.SquareSize);
             }
-
-            return curTarget;
         }
     }
 }

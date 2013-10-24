@@ -16,8 +16,7 @@ struct VertexToPixel
 
 struct PixelToFrame
 {
-    float4 Color : COLOR0;
-	
+    float4 Color : COLOR0; 	
 };
 
 //------- Constants --------
@@ -27,8 +26,9 @@ float4x4 worldMatrix;
 
 
 //------- Texture Samplers --------
-
 Texture heightMap;
+sampler TextureSampler = sampler_state { texture = <heightMap>; magfilter = POINT; minfilter = POINT; mipfilter=POINT; AddressU = Clamp; AddressV = Clamp;};
+
 float heightScale;
 bool displayContours;
 float contourSpacing;
@@ -36,7 +36,7 @@ float4 color0;
 float4 color1;
 float4 color2;
 float4 color3;
-sampler TextureSampler = sampler_state { texture = <heightMap>; magfilter = POINT; minfilter = POINT; mipfilter=POINT; AddressU = Clamp; AddressV = Clamp;};
+
 
 //------- Technique: Terrain --------
 
@@ -85,7 +85,7 @@ PixelToFrame TerrainPS(VertexToPixel PSIn)
 
 technique Terrain
 {
-	pass Pass0
+	pass PassMap
 	{   
 		VertexShader = compile vs_3_0 TerrainVS();
 		PixelShader  = compile ps_3_0 TerrainPS();

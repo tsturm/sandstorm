@@ -66,14 +66,14 @@ namespace Sandstorm.ParticleSystem
                 //for(int i=0;i<100;i++)
                     e.emit();
             }*/
-            _drawEngine.Update(pGameTime);
-            _physicEngine.Update(pGameTime);
+           /* _drawEngine.Update(pGameTime);
+            _physicEngine.Update(pGameTime);*/
         }
 
-        public RenderTarget2D Draw(Camera pCamera)
+        public void Draw(Camera pCamera)
         {
             _physicEngine.Draw();
-            return _drawEngine.Draw(pCamera, _drawEngine.getFPS(), _physicEngine.getFPS());
+            _drawEngine.Draw(pCamera);
         }
     }
 }
