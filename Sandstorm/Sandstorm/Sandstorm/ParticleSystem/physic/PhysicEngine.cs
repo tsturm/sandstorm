@@ -125,7 +125,7 @@ namespace Sandstorm.ParticleSystem.physic
         int offset = 0;
         public void Draw() //Nothing to draw.. normally
         {
-          /*  Texture2D pos = _sharedList.ParticlePositions;
+            Texture2D pos = _sharedList.ParticlePositions;
             Vector4[] data = new Vector4[SharedList.SquareSize * SharedList.SquareSize];
             pos.GetData<Vector4>(data);
 
@@ -140,9 +140,9 @@ namespace Sandstorm.ParticleSystem.physic
            
             KreisPos = 0.2f;
             offset += 1;
-            pos.SetData(data);*/
+            pos.SetData(data);
 
-
+            /*
             _graphicsDevice.SetRenderTarget(renderTarget1);
 
             _graphicsDevice.Clear(Color.Transparent);
@@ -181,7 +181,7 @@ namespace Sandstorm.ParticleSystem.physic
 
             _sharedList.ParticlePositions = renderTarget1;
 
-            _graphicsDevice.SetRenderTarget(null);
+            _graphicsDevice.SetRenderTarget(null);*/
         }
     }
 }

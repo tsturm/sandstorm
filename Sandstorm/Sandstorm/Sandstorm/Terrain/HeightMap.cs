@@ -26,9 +26,7 @@ namespace Sandstorm.Terrain
         public Vector4 _color0 = new Vector4(0.0f, 0.0f, 0.65f, 1.0f);
         public Vector4 _color1 = new Vector4(0.2f, 0.52f, 0.03f, 1.0f);
         public Vector4 _color2 = new Vector4(0.9f, 0.85f, 0.34f, 1.0f);
-        public Vector4 _color3 = new Vector4(0.7f, 0.17f, 0.0f, 1.0f);
-
-        
+        public Vector4 _color3 = new Vector4(0.7f, 0.17f, 0.0f, 1.0f);     
 
         float[,] _heightData = new float[512, 512];
         Vector3[,] _normals = new Vector3[512, 512];

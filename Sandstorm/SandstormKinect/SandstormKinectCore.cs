@@ -227,6 +227,18 @@ namespace SandstormKinect
                             //}
                         }
 
+                        /*for (int y = Bounds.Y; y < Bounds.Y + Bounds.Height; y++)
+                        {
+                            for (int x = Bounds.X, idx = 0; x < Bounds.X + Bounds.Width; x++, idx++)
+                            {
+                                myDepthArray[idx] = this.DepthPixels[y * this.sensor.DepthStream.FrameWidth + x].Depth;
+                                myDiffSum += Math.Abs((double)myPrevDepthArray[idx] - (double)myDepthArray[idx]);
+                            }
+                        }
+
+                        //
+                        myDepthArray.CopyTo(myPrevDepthArray, 0);*/
+
                         //send event for changed depth image
                         if (this.SandstormKinectDepth != null && (myDiffSum / (640 * 480)) > diffThreshold)
                         {

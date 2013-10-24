@@ -36,7 +36,8 @@ namespace Sandstorm
         RenderTarget2D _renderTargetPosition = null;
         SpriteBatch _spriteBatch = null;
         SharedList _sharedList = null;
-        FPSCounter _fpsCounter = FPSCounter.getInstance();
+
+        private FPSCounter _fpsCounter;
 
         public struct RENDERINDEX
         {
@@ -59,7 +60,10 @@ namespace Sandstorm
             graphics = new GraphicsDeviceManager(this);
             graphics.PreparingDeviceSettings += new System.EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings); 
             Content.RootDirectory = "Content";
-            this.IsFixedTimeStep = false;
+            //this.IsFixedTimeStep = false;
+
+            _fpsCounter = new FPSCounter(this);
+            Components.Add(_fpsCounter);
 
             graphics.SynchronizeWithVerticalRetrace = false;
         }
@@ -275,17 +279,13 @@ namespace Sandstorm
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            _fpsCounter.Measure();
-
-
             RenderIt(_perspCamera, _editor.panel1.Handle);
             RenderIt(_orthoCamera, _beamer.panel1.Handle);
             
             GraphicsDevice.Textures[0] = null;
 
             //_editor.Particles = _particleSystem.NumberOfParticles;
-            //_editor.FPS = _fpsCounter.getFrames();
-            Debug.WriteLine(_fpsCounter.getFrames());
+            _editor.FPS = _fpsCounter.FPS;
         }
     }
 }
