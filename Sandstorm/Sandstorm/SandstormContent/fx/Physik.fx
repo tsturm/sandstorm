@@ -13,37 +13,35 @@ sampler positionSampler  = sampler_state
     AddressV  = Clamp;
 };
 
-struct VertexShaderInput
-{
-    float4 Position : POSITION0;
-};
 
 struct VertexShaderOutput
 {
-    float4 Position : POSITION0;
+    float4 Position : POSITION;
+	float2 TexCoord : TEXCOORD0;
+	float3 posWS : TEXCOORD1;
 };
 
-VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
+VertexShaderOutput VertexShaderFunction(float4 position:POSITION, float2 tex:TEXCOORD0)
 {
-    VertexShaderOutput output;
+    VertexShaderOutput output = (VertexShaderOutput)0;
 
-    output.Position = float4(1, 0, 0, 1);
-
-    // TODO: add your vertex shader code here.
+    output.Position = position;
+	output.posWS = position;
+	output.TexCoord = tex;
 
     return output;
 }
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-    return float4(1, 0, 0, 1);
+    return float4(sin(input.posWS.x)*10.0f, cos(input.posWS.y)*10.0f, cos(input.posWS.z)*10.0f, 1.0f);
 }
 
 technique Physik
 {
     pass Pass0
     {
-        VertexShader = compile vs_2_0 VertexShaderFunction();
-        PixelShader = compile ps_2_0 PixelShaderFunction();
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction();
     }
 }

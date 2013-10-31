@@ -145,26 +145,52 @@ namespace Sandstorm.ParticleSystem.physic
             //  _graphicsDevice.Clear(Color.Transparent);
 
             RenderTarget2D rt = new RenderTarget2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4, DepthFormat.None);
-            _graphicsDevice.SetRenderTarget(rt);
+            _graphicsDevice.SetRenderTarget(null);
 
             // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
             _graphicsDevice.SetVertexBuffer(_vertexBuffer);
 
-            List<short> indices = new List<short>();
-            for (short i = 0; i < 1000; i++)
-                indices.Add((short)i);
 
-            _indexBuffer = new IndexBuffer(_graphicsDevice, IndexElementSize.SixteenBits, indices.Count, BufferUsage.WriteOnly);
-            _indexBuffer.SetData(indices.ToArray());
+
+            VertexPositionTexture[] _vertices2 = new VertexPositionTexture[4];
+            int[] _indices = new int[6];
+
+            _vertices2[0].Position = new Vector3(-1, 1, 1);
+            _vertices2[1].Position = new Vector3(1, 1, 1);
+            _vertices2[2].Position = new Vector3(1, -1, 1);
+            _vertices2[3].Position = new Vector3(-1, -1, 1);
+
+            _vertices2[0].TextureCoordinate = new Vector2(0, 0);
+            _vertices2[1].TextureCoordinate = new Vector2(1, 0);
+            _vertices2[2].TextureCoordinate = new Vector2(0, 1);
+            _vertices2[3].TextureCoordinate = new Vector2(1, 1);
+
+            _indices[0] = 0;
+            _indices[1] = 1;
+            _indices[2] = 3;
+            _indices[3] = 3;
+            _indices[4] = 1;
+            _indices[5] = 2;
+
+            _indexBuffer = new IndexBuffer(_graphicsDevice, IndexElementSize.ThirtyTwoBits, _indices.Length, BufferUsage.WriteOnly);
+            _indexBuffer.SetData(_indices);
 
             _graphicsDevice.Indices = _indexBuffer;
             _graphicsDevice.BlendState = BlendState.Opaque;
 
+            _effect.CurrentTechnique = _effect.Techniques["Physik"];
 
             foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                _graphicsDevice.DrawIndexedPrimitives(PrimitiveType.LineList, 0, 0, _vertexBuffer.VertexCount, 0, _indexBuffer.IndexCount / 3);
+                _graphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList,
+                                                             _vertices2,
+                                                             0,
+                                                             _vertices2.Length,
+                                                             _indices,
+                                                             0,
+                                                             _indices.Length / 3,
+                                                             VertexPositionTexture.VertexDeclaration);
             }
 
             _graphicsDevice.SetRenderTarget(null);
@@ -172,20 +198,22 @@ namespace Sandstorm.ParticleSystem.physic
             Vector4[] data = new Vector4[SharedList.SquareSize * SharedList.SquareSize];
             rt.GetData<Vector4>(data);
 
-            for (int i = 0; i < SharedList.SquareSize; i++)
-                for (int j = 0; j < SharedList.SquareSize; j++)
-                {
-                    int index = i * SharedList.SquareSize + j;
-                    data[index].Y = (float)(50.00f * Math.Sin(((j + offset) % SharedList.SquareSize) * KreisPos));
-                    data[index].X = (float)(50.00f * Math.Cos(((j + offset) % SharedList.SquareSize) * KreisPos));
-                }
-
-            KreisPos = 0.2f;
-            offset += 1;
-            rt.SetData(data);
 
 
-            Console.WriteLine(data[0]);
+            //for (int i = 0; i < SharedList.SquareSize; i++)
+            //    for (int j = 0; j < SharedList.SquareSize; j++)
+            //    {
+            //        int index = i * SharedList.SquareSize + j;
+            //        data[index].Y = (float)(50.00f * Math.Sin(((j + offset) % SharedList.SquareSize) * KreisPos));
+            //        data[index].X = (float)(50.00f * Math.Cos(((j + offset) % SharedList.SquareSize) * KreisPos));
+            //    }
+
+            //KreisPos = 0.2f;
+            //offset += 1;
+            //rt.SetData(data);
+
+
+         //   Console.WriteLine(data[0]);
 
             SpriteBatch _spriteBatch = new SpriteBatch(_graphicsDevice);
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
