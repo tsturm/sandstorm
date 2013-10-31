@@ -20,7 +20,7 @@ namespace Sandstorm.ParticleSystem
         private int _count = 0;
 
         private Texture2D _particlePositions = null;
-        private static int _squareSize = 512;
+        private static int _squareSize = 16;
 
         private static SharedList instance = null;
        

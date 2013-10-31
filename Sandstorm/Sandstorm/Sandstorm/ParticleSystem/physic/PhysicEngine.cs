@@ -28,16 +28,16 @@ namespace Sandstorm.ParticleSystem.physic
         private ContentManager _contentManager = null;
         private VertexBuffer _vertexBuffer = null;
         private Effect _effect;
-        private RenderTarget2D renderTarget1 = null;
 
         private IndexBuffer _indexBuffer = null;
+        private DynamicVertexBuffer _instanceVertexBuffer = null;
 
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
             new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 0)
-        );  
+        );
 
-        public PhysicEngine(GraphicsDevice pGraphicsDevice, ContentManager pContentManager,SharedList pList, HeightMap heightMap)
+        public PhysicEngine(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, SharedList pList, HeightMap heightMap)
         {
             this._graphicsDevice = pGraphicsDevice;
             this._contentManager = pContentManager;
@@ -50,7 +50,7 @@ namespace Sandstorm.ParticleSystem.physic
             this._forces.Add(new Wind(new Vector3(-0.0f, -0.0f, -0.1f), heightMap));
 
 
-            
+
             Vector2[] iVertex = new Vector2[SharedList.SquareSize * SharedList.SquareSize]; //Position auf 
 
             for (int x = 0; x < SharedList.SquareSize; x++)
@@ -64,10 +64,6 @@ namespace Sandstorm.ParticleSystem.physic
             InitInstanceVertexBuffer(iVertex);
 
             _effect = _contentManager.Load<Effect>("fx/Physik");
-
-
-            renderTarget1 = new RenderTarget2D(_graphicsDevice,512, 512, false, SurfaceFormat.Vector4, DepthFormat.None);
-            
         }
 
         void InitInstanceVertexBuffer(Vector2[] pPositions)
@@ -88,11 +84,11 @@ namespace Sandstorm.ParticleSystem.physic
 
         public void Update(GameTime pGameTime) //Update physic
         {
-            
-    /*        moveParticles();
-            _collisionDetector.checkCollisions();
-            applyForces();*/
-            
+
+            /*        moveParticles();
+                    _collisionDetector.checkCollisions();
+                    applyForces();*/
+
         }
 
         private void moveParticles()
@@ -125,7 +121,7 @@ namespace Sandstorm.ParticleSystem.physic
         int offset = 0;
         public void Draw() //Nothing to draw.. normally
         {
-            Texture2D pos = _sharedList.ParticlePositions;
+            /*Texture2D pos = _sharedList.ParticlePositions;
             Vector4[] data = new Vector4[SharedList.SquareSize * SharedList.SquareSize];
             pos.GetData<Vector4>(data);
 
@@ -140,48 +136,66 @@ namespace Sandstorm.ParticleSystem.physic
            
             KreisPos = 0.2f;
             offset += 1;
-            pos.SetData(data);
-
-            /*
-            _graphicsDevice.SetRenderTarget(renderTarget1);
-
-            _graphicsDevice.Clear(Color.Transparent);
-
-
-            _graphicsDevice.SetVertexBuffers(
-                       new VertexBufferBinding(_vertexBuffer, 0, 0)
-           );
+            pos.SetData(data);*/
 
 
 
-            
+            //  _graphicsDevice.SetRenderTarget(renderTarget1);
+
+            //  _graphicsDevice.Clear(Color.Transparent);
+
+            RenderTarget2D rt = new RenderTarget2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4, DepthFormat.None);
+            _graphicsDevice.SetRenderTarget(rt);
+
+            // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
+            _graphicsDevice.SetVertexBuffer(_vertexBuffer);
+
             List<short> indices = new List<short>();
-            for(int i=0; i < 100;i++)
-                indices.Add((short)(0));
+            for (short i = 0; i < 1000; i++)
+                indices.Add((short)i);
 
             _indexBuffer = new IndexBuffer(_graphicsDevice, IndexElementSize.SixteenBits, indices.Count, BufferUsage.WriteOnly);
-
             _indexBuffer.SetData(indices.ToArray());
 
             _graphicsDevice.Indices = _indexBuffer;
-            _effect.CurrentTechnique = _effect.Techniques["Physik"];
-
-            _effect.Parameters["positionMap"].SetValue(_sharedList.ParticlePositions);
-
             _graphicsDevice.BlendState = BlendState.Opaque;
-            _graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
-            _graphicsDevice.RasterizerState = RasterizerState.CullNone;
+
 
             foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                //_graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, _vertexBuffer.VertexCount, 0, _vertexBuffer.VertexCount / 3);
+                _graphicsDevice.DrawIndexedPrimitives(PrimitiveType.LineList, 0, 0, _vertexBuffer.VertexCount, 0, _indexBuffer.IndexCount / 3);
             }
 
+            _graphicsDevice.SetRenderTarget(null);
 
-            _sharedList.ParticlePositions = renderTarget1;
+            Vector4[] data = new Vector4[SharedList.SquareSize * SharedList.SquareSize];
+            rt.GetData<Vector4>(data);
 
-            _graphicsDevice.SetRenderTarget(null);*/
+            for (int i = 0; i < SharedList.SquareSize; i++)
+                for (int j = 0; j < SharedList.SquareSize; j++)
+                {
+                    int index = i * SharedList.SquareSize + j;
+                    data[index].Y = (float)(50.00f * Math.Sin(((j + offset) % SharedList.SquareSize) * KreisPos));
+                    data[index].X = (float)(50.00f * Math.Cos(((j + offset) % SharedList.SquareSize) * KreisPos));
+                }
+
+            KreisPos = 0.2f;
+            offset += 1;
+            rt.SetData(data);
+
+
+            Console.WriteLine(data[0]);
+
+            SpriteBatch _spriteBatch = new SpriteBatch(_graphicsDevice);
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                SamplerState.PointClamp, DepthStencilState.Default,
+                RasterizerState.CullNone);
+            //  _spriteBatch.Draw(_renderTargetMain, new Vector2(0, 0), Color.White);
+            _spriteBatch.Draw(rt, new Vector2(0, 0), Color.Red);
+            _spriteBatch.End();
+
+            _sharedList.ParticlePositions = rt;
         }
     }
 }
