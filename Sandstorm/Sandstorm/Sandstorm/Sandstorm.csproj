@@ -112,7 +112,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Sandstorm.cs" />
     <Compile Include="Terrain\HeightMap.cs" />
-    <Compile Include="Terrain\Terrain.cs" />
     <Compile Include="VertexPosition.cs" />
   </ItemGroup>
   <ItemGroup>

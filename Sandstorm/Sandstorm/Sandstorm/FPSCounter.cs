@@ -1,78 +1,54 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
+
+using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Sandstorm
 {
-    /// <summary>
-    /// This is a game component that implements IUpdateable.
-    /// </summary>
-    public class FPSCounter : Microsoft.Xna.Framework.GameComponent
+    public class FPSCounter : DrawableGameComponent
     {
+
         #region FIELDS
-
-        private float _Elapsed;
-        private float _FrameRate;
-        private float _Frames;
-
+        private int _frameRate = 0;
+        private int _frameCounter = 0;
+        private TimeSpan _elapsedTime = TimeSpan.Zero;
         #endregion
 
         #region PROPPERTIES
-
         public float FPS
         {
-            get { return _FrameRate; }
-            set {}
+            get { return _frameRate; }
+            set { }
         }
-
         #endregion
 
-        public FPSCounter(Game game) : base(game)
+
+        public FPSCounter(Game game)
+            : base(game)
         {
-            _Frames = 0;
-            _Elapsed = 0;
-            _FrameRate = 0;
         }
 
-        /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
-        /// </summary>
-        public override void Initialize()
-        {
-            // TODO: Add your initialization code here
-            
-            base.Initialize();
-        }
 
-        /// <summary>
-        /// Allows the game component to update itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            _Elapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _elapsedTime += gameTime.ElapsedGameTime;
 
-            if (_Elapsed > 1.0f)
+            if (_elapsedTime > TimeSpan.FromSeconds(1))
             {
-                _Elapsed -= 1.0f;
-                _FrameRate = _Frames;
-                _Frames = 0;
+                _elapsedTime -= TimeSpan.FromSeconds(1);
+                _frameRate = _frameCounter;
+                _frameCounter = 0;
             }
-            else
-            {
-                _Frames += 1;
-            }
-
             base.Update(gameTime);
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            _frameCounter++;
+            base.Draw(gameTime);
         }
     }
 }
+

@@ -286,6 +286,7 @@ namespace Sandstorm
 
             //_editor.Particles = _particleSystem.NumberOfParticles;
             _editor.FPS = _fpsCounter.FPS;
+            base.Draw(gameTime);
         }
     }
 }
