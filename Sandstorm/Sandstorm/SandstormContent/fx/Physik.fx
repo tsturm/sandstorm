@@ -2,6 +2,7 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 
+float wavePos;
 texture positionMap;
 sampler positionSampler  = sampler_state
 {
@@ -17,24 +18,25 @@ sampler positionSampler  = sampler_state
 struct VertexShaderOutput
 {
     float4 Position : POSITION;
-	float2 TexCoord : TEXCOORD0;
 	float3 posWS : TEXCOORD1;
 };
 
-VertexShaderOutput VertexShaderFunction(float4 position:POSITION, float2 tex:TEXCOORD0)
+VertexShaderOutput VertexShaderFunction(float4 position:POSITION)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
 
     output.Position = position;
 	output.posWS = position;
-	output.TexCoord = tex;
+	output.posWS.x = position.x*100.0f*wavePos;
+	output.posWS.y = position.y*100.0f*wavePos;
+	output.posWS.z = 0.0f;
 
     return output;
 }
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-    return float4(sin(input.posWS.x)*10.0f, cos(input.posWS.y)*10.0f, cos(input.posWS.z)*10.0f, 1.0f);
+    return float4(input.posWS.x, input.posWS.y, input.posWS.z, 1.0f);
 }
 
 technique Physik

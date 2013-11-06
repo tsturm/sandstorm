@@ -30,23 +30,6 @@
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.VideoImporters, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="fx\Billboard.fx">
-      <Name>Billboard</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
-    <Compile Include="fx\effects.fx">
-      <Name>effects</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="fx\InstancedModel.fx">
-      <Name>InstancedModel</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
     <Compile Include="fx\terrain.fx">
       <Name>terrain</Name>
       <Importer>EffectImporter</Importer>
@@ -92,15 +75,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="fx\particleDrawer.fx">
-      <Name>particleDrawer</Name>
+    <Compile Include="fx\Physik.fx">
+      <Name>Physik</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="fx\Physik.fx">
-      <Name>Physik</Name>
+    <Compile Include="fx\particleDrawer.fx">
+      <Name>particleDrawer</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
