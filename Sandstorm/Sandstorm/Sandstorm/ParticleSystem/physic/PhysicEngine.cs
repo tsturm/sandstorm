@@ -133,6 +133,11 @@ namespace Sandstorm.ParticleSystem.physic
         }
 
         bool up = false;
+        private void moveGPU()
+        {
+
+        }
+
         private Texture2D doPhysicsGPU()
         {
             RenderTarget2D rt = new RenderTarget2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4, DepthFormat.None);
@@ -141,17 +146,10 @@ namespace Sandstorm.ParticleSystem.physic
             _graphicsDevice.Indices = _indexBuffer;
             _graphicsDevice.BlendState = BlendState.Opaque;
 
-            _effect.CurrentTechnique = _effect.Techniques["Physik"];
-            _effect.Parameters["wavePos"].SetValue(KreisPos);
-
-            if(up)
-                KreisPos += 0.01f;               
-            else
-                KreisPos -= 0.01f;
-            if (KreisPos > 1.0f)
-                up = false;
-            else if (KreisPos <= 0.2f)
-                up = true;
+            _effect.CurrentTechnique = _effect.Techniques["Move"];            
+            _effect.Parameters["positionMap"].SetValue(_sharedList.ParticlePositions);
+            _effect.Parameters["forceMap"].SetValue(_sharedList.ParticleForces);
+            
 
             foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
             {
@@ -182,9 +180,8 @@ namespace Sandstorm.ParticleSystem.physic
         }
         public void Draw() //Nothing to draw.. normally
         {
-            Texture2D pos = doPhysicsGPU();
-            ShowTextureTopLeft(pos);
-             _sharedList.ParticlePositions = pos;
+            _sharedList.ParticlePositions = doPhysicsGPU();
+            ShowTextureTopLeft(_sharedList.ParticlePositions);
         }
     }
 }
