@@ -19,7 +19,6 @@ namespace Sandstorm.ParticleSystem
         private int _pos = 0;
         private int _count = 0;
 
-        private Texture2D _particlePositions = null;
         private Texture2D _particleForces = null;
         private static int _squareSize = 16;
 
@@ -35,38 +34,17 @@ namespace Sandstorm.ParticleSystem
         private SharedList(GraphicsDevice pGraphicsDevice)
         {
             _graphicsDevice = pGraphicsDevice;
-            _particlePositions = new Texture2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4);
+            
             _particleForces = new Texture2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4);
 
-            Vector4[] myVector = new Vector4[SharedList.SquareSize * SharedList.SquareSize];
-            for (int x = 0; x < _squareSize; x++)
-                for (int y = 0; y < _squareSize; y++)
-                {
-                    myVector[x * _squareSize + y].X = x * 10f;
-                    myVector[x * _squareSize + y].Y = y * 10f;
-                }
-            _particlePositions.SetData(myVector);
-            myVector = new Vector4[SharedList.SquareSize * SharedList.SquareSize];
+        /*    myVector = new Vector4[SharedList.SquareSize * SharedList.SquareSize];
             for (int x = 0; x < _squareSize; x++)
                 for (int y = 0; y < _squareSize; y++)
                 {
                     myVector[x * _squareSize + y].Y = 1.0f;
                 }
-            _particleForces.SetData(myVector);
+            _particleForces.SetData(myVector);*/
         }
-
-        public Texture2D ParticlePositions
-        {
-            get { return _particlePositions; }
-            set { _particlePositions = value; }
-        }
-
-        public Texture2D ParticleForces
-        {
-            get { return _particleForces; }
-            set { _particleForces = value; }
-        }
-
         public static int SquareSize
         {
             get { return _squareSize; }

@@ -39,13 +39,13 @@ namespace Sandstorm.ParticleSystem.draw
         {
         }
         
-        public void Draw(Camera pCamera) //Draw all Particles
+        public void Draw(Camera pCamera,Texture2D particles) //Draw all Particles
         {            
             //Draw Particles
             RasterizerState prevRasterizerState = _graphicsDevice.RasterizerState;
             BlendState prevBlendState = _graphicsDevice.BlendState;
 
-            _instancing.Draw(pCamera);
+            _instancing.Draw(pCamera, particles);
 
             _graphicsDevice.BlendState = prevBlendState;
             _graphicsDevice.RasterizerState = prevRasterizerState;            

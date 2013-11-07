@@ -105,8 +105,8 @@ namespace Sandstorm
             _editor.Show();
             _beamer.Show();
 
-            _kinectSystem.SandstormKinectDepth += new EventHandler<SandstormKinectEvent>(_kinectSystem_SandstormKinectDepth);
-            _kinectSystem.StartKinect();
+            //_kinectSystem.SandstormKinectDepth += new EventHandler<SandstormKinectEvent>(_kinectSystem_SandstormKinectDepth);
+            //_kinectSystem.StartKinect();
        
 
             graphics.PreferredBackBufferWidth = _editor.panel1.Width;
@@ -254,7 +254,7 @@ namespace Sandstorm
 
 
             //Draw Heightmap
-            _heightMap.Draw(pCamera);
+            //_heightMap.Draw(pCamera);
 
             //Draw Particles
             _particleSystem.Draw(pCamera);

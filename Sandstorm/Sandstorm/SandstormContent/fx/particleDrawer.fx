@@ -103,25 +103,17 @@ float4 RGBtoHSV(in float3 RGB)
 VertexShaderOutput InstancingBBVertexShader(VertexShaderInput input)
 {
     VertexShaderOutput output;
-	
-	//TODO: short statt vector2
-
-	//position Particle
-	//int x = floor(input.iPosition/4);
-	//int y = input.iPosition%4;
-
-	//float posX = 1.0f;
-	//float posY = 0.25*y;
-	
+		
 	
 	float posX = input.iPosition.x;
 	float posY = input.iPosition.y;
 	
-	float4 realPosition = tex2Dlod ( positionSampler, float4(posX,posY,0,0));	
+	float4 realPosition = tex2Dlod ( positionSampler, float4(posX,posY,0,0));
 	
 	
 	//position Billboard
-	float4x4 worldViewProjection = mul(mul(world, view), projection);	
+	float4x4 worldViewProjection = mul(mul(world, view), projection);
+		
 	float2 offset = input.TextureCoordinate.zw;
 	float3 xAxis = float3(view._11, view._21, view._31);
 	float3 yAxis = float3(view._12, view._22, view._32);

@@ -145,7 +145,7 @@ namespace Sandstorm.ParticleSystem.draw
             instanceVertexBuffer.SetData(pPositions, 0, pPositions.Length, SetDataOptions.Discard);
         }
 
-        public void Draw(Camera pCamera)
+        public void Draw(Camera pCamera, Texture2D particles)
         {
             if (_internalstate != _state)
             {
@@ -168,7 +168,7 @@ namespace Sandstorm.ParticleSystem.draw
             _effect.Parameters["view"].SetValue(pCamera.ViewMatrix);
             _effect.Parameters["projection"].SetValue(pCamera.ProjMatrix);
             _effect.Parameters["Texture"].SetValue(_billboardTexture);
-            _effect.Parameters["positionMap"].SetValue(_sharedList.ParticlePositions);
+            _effect.Parameters["positionMap"].SetValue(particles);
             /*_effect.Parameters["alphaTestDirection"].SetValue(1.0f);
             _effect.Parameters["alphaTestThreshold"].SetValue(0.3f);*/
             _effect.Parameters["BBSize"].SetValue((_state == INSTANCE_MODE.DEBUG) ? _DebugBBSize : _BBSize);
@@ -188,6 +188,11 @@ namespace Sandstorm.ParticleSystem.draw
                                                                _vertexBuffer.VertexCount, 0,
                                                                _indexBuffer.IndexCount / 3, SharedList.SquareSize * SharedList.SquareSize);
             }
+
+            _graphicsDevice.Textures[0] = null;
+            _graphicsDevice.SetRenderTarget(null);
+            
+
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Sandstorm
             SandstormBeamer beamer = new SandstormBeamer();
             beamer.Disposed += new EventHandler(form_Disposed);
 
-            kinectSystem = new SandstormKinectCore();
+            kinectSystem = null; new SandstormKinectCore();
 
             using (game = new Sandstorm(editor, beamer, kinectSystem))
             {

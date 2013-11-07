@@ -29,35 +29,27 @@ sampler forceSampler  = sampler_state
 struct VertexShaderOutput
 {
     float4 Position : POSITION;
-	float3 posWS : TEXCOORD1;
+	float2 texCoord : TEXCOORD0;
 };
 
-VertexShaderOutput getParticleTexPos(float4 position:POSITION)
+VertexShaderOutput getParticleTexPos(float4 position:POSITION, float2 texCoord:TEXCOORD0)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
     output.Position = position;
-	output.posWS = position;
-	output.posWS.x = position.x;
-	output.posWS.y = position.y;
-	output.posWS.z = position.z;
+	output.texCoord = texCoord;
 
     return output;
 }
 
 float4 moveParticle(VertexShaderOutput input) : COLOR0
 {
-    //return float4(input.posWS.x/2, input.posWS.y, input.posWS.z, 1.0f);
-	float4 mapPos = tex2D(positionSampler, float2(input.posWS.x,input.posWS.y));
-	float4 mapForce = tex2D(forceSampler, float2(input.posWS.x,input.posWS.y));
-	mapPos.x += mapForce.x;
-	mapPos.y += mapForce.y;
-	mapPos.z += mapForce.z;
+	float4 mapPos = tex2D(positionSampler, input.texCoord);
 	return mapPos;
 }
 
-float4 applyForces(VertexShaderOutput input) : COLOR0
+/*float4 applyForces(VertexShaderOutput input) : COLOR0
 {
-	float4 mapForce = tex2D(forceSampler, float2(input.posWS.x,input.posWS.y));
+	//float4 mapForce = tex2D(forceSampler, float2(input.posWS.x,input.posWS.y));
 	mapForce.y += -0.01f;
 	return mapForce;
 }
@@ -69,7 +61,7 @@ technique Forces
         VertexShader = compile vs_3_0 getParticleTexPos();
         PixelShader = compile ps_3_0 applyForces();
     }
-}
+}*/
 
 technique Move
 {

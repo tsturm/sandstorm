@@ -72,8 +72,9 @@ namespace Sandstorm.ParticleSystem
 
         public void Draw(Camera pCamera)
         {
-            _physicEngine.Draw();
-            _drawEngine.Draw(pCamera);
+            Texture2D particles = _physicEngine.Draw();
+
+            _drawEngine.Draw(pCamera,particles);
         }
     }
 }
