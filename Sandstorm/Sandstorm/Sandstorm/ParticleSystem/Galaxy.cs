@@ -70,11 +70,12 @@ namespace Sandstorm.ParticleSystem
             _physicEngine.Update(pGameTime);*/
         }
 
-        public void Draw(Camera pCamera)
+        public Texture2D Draw(Camera pCamera)
         {
             Texture2D particles = _physicEngine.Draw();
 
-            _drawEngine.Draw(pCamera,particles);
+            Texture2D screenResult = _drawEngine.Draw(pCamera, particles);
+            return screenResult;
         }
     }
 }

@@ -31,21 +31,9 @@ namespace Sandstorm
         SandstormKinectEvent eventBuffer = null;
         Stopwatch _stopWatch = new Stopwatch();
 
-        RenderTarget2D _renderTargetMain = null;
-        RenderTarget2D _renderTargetNormal = null;
-        RenderTarget2D _renderTargetPosition = null;
-        SpriteBatch _spriteBatch = null;
         SharedList _sharedList = null;
 
         private FPSCounter _fpsCounter;
-
-        public struct RENDERINDEX
-        {
-            public static int BEAMER_HEIGHT = 0;
-            public static int BEAMER_PARTICLES = 1;
-            public static int PC_HEIGHT = 2;
-            public static int PC_PARTICLES = 3;
-        }
 
         public Sandstorm(SandstormEditor editor, SandstormBeamer beamer, SandstormKinectCore kinectSystem)
         {
@@ -127,11 +115,7 @@ namespace Sandstorm
             _cameraController2 = new CameraController(_orthoCamera);
             _cameraController = new CameraController(_perspCamera);
 
-            _renderTargetMain = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-            _renderTargetNormal = new RenderTarget2D(GraphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4, DepthFormat.None);
-            _renderTargetPosition = new RenderTarget2D(GraphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4, DepthFormat.None);
-
-            _heightMap = new HeightMap(GraphicsDevice, Content, _renderTargetMain,_renderTargetNormal);
+            _heightMap = new HeightMap(GraphicsDevice, Content);
             _particleSystem = new Galaxy(GraphicsDevice, _sharedList, Content, _perspCamera, _heightMap);
 
             base.Initialize();
@@ -241,7 +225,6 @@ namespace Sandstorm
             base.Update(gameTime);
         }
 
-
         void RenderIt(Camera pCamera,IntPtr pHandle)
         {
             //Clear Screen
@@ -252,23 +235,22 @@ namespace Sandstorm
             else
                 GraphicsDevice.Clear(Color.Black);
 
-
             //Draw Heightmap
-            //_heightMap.Draw(pCamera);
+            Texture2D heightMapTexture = _heightMap.Draw(pCamera);
 
             //Draw Particles
-            _particleSystem.Draw(pCamera);
+            Texture2D particlesTexture = _particleSystem.Draw(pCamera);
 
-            //Render Targets zeichnen
-        //    GraphicsDevice.SetRenderTarget(null);
+            //Beide Texturen vorhanden, nun wird auf den Screen geschrieben!
+            GraphicsDevice.SetRenderTarget(null);
 
-            /*_spriteBatch = new SpriteBatch(GraphicsDevice);
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+            SpriteBatch _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque,
                 SamplerState.LinearClamp, DepthStencilState.Default,
                 RasterizerState.CullNone);
-          //  _spriteBatch.Draw(_renderTargetMain, new Vector2(0, 0), Color.White);
-            _spriteBatch.Draw(particles, new Vector2(0, 0), Color.White);
-            _spriteBatch.End();*/
+                _spriteBatch.Draw(heightMapTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(particlesTexture, new Vector2(0, 0), Color.White);
+            _spriteBatch.End();
 
             GraphicsDevice.Present(null, null, pHandle);
         }

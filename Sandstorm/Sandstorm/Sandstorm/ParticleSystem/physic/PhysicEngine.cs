@@ -30,8 +30,9 @@ namespace Sandstorm.ParticleSystem.physic
         private Effect _effect;
         private IndexBuffer _indexBuffer = null;
         VertexPositionTexture[] _vertices = null;
+
+
         RenderTarget2D _rt = null;
-        RenderTarget2D _rt2 = null;
         int[] _indices = null;
 
 
@@ -58,7 +59,6 @@ namespace Sandstorm.ParticleSystem.physic
         );
 
             _rt = new RenderTarget2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4, DepthFormat.None);
-            _rt2 = new RenderTarget2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4, DepthFormat.None);
 
             _vertices = new VertexPositionTexture[4];
             _vertexBuffer = new VertexBuffer(_graphicsDevice, _VertexDeclaration, _vertices.Length, BufferUsage.None);
@@ -158,28 +158,20 @@ namespace Sandstorm.ParticleSystem.physic
             return pos;
         }*/
 
-        bool up = false;
-        private void moveGPU()
+        private Texture2D doPhysicsGPU()
         {
-
-        }
-
-        private void doPhysicsGPU()
-        {
-            //_rt = new RenderTarget2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4, DepthFormat.None);
-
-            _graphicsDevice.SetRenderTarget(_rt);
-
-            _graphicsDevice.Clear(Color.Black);
-            _graphicsDevice.SetVertexBuffer(_vertexBuffer);
-            _graphicsDevice.Indices = _indexBuffer;
             _graphicsDevice.BlendState = BlendState.Opaque;
+
+            _graphicsDevice.SetRenderTarget(_rt); //ins Rendertarget rendern
+
+            _graphicsDevice.Clear(Color.White); //Rendertarget löschen
+            _graphicsDevice.SetVertexBuffer(_vertexBuffer); //Vertexbuffer setzen
+            _graphicsDevice.Indices = _indexBuffer; //Indexbuffer setzen
             
 
             _effect.CurrentTechnique = _effect.Techniques["Move"];
             _effect.Parameters["positionMap"].SetValue(_particlePositions);
             
-
             foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
@@ -192,11 +184,10 @@ namespace Sandstorm.ParticleSystem.physic
                                                              _indices.Length / 3,
                                                              _VertexDeclaration);
             }
-
             
             _graphicsDevice.SetRenderTarget(null);
-            //_graphicsDevice.Textures[0] = null;
 
+            return _rt;
         }
 
         private void ShowTextureTopLeft(Texture2D pos)
@@ -211,9 +202,9 @@ namespace Sandstorm.ParticleSystem.physic
         }
         public Texture2D Draw() //Nothing to draw.. normally
         {
-            doPhysicsGPU();
-            //ShowTextureTopLeft(_rt);
-            return _rt;
+            Texture2D positions = doPhysicsGPU(); //Particlepositionen berechnen
+           // ShowTextureTopLeft(_rt);
+            return positions; //Particlepositionen zurückgeben
             
         }
     }

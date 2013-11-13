@@ -22,6 +22,7 @@ namespace Sandstorm.ParticleSystem.draw
         private SpriteFont _font = null;
         
         private Instancing _instancing = null;
+        RenderTarget2D _rt = null;
 
         public DrawEngine(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, SharedList pList)
         {
@@ -32,6 +33,8 @@ namespace Sandstorm.ParticleSystem.draw
             _spriteBatch = new SpriteBatch(this._graphicsDevice);
             _font = _contentManager.Load<SpriteFont>("font/FPSFont");
             _instancing = new Instancing(_graphicsDevice,_contentManager,_sharedList);
+
+            _rt = new RenderTarget2D(_graphicsDevice, _graphicsDevice.PresentationParameters.BackBufferWidth,_graphicsDevice.PresentationParameters.BackBufferHeight, false,SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
         }
 
 
@@ -39,8 +42,10 @@ namespace Sandstorm.ParticleSystem.draw
         {
         }
         
-        public void Draw(Camera pCamera,Texture2D particles) //Draw all Particles
-        {            
+        public Texture2D Draw(Camera pCamera,Texture2D particles) //Draw all Particles
+        {
+            _graphicsDevice.SetRenderTarget(_rt); //Instanced Particles to Renderbuffer
+
             //Draw Particles
             RasterizerState prevRasterizerState = _graphicsDevice.RasterizerState;
             BlendState prevBlendState = _graphicsDevice.BlendState;
@@ -48,7 +53,11 @@ namespace Sandstorm.ParticleSystem.draw
             _instancing.Draw(pCamera, particles);
 
             _graphicsDevice.BlendState = prevBlendState;
-            _graphicsDevice.RasterizerState = prevRasterizerState;            
+            _graphicsDevice.RasterizerState = prevRasterizerState;
+
+            _graphicsDevice.SetRenderTarget(null);
+
+            return _rt; //Return Result
         }
     }
 }

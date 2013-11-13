@@ -25,23 +25,26 @@ namespace Sandstorm.ParticleSystem.draw
         private GraphicsDevice _graphicsDevice = null;
         private ContentManager _contentManager = null;
         private SharedList _sharedList = null;
-        
-        private DynamicVertexBuffer instanceVertexBuffer = null;
+ 
+
         private Effect _effect;
-        private VertexBuffer _vertexBuffer;
-        private IndexBuffer _indexBuffer;           
         private Texture2D _billboardTexture;
 
-        private static float _BBSize = 25.0f;
-        
+        private static float _BBSize = 25.0f;        
         private static float _DebugBBSize = 1.0f;
         private static INSTANCE_MODE _state = INSTANCE_MODE.NORMAL;
         private static INSTANCE_MODE _internalstate = INSTANCE_MODE.NORMAL;
 
+            
+        private DynamicVertexBuffer _instanceVertexBuffer = null;
+        private VertexBuffer _vertexBuffer;
+
+        private IndexBuffer _indexBuffer;          
         private static VertexDeclaration _instanceVertexDeclaration = new VertexDeclaration
         (
             new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 1)
-        );  
+        );
+        VertexBufferBinding[] _vertexbuffersBinded = null;
       
         public static void nextMode()
         {
@@ -103,6 +106,12 @@ namespace Sandstorm.ParticleSystem.draw
 
             _indexBuffer = new IndexBuffer(_graphicsDevice, IndexElementSize.SixteenBits, indices.Count, BufferUsage.WriteOnly);
             _indexBuffer.SetData(indices.ToArray());
+
+
+            _vertexbuffersBinded = new VertexBufferBinding[]{
+                       new VertexBufferBinding(_vertexBuffer, 0, 0),
+                       new VertexBufferBinding(_instanceVertexBuffer, 0, 1)
+                };
         }
 
         public Instancing(GraphicsDevice pGraphicsDevice, ContentManager pContentManager, SharedList pList)
@@ -113,7 +122,6 @@ namespace Sandstorm.ParticleSystem.draw
             _effect = _contentManager.Load<Effect>("fx/particleDrawer");
             _billboardTexture = _contentManager.Load<Texture2D>("tex/smoke");
 
-            LoadParticleInstance();
 
             Vector2[] iVertex = new Vector2[SharedList.SquareSize * SharedList.SquareSize]; //Position auf 
 
@@ -126,23 +134,22 @@ namespace Sandstorm.ParticleSystem.draw
 
 
             InitInstanceVertexBuffer(iVertex);
-
-
+            LoadParticleInstance();
         }
 
         void InitInstanceVertexBuffer(Vector2[] pPositions)
         {
             // If we have more instances than room in our vertex buffer, grow it to the neccessary size.
-            if ((instanceVertexBuffer == null) || (pPositions.Length > instanceVertexBuffer.VertexCount))
+            if ((_instanceVertexBuffer == null) || (pPositions.Length > _instanceVertexBuffer.VertexCount))
             {
-                if (instanceVertexBuffer != null)
-                    instanceVertexBuffer.Dispose();
+                if (_instanceVertexBuffer != null)
+                    _instanceVertexBuffer.Dispose();
 
-                instanceVertexBuffer = new DynamicVertexBuffer(_graphicsDevice, _instanceVertexDeclaration,
+                _instanceVertexBuffer = new DynamicVertexBuffer(_graphicsDevice, _instanceVertexDeclaration,
                                                                pPositions.Length, BufferUsage.None);
             }
 
-            instanceVertexBuffer.SetData(pPositions, 0, pPositions.Length, SetDataOptions.Discard);
+            _instanceVertexBuffer.SetData(pPositions, 0, pPositions.Length, SetDataOptions.Discard);
         }
 
         public void Draw(Camera pCamera, Texture2D particles)
@@ -151,14 +158,11 @@ namespace Sandstorm.ParticleSystem.draw
             {
                 _internalstate = _state;
                 LoadParticleInstance();
+
             }
 
             // Tell the GPU to read from both the model vertex buffer plus our instanceVertexBuffer.
-            _graphicsDevice.SetVertexBuffers(
-                       new VertexBufferBinding(_vertexBuffer, 0, 0),
-                       new VertexBufferBinding(instanceVertexBuffer, 0, 1)
-           );
-            
+            _graphicsDevice.SetVertexBuffers(_vertexbuffersBinded );            
             _graphicsDevice.Indices = _indexBuffer;
 
             // Set up the instance rendering effect.
@@ -188,11 +192,7 @@ namespace Sandstorm.ParticleSystem.draw
                                                                _vertexBuffer.VertexCount, 0,
                                                                _indexBuffer.IndexCount / 3, SharedList.SquareSize * SharedList.SquareSize);
             }
-
-            _graphicsDevice.Textures[0] = null;
-            _graphicsDevice.SetRenderTarget(null);
             
-
         }
     }
 }
