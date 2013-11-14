@@ -41,6 +41,16 @@ namespace Sandstorm.ParticleSystem.draw
         public void Update(GameTime pGameTime) //Update DrawEngine
         {
         }
+
+        private void ShowTextureTopLeft(Texture2D pos)
+        {
+            SpriteBatch _spriteBatch = new SpriteBatch(_graphicsDevice);
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                SamplerState.PointClamp, DepthStencilState.Default,
+                RasterizerState.CullNone);
+            _spriteBatch.Draw(pos, new Vector2(0, 0), Color.White);
+            _spriteBatch.End();
+        }
         
         public Texture2D Draw(Camera pCamera,Texture2D particles) //Draw all Particles
         {
@@ -50,8 +60,9 @@ namespace Sandstorm.ParticleSystem.draw
             RasterizerState prevRasterizerState = _graphicsDevice.RasterizerState;
             BlendState prevBlendState = _graphicsDevice.BlendState;
 
+            ShowTextureTopLeft(particles);
             _instancing.Draw(pCamera, particles);
-
+            
             _graphicsDevice.BlendState = prevBlendState;
             _graphicsDevice.RasterizerState = prevRasterizerState;
 

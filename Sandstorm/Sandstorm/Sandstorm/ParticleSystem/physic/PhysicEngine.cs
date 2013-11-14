@@ -86,15 +86,19 @@ namespace Sandstorm.ParticleSystem.physic
 
             _effect = _contentManager.Load<Effect>("fx/Physik");
 
-            _particlePositions = new Texture2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4);//new Texture2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4);
 
+            //Positionen der Partikek dargstellt durch eine 2D Texture, wobei RGB für XYZ steht, A (W) == 1
+            _particlePositions = new Texture2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4);
+
+
+            //Statische Initialisierung der Partikel
             Vector4[] myVector = new Vector4[SharedList.SquareSize * SharedList.SquareSize];
             for (int x = 0; x < SharedList.SquareSize; x++)
                 for (int y = 0; y < SharedList.SquareSize; y++)
                 {
-                    myVector[x * SharedList.SquareSize + y].X = x;
-                    myVector[x * SharedList.SquareSize + y].Y = y;
-                    myVector[x * SharedList.SquareSize + y].Z = 1.0f;
+                    myVector[x * SharedList.SquareSize + y].X = x * 10f;
+                    myVector[x * SharedList.SquareSize + y].Y = y * 10f;
+                    myVector[x * SharedList.SquareSize + y].Z = 1.0f * 10f;
                     myVector[x * SharedList.SquareSize + y].W = 1.0f;
                 }
             _particlePositions.SetData(myVector);
@@ -137,26 +141,23 @@ namespace Sandstorm.ParticleSystem.physic
 
         float KreisPos = 0;
         float offset = 0;
-      /*  private Texture2D doPhysicsCPU()
+        private Texture2D doPhysicsCPU()
         {
-            Texture2D pos = _sharedList.ParticlePositions;
+            Texture2D pos = new Texture2D(_graphicsDevice, SharedList.SquareSize, SharedList.SquareSize, false, SurfaceFormat.Vector4);
             Vector4[] data = new Vector4[SharedList.SquareSize * SharedList.SquareSize];
-            pos.GetData<Vector4>(data);
+            _particlePositions.GetData<Vector4>(data);
 
             for (int i = 0; i < SharedList.SquareSize; i++)
                 for (int j = 0; j < SharedList.SquareSize; j++)
                 {
                     int index = i * SharedList.SquareSize + j;
-                    //data[i].X = ;
-                    //data[i].Y += 1.0f;
-                    data[index].Y = (float)(50.00f * Math.Sin(((j + offset) % SharedList.SquareSize) * KreisPos));
+                    data[index].Z = (float)(50.00f * Math.Cos(((offset) % SharedList.SquareSize) * KreisPos));
+                    data[index].Y = (float)(50.00f * Math.Sin(((offset) % SharedList.SquareSize) * KreisPos));                    
                 }
-
-            KreisPos = 0.2f;
-            offset += 0.1f;
+            
             pos.SetData(data);
             return pos;
-        }*/
+        }
 
         private Texture2D doPhysicsGPU()
         {
@@ -171,6 +172,9 @@ namespace Sandstorm.ParticleSystem.physic
 
             _effect.CurrentTechnique = _effect.Techniques["Move"];
             _effect.Parameters["positionMap"].SetValue(_particlePositions);
+            _effect.Parameters["a"].SetValue(KreisPos);
+            _effect.Parameters["b"].SetValue(offset);
+            _effect.Parameters["SquareSize"].SetValue(SharedList.SquareSize);
             
             foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
             {
@@ -186,25 +190,32 @@ namespace Sandstorm.ParticleSystem.physic
             }
             
             _graphicsDevice.SetRenderTarget(null);
+            _graphicsDevice.Textures[0] = null;
 
             return _rt;
         }
 
-        private void ShowTextureTopLeft(Texture2D pos)
+
+        private void setNewPosition(Texture2D pPosition)
         {
-            SpriteBatch _spriteBatch = new SpriteBatch(_graphicsDevice);
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
-                SamplerState.PointClamp, DepthStencilState.Default,
-                RasterizerState.CullNone);
-            //  _spriteBatch.Draw(_renderTargetMain, new Vector2(0, 0), Color.White);
-            _spriteBatch.Draw(pos, new Vector2(0, 0), Color.White);
-            _spriteBatch.End();
+            Vector4[] data = new Vector4[_rt.Height * _rt.Width];
+            pPosition.GetData(data);
+            _particlePositions.SetData(data);
         }
+
         public Texture2D Draw() //Nothing to draw.. normally
         {
-            Texture2D positions = doPhysicsGPU(); //Particlepositionen berechnen
-           // ShowTextureTopLeft(_rt);
-            return positions; //Particlepositionen zurückgeben
+
+            Texture2D newPositions;
+
+            newPositions = doPhysicsGPU(); //Particlepositionen berechnen
+            newPositions = doPhysicsCPU(); //Particlepositionen berechnen
+
+            setNewPosition(newPositions);
+            KreisPos = 0.2f;
+            offset += 1f;
+
+            return newPositions; //Particlepositionen zurückgeben
             
         }
     }

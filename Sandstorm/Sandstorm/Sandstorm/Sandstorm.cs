@@ -244,6 +244,8 @@ namespace Sandstorm
             //Beide Texturen vorhanden, nun wird auf den Screen geschrieben!
             GraphicsDevice.SetRenderTarget(null);
 
+
+
             SpriteBatch _spriteBatch = new SpriteBatch(GraphicsDevice);
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque,
                 SamplerState.LinearClamp, DepthStencilState.Default,
@@ -252,6 +254,7 @@ namespace Sandstorm
                 _spriteBatch.Draw(particlesTexture, new Vector2(0, 0), Color.White);
             _spriteBatch.End();
 
+            
             GraphicsDevice.Present(null, null, pHandle);
         }
 

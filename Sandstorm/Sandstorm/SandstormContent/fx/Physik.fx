@@ -5,6 +5,10 @@ float4x4 Projection;
 texture positionMap;
 texture forceMap;
 
+int SquareSize;
+float a;
+float b;
+
 sampler positionSampler  = sampler_state
 {
     Texture   = <positionMap>;
@@ -43,7 +47,10 @@ VertexShaderOutput getParticleTexPos(float4 position:POSITION, float2 texCoord:T
 
 float4 moveParticle(VertexShaderOutput input) : COLOR0
 {
-	float4 mapPos = tex2D(positionSampler, input.texCoord);
+	float4 mapPos = tex2D(positionSampler, input.texCoord);	
+    mapPos.z = 50.00f * cos(((b) % SquareSize) * a);
+	mapPos.y = 50.00f * sin(((b) % SquareSize) * a);
+
 	return mapPos;
 }
 
