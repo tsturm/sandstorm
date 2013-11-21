@@ -1,15 +1,15 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Sandstorm.Terrain;
-using Sandstorm.ParticleSystem;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using SandstormKinect;
-
+using Microsoft.Xna.Framework.Media;
+using ParticleStormDLL;
+using System.Globalization;
 
 namespace Sandstorm
 {
@@ -19,66 +19,39 @@ namespace Sandstorm
     public class Sandstorm : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        public Camera _perspCamera = null;
-        public Camera _orthoCamera = null;
-        CameraController _cameraController;
-        CameraController _cameraController2;
-        HeightMap _heightMap;
-        SandstormEditor _editor;
-        SandstormBeamer _beamer;
-        Galaxy _particleSystem;
-        SandstormKinectCore _kinectSystem;
-        SandstormKinectEvent eventBuffer = null;
-        Stopwatch _stopWatch = new Stopwatch();
+        CameraController cameraController;
+        private SpriteBatch SpriteBatch;
+        private SpriteFont SpriteFont;
 
-        SharedList _sharedList = null;
+        /// <summary>
+        /// Gets or Sets the camera of the scene
+        /// </summary>
+        public Camera Camera { get; set; }
 
-        private FPSCounter _fpsCounter;
 
-        public Sandstorm(SandstormEditor editor, SandstormBeamer beamer, SandstormKinectCore kinectSystem)
+        private Terrain Terrain;
+        private ParticleStorm ParticleSystem;
+        private FPSCounter FPSCounter;
+
+
+        public Sandstorm()
         {
-            
-            _kinectSystem = kinectSystem;
-            _editor = editor;
-            _beamer = beamer;
-            _editor.TerrainHeightChanged += _editor_TerrainHeight_Changed;
-            _editor.TerrainColorChanged += _editor_TerrainColor_Changed;
-            _editor.TerrainContoursChanged += _editor_TerrainContour_Changed;
-            Mouse.WindowHandle = _editor.Handle;            
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreparingDeviceSettings += new System.EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings); 
             Content.RootDirectory = "Content";
-            //this.IsFixedTimeStep = false;
 
-            _fpsCounter = new FPSCounter(this);
-            Components.Add(_fpsCounter);
+            #if DEBUG
+                IsFixedTimeStep = false;
+                graphics.SynchronizeWithVerticalRetrace = false;
+            #else
+                IsFixedTimeStep = true;
+            #endif
 
-            graphics.SynchronizeWithVerticalRetrace = false;
+            //Allow Resizing
+            Window.AllowUserResizing = true;
+
+            // Subscribe to the game window's ClientSizeChanged event.
+            Window.ClientSizeChanged += new EventHandler<EventArgs>(OnResize);
         }
-
-        void graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
-        {
-            GraphicsAdapter adapter = null;
-            foreach (var item in GraphicsAdapter.Adapters)
-            {
-                if (item.IsProfileSupported(GraphicsProfile.HiDef))
-                {
-                    adapter = item;
-                }
-                else
-                {
-                    if (adapter == null && item.IsProfileSupported(GraphicsProfile.Reach))
-                    {
-                        adapter = item;
-                    }
-                }
-            }
-            if (adapter == null)
-            {
-                throw new System.NotSupportedException("None of your graphics cards support XNA.");
-            }
-            e.GraphicsDeviceInformation.Adapter = adapter;
-        } 
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -88,96 +61,18 @@ namespace Sandstorm
         /// </summary>
         protected override void Initialize()
         {
-            Form xnaWindow = (Form)Control.FromHandle((this.Window.Handle));
-            xnaWindow.GotFocus += new EventHandler(xnaWindow_GotFocus);
-            _editor.Show();
-            _beamer.Show();
+            Camera = new Camera(GraphicsDevice.Viewport);
+            cameraController = new CameraController(Camera);
 
-            //_kinectSystem.SandstormKinectDepth += new EventHandler<SandstormKinectEvent>(_kinectSystem_SandstormKinectDepth);
-            //_kinectSystem.StartKinect();
-       
+Terrain = new Terrain(this);
 
-            graphics.PreferredBackBufferWidth = _editor.panel1.Width;
-            graphics.PreferredBackBufferHeight = _editor.panel1.Height;
-            graphics.PreferMultiSampling = true;
-            graphics.IsFullScreen = false;
-            graphics.ApplyChanges();
-            _sharedList = SharedList.getInstance(GraphicsDevice);
+            ParticleSystem = new ParticleStorm(this);
 
-            _beamer.panel1.Resize += new EventHandler(_beamer_ResizeEnd);
-            _editor.panel1.Resize += new EventHandler(_editor_ResizeEnd);
+            
 
-
-
-            _orthoCamera = Camera.LoadCamera(Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION, _beamer.panel1.Width, _beamer.panel1.Height);
-            _perspCamera = Camera.LoadCamera(Camera.ProjectionType.PERSPECTIVE_PROJECTION, _editor.panel1.Width, _editor.panel1.Height);
-
-            _cameraController2 = new CameraController(_orthoCamera);
-            _cameraController = new CameraController(_perspCamera);
-
-            _heightMap = new HeightMap(GraphicsDevice, Content);
-            _particleSystem = new Galaxy(GraphicsDevice, _sharedList, Content, _perspCamera, _heightMap);
+            FPSCounter = new FPSCounter(this);
 
             base.Initialize();
-
-        }
-
-        void _kinectSystem_SandstormKinectDepth(object sender, SandstormKinectEvent e)
-        {
-            Console.WriteLine("Event");
-            this.eventBuffer = e;
-            _heightMap.setData(eventBuffer.DepthImage, eventBuffer.Width, eventBuffer.Height);
-        }
-
-        void xnaWindow_GotFocus(object sender, EventArgs e)
-        {
-            ((Form)sender).Visible = false;
-            _editor.TopMost = false;
-        }
-
-        void _beamer_ResizeEnd(object sender, EventArgs e)
-        {
-            if (_beamer.panel1.Width > GraphicsDevice.Viewport.Width || 
-                _beamer.panel1.Height > GraphicsDevice.Viewport.Height)
-            {
-                graphics.PreferredBackBufferWidth = _beamer.panel1.Width;
-                graphics.PreferredBackBufferHeight = _beamer.panel1.Height;
-                graphics.ApplyChanges();
-            }
-
-            _orthoCamera.Viewport = new Viewport(0, 0, _beamer.panel1.Width, _beamer.panel1.Height);
-        }
-
-        void _editor_ResizeEnd(object sender, EventArgs e)
-        {
-            if (_editor.panel1.Width > GraphicsDevice.Viewport.Width || 
-                _editor.panel1.Height > GraphicsDevice.Viewport.Height)
-            {
-                graphics.PreferredBackBufferWidth = _editor.panel1.Width;
-                graphics.PreferredBackBufferHeight = _editor.panel1.Height;
-                graphics.ApplyChanges();
-            }
-
-            _perspCamera.Viewport = new Viewport(0, 0, _editor.panel1.Width, _editor.panel1.Height);
-        }
-
-        void _editor_TerrainHeight_Changed(object sender, TerrainArgs e)
-        {
-            _heightMap._heightScale = (float) e.Height;
-        }
-
-        void _editor_TerrainColor_Changed(object sender, TerrainArgs e)
-        {
-            _heightMap._color0 = e.Color0;
-            _heightMap._color1 = e.Color1;
-            _heightMap._color2 = e.Color2;
-            _heightMap._color3 = e.Color3;
-        }
-
-        void _editor_TerrainContour_Changed(object sender, TerrainArgs e)
-        {
-            _heightMap._displayContours = e.DisplayContours;
-            _heightMap._contourSpacing = e.ContourSpacing;
         }
 
         /// <summary>
@@ -186,17 +81,55 @@ namespace Sandstorm
         /// </summary>
         protected override void LoadContent()
         {
-            // TODO: use this.Content to load your game content here
-            _heightMap.GenerateHeightField(420, 420);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteFont = Content.Load<SpriteFont>("font\\Font");
         }
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// all content.
         /// </summary>
-        protected override void UnloadContent()
+        protected override void UnloadContent() { }
+
+        /// <summary>
+        /// Handles Window resizing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnResize(object sender, EventArgs e)
         {
-            // TODO: Unload any non ContentManager content here
+            if (Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
+            {
+                graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
+                graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
+                Camera.Viewport = new Viewport(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void HandleInput()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                Exit();
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.F11))
+            {
+                if (graphics.IsFullScreen)
+                {
+                    graphics.PreferredBackBufferWidth = 800;
+                    graphics.PreferredBackBufferHeight = 480;
+                    graphics.ToggleFullScreen();
+                }
+                else
+                {
+                    graphics.PreferredBackBufferWidth = GraphicsDevice.Adapter.CurrentDisplayMode.Width;
+                    graphics.PreferredBackBufferHeight = GraphicsDevice.Adapter.CurrentDisplayMode.Height;
+                    graphics.ToggleFullScreen();
+                }
+            }
         }
 
         /// <summary>
@@ -206,56 +139,13 @@ namespace Sandstorm
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-                this.Exit();
+            //Handle user input
+            HandleInput();
 
-            // TODO: Add your update logic here
-            if (_editor.panel1.Focused)
-            {
-                _cameraController.Update(gameTime);
-            }
-            
-            _cameraController2.Update(gameTime);
+            //Update camera controller
+            cameraController.Update(gameTime);
 
-            //_orthoCamera.Left(5.1f);
-
-         //   _particleSystem.Update(gameTime);
-                       
             base.Update(gameTime);
-        }
-
-        void RenderIt(Camera pCamera,IntPtr pHandle)
-        {
-            //Clear Screen
-            if (pCamera == _perspCamera)
-            {
-                GraphicsDevice.Clear(Color.CornflowerBlue);
-            }
-            else
-                GraphicsDevice.Clear(Color.Black);
-
-            //Draw Heightmap
-            Texture2D heightMapTexture = _heightMap.Draw(pCamera);
-
-            //Draw Particles
-            Texture2D particlesTexture = _particleSystem.Draw(pCamera);
-
-            //Beide Texturen vorhanden, nun wird auf den Screen geschrieben!
-            GraphicsDevice.SetRenderTarget(null);
-
-
-
-            SpriteBatch _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque,
-                SamplerState.LinearClamp, DepthStencilState.Default,
-                RasterizerState.CullNone);
-                _spriteBatch.Draw(heightMapTexture, new Vector2(0, 0), Color.White);
-                _spriteBatch.Draw(particlesTexture, new Vector2(0, 0), Color.White);
-            _spriteBatch.End();
-
-            
-            GraphicsDevice.Present(null, null, pHandle);
         }
 
         /// <summary>
@@ -264,14 +154,21 @@ namespace Sandstorm
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            RenderIt(_perspCamera, _editor.panel1.Handle);
-            RenderIt(_orthoCamera, _beamer.panel1.Handle);
-            
-            GraphicsDevice.Textures[0] = null;
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(Color.Black);
 
-            //_editor.Particles = _particleSystem.NumberOfParticles;
-            _editor.FPS = _fpsCounter.FPS;
+            ParticleSystem.SetMatrices(Camera.ViewMatrix, Camera.ProjMatrix);
+            Terrain.SetMatrices(Camera.ViewMatrix, Camera.ProjMatrix);
+
             base.Draw(gameTime);
+
+            string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\n", ParticleSystem.ActiveParticles);
+
+            SpriteBatch.Begin();
+
+            SpriteBatch.DrawString(SpriteFont, text, new Vector2(10, 25), Color.White);
+
+            SpriteBatch.End();
         }
     }
 }

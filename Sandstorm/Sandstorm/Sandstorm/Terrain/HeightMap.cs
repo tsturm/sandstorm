@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using SandstormKinect;
 using System.Threading;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;

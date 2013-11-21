@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Sandstorm.ParticleSystem.draw;
 
 namespace Sandstorm
 {
@@ -8,11 +7,10 @@ namespace Sandstorm
     {
         private Camera _camera;
         private bool _mlb = false;
+        private bool _mrb = false;
         private Vector2 _currentMousePos;
         private bool _msw = false;
         private int _scrollWheel;
-
-        private bool _nextMode = false;
 
         public CameraController(Camera pCamera)
         {
@@ -61,6 +59,27 @@ namespace Sandstorm
                         _mlb = false;
                     }
 
+                    if (mouseState.RightButton == ButtonState.Pressed)
+                    {
+                        if (!_mrb)
+                        {
+                            _mrb = true;
+                            _currentMousePos = new Vector2(mouseState.X, mouseState.Y);
+                        }
+                        else
+                        {
+                            Vector2 mPos = new Vector2(mouseState.X, mouseState.Y);
+                            Vector2 delta = mPos - _currentMousePos;
+                            _currentMousePos = mPos;
+
+                            _camera.Zoom(delta.Y);
+                        }
+                    }
+                    else
+                    {
+                        _mrb = false;
+                    }
+
                     //Zoom
                     if (_msw)
                     {
@@ -71,7 +90,7 @@ namespace Sandstorm
                     {
                         int delta = _scrollWheel - mouseState.ScrollWheelValue;
 
-                        _camera.Zoom(delta);
+                        _camera.Zoom(delta * 0.5f);
 
                         _scrollWheel = mouseState.ScrollWheelValue;
                     }
@@ -106,15 +125,6 @@ namespace Sandstorm
                     else if (keyState.IsKeyDown(Keys.Subtract))
                     {
                         _camera.Zoom(1f);
-                    }
-                    else if (keyState.IsKeyDown(Keys.Space))
-                    {
-                        _nextMode = true;
-                    }
-                    else if (_nextMode)
-                    {
-                        Instancing.nextMode();
-                        _nextMode = false;
                     }
                 }
             }

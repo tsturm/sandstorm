@@ -51,8 +51,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="font\FPSFont.spritefont">
-      <Name>FPSFont</Name>
+    <Compile Include="font\Font.spritefont">
+      <Name>Font</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>

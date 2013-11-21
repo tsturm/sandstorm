@@ -83,11 +83,47 @@ PixelToFrame TerrainPS(VertexToPixel PSIn)
 	return Output;
 }
 
+VertexToPixel TerrainVS2( float4 inPos : POSITION, float2 inTexCoord: TEXCOORD0)
+{	
+	VertexToPixel Output = (VertexToPixel)0;
+
+	float4x4 viewProjection = mul (viewMatrix, projMatrix);
+	float4x4 worldViewProjection = mul (worldMatrix, viewProjection);
+
+	float4 pos = inPos;
+	float height = tex2Dlod(TextureSampler, float4(inTexCoord, 0, 0)).r;
+	pos.y = height * heightScale;
+
+	Output.Position = mul(pos, worldViewProjection);
+	Output.TexCoord = inTexCoord;
+
+	return Output;    
+}
+
+PixelToFrame TerrainPS2(VertexToPixel PSIn) 
+{
+	PixelToFrame Output = (PixelToFrame)0;		
+	
+	Output.Color = tex2D(TextureSampler, PSIn.TexCoord);
+
+	return Output;
+}
+
+
 technique Terrain
 {
 	pass PassMap
 	{   
 		VertexShader = compile vs_3_0 TerrainVS();
 		PixelShader  = compile ps_3_0 TerrainPS();
+	}
+}
+
+technique Terrain2
+{
+	pass PassMap
+	{   
+		VertexShader = compile vs_3_0 TerrainVS2();
+		PixelShader  = compile ps_3_0 TerrainPS2();
 	}
 }
