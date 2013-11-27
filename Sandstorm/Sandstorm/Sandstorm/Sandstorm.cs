@@ -64,7 +64,7 @@ namespace Sandstorm
             Camera = new Camera(GraphicsDevice.Viewport);
             cameraController = new CameraController(Camera);
 
-Terrain = new Terrain(this);
+            Terrain = new Terrain(this);
 
             ParticleSystem = new ParticleStorm(this);
 
@@ -154,6 +154,7 @@ Terrain = new Terrain(this);
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            ParticleSystem.UpdateParticles(gameTime);
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
 
