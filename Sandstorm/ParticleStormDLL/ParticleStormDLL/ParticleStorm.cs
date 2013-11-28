@@ -322,7 +322,7 @@ namespace ParticleStormDLL
             EffectUpdate.Parameters["StartSizeMax"].SetValue(ParticleProperties.StartSizeMax);
             EffectUpdate.Parameters["EndSizeMin"].SetValue(ParticleProperties.EndSizeMin);
             EffectUpdate.Parameters["EndSizeMax"].SetValue(ParticleProperties.EndSizeMax);
-            EffectUpdate.Parameters["Field"].SetValue(new Vector4(50, 0, 10, 2000));
+            EffectUpdate.Parameters["Field"].SetValue(new Vector4(40, 0, 10, 2000));
             EffectUpdate.Parameters["ElapsedTime"].SetValue((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             //Begin first effect pass

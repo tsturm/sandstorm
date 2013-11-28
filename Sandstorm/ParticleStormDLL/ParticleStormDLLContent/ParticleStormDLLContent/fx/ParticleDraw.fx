@@ -63,9 +63,9 @@ VSOutput DrawVS(VSInput Input, float2 positionTexCoord : BLENDWEIGHT)
 {	
 	VSOutput Output = (VSOutput)0;
 
-	float3 xAxis = float3(ViewMatrix._11, ViewMatrix._21, ViewMatrix._31);
-	float3 yAxis = float3(ViewMatrix._12, ViewMatrix._22, ViewMatrix._32);
-	float3 zAxis = float3(ViewMatrix._13, ViewMatrix._23, ViewMatrix._33);
+	float3 xAxis = float3(ViewMatrix._11, ViewMatrix._12, ViewMatrix._13);
+	float3 yAxis = float3(ViewMatrix._21, ViewMatrix._22, ViewMatrix._23);
+	float3 zAxis = float3(ViewMatrix._31, ViewMatrix._32, ViewMatrix._33);
 	float3 position = Input.Position.xyz;
 
 	float4 realPosition = tex2Dlod(positionSampler, float4(positionTexCoord, 0.0, 0.0));
