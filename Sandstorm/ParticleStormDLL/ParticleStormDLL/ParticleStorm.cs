@@ -403,8 +403,6 @@ namespace ParticleStormDLL
         /// <param name="gameTime">Time passed since the last call to Draw.</param>
         public override void Draw(GameTime gameTime)
         {
-            UpdateParticles(gameTime);
-
             //Set Backbuffer as RenderTarget
             GraphicsDevice.SetRenderTarget(null);
 
