@@ -195,6 +195,14 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 			velocity += ElapsedTime * (ExternalForces + fieldForce);
 
 			position += velocity * ElapsedTime;
+
+			if(position.y<-20.0f)//kollision
+			{
+				float3 normal = float3(0.0f,1.0f,0.0f);
+				velocity = (velocity - ((2.0f * dot(velocity, normal)) * normal));
+				float friction = 0.1f;
+				//velocity = (1.0f-friction)*velocity;
+			}
 		}
 	}
 

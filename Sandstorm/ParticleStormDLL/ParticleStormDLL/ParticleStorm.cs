@@ -82,8 +82,8 @@ namespace ParticleStormDLL
 
             ExternalForces = Vector3.Zero;
 
-            //Forces.Add(new Gravity());
-            Forces.Add(new Wind(new Vector3(1.0f, 0.5f, 0.2f), 12.0f));
+            Forces.Add(new Gravity());
+            //Forces.Add(new Wind(new Vector3(1.0f, 0.5f, 0.2f), 12.0f));
 
             //Set Default view matrix
             ViewMatrix = Matrix.Identity;
@@ -322,7 +322,7 @@ namespace ParticleStormDLL
             EffectUpdate.Parameters["StartSizeMax"].SetValue(ParticleProperties.StartSizeMax);
             EffectUpdate.Parameters["EndSizeMin"].SetValue(ParticleProperties.EndSizeMin);
             EffectUpdate.Parameters["EndSizeMax"].SetValue(ParticleProperties.EndSizeMax);
-            EffectUpdate.Parameters["Field"].SetValue(new Vector4(50, 0, 10, 2000));
+            EffectUpdate.Parameters["Field"].SetValue(new Vector4(0, 0, 0, 0));
             EffectUpdate.Parameters["ElapsedTime"].SetValue((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             //Begin first effect pass
