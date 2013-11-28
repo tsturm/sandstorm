@@ -103,14 +103,14 @@ namespace ParticleStormDLL
         /// </summary>
         public ParticleProperties()
         {
-            LifeTimeMin = 10.0f;
+            LifeTimeMin = 5.0f;
             LifeTimeMax = 30.0f;
-            PositionMin = new Vector3(0, 0, 0);
-            PositionMax = new Vector3(0, 0, 0);
+            PositionMin = new Vector3(0, 10, 0);
+            PositionMax = new Vector3(0, 10, 0);
             //VelocityMin = new Vector3(0, 10, 0);
             //VelocityMax = new Vector3(15, 35, 15);
-            VelocityMin = new Vector3(0, 10, 10);
-            VelocityMax = new Vector3(0, 10, 10);
+            VelocityMin = new Vector3(-5, 20, -5);
+            VelocityMax = new Vector3(5, 40, 5);
             StartSizeMin = 1.0f;
             StartSizeMax = 1.0f;
             EndSizeMin = 0.01f;
