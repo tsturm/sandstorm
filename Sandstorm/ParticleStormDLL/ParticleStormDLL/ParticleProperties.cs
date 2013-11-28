@@ -103,20 +103,22 @@ namespace ParticleStormDLL
         /// </summary>
         public ParticleProperties()
         {
-            LifeTimeMin = 800.0f;
-            LifeTimeMax = 800.0f;
-            PositionMin = new Vector3(0, 0, 0);
-            PositionMax = new Vector3(0, 0, 0);
-            VelocityMin = new Vector3(-20, 10, -20);
-            VelocityMax = new Vector3(20, 35, 20);
+            LifeTimeMin = 5.0f;
+            LifeTimeMax = 30.0f;
+            PositionMin = new Vector3(0, 10, 0);
+            PositionMax = new Vector3(0, 10, 0);
+            //VelocityMin = new Vector3(0, 10, 0);
+            //VelocityMax = new Vector3(15, 35, 15);
+            VelocityMin = new Vector3(-5, 20, -5);
+            VelocityMax = new Vector3(5, 40, 5);
             StartSizeMin = 1.0f;
             StartSizeMax = 1.0f;
-            EndSizeMin = 5.0f;
-            EndSizeMax = 5.0f;
-            StartColorMin = new Color(0.7f, 0.2f, 0.1f, 1.0f);
-            StartColorMax = new Color(0.9f, 0.6f, 0.5f, 1.0f);
-            EndColorMin = new Color(0.8f, 0.8f, 0.8f, 0.0f);
-            EndColorMax = new Color(0.9f, 0.9f, 0.9f, 0.0f);
+            EndSizeMin = 0.01f;
+            EndSizeMax = 0.01f;
+            StartColorMin = new Color(0.25f, 0.1f, 0.0f, 1.0f);
+            StartColorMax = new Color(0.5f, 0.25f, 0.1f, 1.0f);
+            EndColorMin = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+            EndColorMax = new Color(0.0f, 0.0f, 0.0f, 0.0f);
             Texture = null;
             AdditiveBlendingEnabled = true;
         }
