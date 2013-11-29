@@ -28,6 +28,8 @@ namespace ParticleStormDLL
         public List<BaseForce> Forces { get; set; }
         protected Vector3 ExternalForces;
 
+        public Texture2D terrain;
+
         protected BaseMesh FullScreenQuad;
         protected BaseMesh Mesh;
 
@@ -84,6 +86,8 @@ namespace ParticleStormDLL
 
             Forces.Add(new Gravity());
             //Forces.Add(new Wind(new Vector3(1.0f, 0.5f, 0.2f), 12.0f));
+
+            terrain = Game.Content.Load<Texture2D>("tex/heightmap");
 
             //Set Default view matrix
             ViewMatrix = Matrix.Identity;
@@ -306,6 +310,7 @@ namespace ParticleStormDLL
             //Set effect parameters
             EffectUpdate.Parameters["Positions"].SetValue(PositionsRT.TargetA);
             EffectUpdate.Parameters["Velocities"].SetValue(VelocitiesRT.TargetA);
+            EffectUpdate.Parameters["Terrain"].SetValue(terrain);
             EffectUpdate.Parameters["Sizes"].SetValue(SizesRT.TargetA);
             EffectUpdate.Parameters["Colors"].SetValue(ColorsRT.TargetA);
             EffectUpdate.Parameters["StartColors"].SetValue(StartColorsRT.TargetA);

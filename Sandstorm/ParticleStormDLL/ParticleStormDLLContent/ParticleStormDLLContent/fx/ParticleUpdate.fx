@@ -13,6 +13,17 @@ float EndSizeMax;
 float3 ExternalForces;
 float4 Field;
 
+texture Terrain;
+sampler TerrainSampler = sampler_state
+{
+    Texture   = <Terrain>;
+    MipFilter = None;
+    MinFilter = Point;
+    MagFilter = Point;
+    AddressU  = Clamp;
+    AddressV  = Clamp;
+};
+
 texture Positions;
 sampler PositionSampler = sampler_state
 {
@@ -196,14 +207,18 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 
 			position += velocity * ElapsedTime;
 
-			float heightPositionParticle = position.y + velocity.y * ElapsedTime;
-			float heightPositionMap = 0.0f;
+			float3 nextPosition = position + velocity * ElapsedTime;
+			float heightPositionParticle = nextPosition.y;
+			float heightPositionMap = tex2D(TerrainSampler, float2(nextPosition.x/420.0+0.5,nextPosition.z/420.0+0.5)).x*100;
 			float distance = heightPositionParticle - heightPositionMap;
 			if(distance<=0.0f)
 			{
-				float3 normal = float3(0.0f,1.0f,0.0f);
+				float3 vec0 = float3(nextPosition.x,tex2D(TerrainSampler, float2(nextPosition.x/420.0+0.5,nextPosition.z/420.0+0.5)).x*100,nextPosition.z);
+				float3 vec1 = float3(nextPosition.x+1,tex2D(TerrainSampler, float2((nextPosition.x+1)/420.0+0.5,nextPosition.z/420.0+0.5)).x*100,nextPosition.z);
+				float3 vec2 = float3(nextPosition.x,tex2D(TerrainSampler, float2(nextPosition.x/420.0+0.5,(nextPosition.z+1)/420.0+0.5)).x*100,nextPosition.z+1);
+				float3 normal = -normalize(cross(vec1-vec0,vec2-vec0));//float3(0.0f,1.0f,0.0f));
 				velocity = (velocity - ((2.0f * dot(velocity, normal)) * normal));
-				float friction = 0.4f;
+				float friction = 1.0f;
 				velocity = (1.0f-friction)*velocity;
 				velocity += normal*abs(distance);
 			}
