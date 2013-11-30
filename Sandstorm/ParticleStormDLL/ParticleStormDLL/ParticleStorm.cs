@@ -360,7 +360,7 @@ namespace ParticleStormDLL
             //GraphicsDevice.Clear(Color.Black);
 
             //Disable Depth-/Stencilbuffer
-            GraphicsDevice.DepthStencilState = DepthStencilState.None;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             //Set BlendState
             GraphicsDevice.BlendState = (ParticleProperties.AdditiveBlendingEnabled) ? BlendState.Additive : BlendState.Opaque;

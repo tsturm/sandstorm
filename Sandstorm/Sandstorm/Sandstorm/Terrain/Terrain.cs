@@ -24,6 +24,15 @@ namespace Sandstorm
         protected Matrix ViewMatrix;
         protected Matrix ProjectionMatrix;
 
+        public Vector4 Color0 = new Vector4(0.0f, 0.0f, 0.65f, 1.0f);
+        public Vector4 Color1 = new Vector4(0.2f, 0.52f, 0.03f, 1.0f);
+        public Vector4 Color2 = new Vector4(0.9f, 0.85f, 0.34f, 1.0f);
+        public Vector4 Color3 = new Vector4(0.7f, 0.17f, 0.0f, 1.0f);
+
+        public float HeightScale = 100.0f;
+        public float ContourSpacing = 4.5f;
+        public bool DisplayContours = false;
+
         public Terrain(Game game) : base(game)
         {
             // TODO: Construct any child components here
@@ -154,12 +163,18 @@ namespace Sandstorm
             GraphicsDevice.SetVertexBuffer(VertexBuffer);
             GraphicsDevice.Indices = IndexBuffer;
 
-            Effect.CurrentTechnique = Effect.Techniques["Terrain2"];
+            Effect.CurrentTechnique = Effect.Techniques["Terrain"];
             Effect.Parameters["worldMatrix"].SetValue(Matrix.Identity);
             Effect.Parameters["viewMatrix"].SetValue(ViewMatrix);
             Effect.Parameters["projMatrix"].SetValue(ProjectionMatrix);
             Effect.Parameters["heightMap"].SetValue(HeightMap);
-            Effect.Parameters["heightScale"].SetValue(100.0f);
+            Effect.Parameters["heightScale"].SetValue(HeightScale);
+            Effect.Parameters["color0"].SetValue(Color0);
+            Effect.Parameters["color1"].SetValue(Color1);
+            Effect.Parameters["color2"].SetValue(Color2);
+            Effect.Parameters["color3"].SetValue(Color3);
+            Effect.Parameters["contourSpacing"].SetValue(ContourSpacing);
+            Effect.Parameters["displayContours"].SetValue(DisplayContours);
 
             //Begin pass
             Effect.CurrentTechnique.Passes[0].Apply();
