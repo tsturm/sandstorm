@@ -8,8 +8,10 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using ParticleStormDLL;
 using System.Globalization;
+
+using ParticleStormDLL;
+using Sandstorm.GUI;
 
 namespace Sandstorm
 {
@@ -32,6 +34,7 @@ namespace Sandstorm
         private Terrain Terrain;
         private ParticleStorm ParticleSystem;
         private FPSCounter FPSCounter;
+        private HUD _HUD;
 
 
         public Sandstorm()
@@ -46,6 +49,9 @@ namespace Sandstorm
                 IsFixedTimeStep = true;
             #endif
 
+            //Show Mouse
+            IsMouseVisible = true;
+
             //Allow Resizing
             Window.AllowUserResizing = true;
 
@@ -59,6 +65,7 @@ namespace Sandstorm
         /// related content.  Calling base.Initialize will enumerate through any components
         /// and initialize them as well.
         /// </summary>
+
         protected override void Initialize()
         {
             Camera = new Camera(GraphicsDevice.Viewport);
@@ -68,10 +75,11 @@ namespace Sandstorm
 
             ParticleSystem = new ParticleStorm(this);
 
-            
-
             FPSCounter = new FPSCounter(this);
 
+            _HUD = new HUD(this);
+
+            
             base.Initialize();
         }
 
@@ -104,6 +112,7 @@ namespace Sandstorm
                 graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
                 Camera.Viewport = new Viewport(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height);
             }
+            _HUD.OnResize();
         }
 
         /// <summary>
@@ -141,9 +150,11 @@ namespace Sandstorm
         {
             //Handle user input
             HandleInput();
+            _HUD.Update(gameTime);
 
-            //Update camera controller
-            cameraController.Update(gameTime);
+            //Mouse camera Events only on focus and if not clicked on buttons
+            if (this.IsActive && !_HUD._gui.HasMouse)
+                cameraController.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -160,8 +171,9 @@ namespace Sandstorm
 
             ParticleSystem.SetMatrices(Camera.ViewMatrix, Camera.ProjMatrix);
             Terrain.SetMatrices(Camera.ViewMatrix, Camera.ProjMatrix);
-
+            
             base.Draw(gameTime);
+
 
             string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\n", ParticleSystem.ActiveParticles);
 
@@ -170,6 +182,8 @@ namespace Sandstorm
             SpriteBatch.DrawString(SpriteFont, text, new Vector2(10, 25), Color.White);
 
             SpriteBatch.End();
+
+            _HUD.Draw(gameTime);
         }
     }
 }

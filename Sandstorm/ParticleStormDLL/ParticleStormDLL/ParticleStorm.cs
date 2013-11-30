@@ -78,7 +78,7 @@ namespace ParticleStormDLL
             TotalParticles = 1024*1024;
 
             //Set default emission rate
-            EmissionRate = 5075;
+            EmissionRate = 1075;
 
             WaitToEmit = EmissionRate;
 
