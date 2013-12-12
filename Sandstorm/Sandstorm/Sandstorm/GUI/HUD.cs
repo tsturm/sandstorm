@@ -50,16 +50,17 @@ namespace Sandstorm.GUI
 
         private static int padding = 10;
         private static int OptionPadding = 40;
+        private static String[] options = new String[] { "LifeTimeMin", "LifeTimeMax", "StartSizeMin", "StartSizeMax" };
 
         private Panel createOptionPanel(int width,int height)
         {
             Panel p = new Panel(0, 0, (int)(width * 0.5), (int)(height * 0.5)); //Option Panel
 
             //creating different options
-            String[] options = new String[] { "LifeTimeMin", "LifeTimeMax", "StartSizeMin", "StartSizeMax" };
             for (int i = 0; i < options.Length; i++) // create the Options Window
             {
-                OptionSlider os = new OptionSlider(p.Area.Left + padding, p.Area.Top + padding + i * OptionPadding, (int)(width * 0.2), options[i],_particleSystem);
+                OptionSlider os = new OptionSlider(p.Area.Left + padding, p.Area.Top + padding + i * OptionPadding, (int)(width * 0.2), options[i], 0.0f, 100.0f, _particleSystem.ParticleProperties);
+
                 p.AddWidgets(os.getWidget());
             }
 

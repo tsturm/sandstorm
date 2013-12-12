@@ -6,14 +6,15 @@ using Ruminate.Utils;
 using Ruminate.GUI.Framework;
 using Ruminate.GUI.Content;
 using ParticleStormDLL;
+using System.Reflection;
 
 namespace Sandstorm.GUI
 {
+
     public class OptionSlider //creates a Slider with Label, which modifies ParticleProperties
     {
         private String labelText = "";
-
-        private int value = 0;
+        private float value = 0;
         private int posX = 0;
         private int posY = 0;
 
@@ -21,23 +22,37 @@ namespace Sandstorm.GUI
 
         Label _sliderLabel = null;
         Slider _slider = null;
-        private ParticleStorm _particleSystem = null;
+        private Object OwnerObject = null;
+        private PropertyInfo FieldInfo;
+        private float Min {get; set;}
+        private float Max {get; set;}
 
-        public OptionSlider(int posX, int posY, int width, String labelText, ParticleStorm _particleSystem)
+
+        public OptionSlider(int posX, int posY, int width, String labelText, float min, float max, Object ownerObject)
         {
-            this._particleSystem = _particleSystem;
+            Min = min;
+            Max = max;
+            this.OwnerObject = ownerObject;
             this.posX = posX;
             this.posY = posY;
             this.labelText = labelText;
+
+            FieldInfo = OwnerObject.GetType().GetProperty(labelText, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            this.value = (float)FieldInfo.GetValue(OwnerObject, null);
             _sliderLabel = new Label(posX, posY, labelText + " = " + value);
+            _sliderLabel.Value = labelText + " = " + this.value;
+
+            
+
             _slider = new Slider(posX + 200, posY, width, delegate(Widget slider)
             {
-                                 this.value = (int)(((Slider)slider).Value*100);
-                                 _sliderLabel.Value = labelText + " = " + this.value;
-                                 _particleSystem.ParticleProperties.StartSizeMin = this.value;
-                                 _particleSystem.ParticleProperties.StartSizeMax = this.value;
+                this.value = min + (float)((Slider)slider).Value * max;
+                _sliderLabel.Value = labelText + " = " + this.value;        
+                FieldInfo.SetValue(OwnerObject, this.value, null);
             });
-            this.w = new Widget[]{_sliderLabel,_slider};
+
+            this.w = new Widget[]{_sliderLabel, _slider};
         }
 
         public Widget[] getWidget()
