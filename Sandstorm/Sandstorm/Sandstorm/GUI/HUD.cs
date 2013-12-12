@@ -13,7 +13,7 @@ using Ruminate.GUI.Content;
 using System.IO;
 using Ruminate.Utils;
 using System.Globalization;
-
+using ParticleStormDLL;
 
 namespace Sandstorm.GUI
 {
@@ -28,14 +28,14 @@ namespace Sandstorm.GUI
         string _Map;        
 
         //Elements
-        Slider _slider;
-        Label _sliderLabel;
+        ParticleStorm _particleSystem = null;
 
-        public HUD(Game game) : base(game)
+        public HUD(Game game,ParticleStorm particleSystem) : base(game)
         {
             _SpriteFont = Game.Content.Load<SpriteFont>("GUI\\Texture");
             _ImageMap = Game.Content.Load<Texture2D>("GUI\\ImageMap");
             _Map = File.OpenText("Content\\GUI\\Map.txt").ReadToEnd();
+            _particleSystem = particleSystem;
             initGui();                      
         }
 
@@ -48,6 +48,32 @@ namespace Sandstorm.GUI
             base.Initialize();
         }
 
+        private static int padding = 10;
+        private static int OptionPadding = 40;
+
+        private Panel createOptionPanel(int width,int height)
+        {
+            Panel p = new Panel(0, 0, (int)(width * 0.5), (int)(height * 0.5)); //Option Panel
+
+            //creating different options
+            String[] options = new String[] { "LifeTimeMin", "LifeTimeMax", "StartSizeMin", "StartSizeMax" };
+            for (int i = 0; i < options.Length; i++) // create the Options Window
+            {
+                OptionSlider os = new OptionSlider(p.Area.Left + padding, p.Area.Top + padding + i * OptionPadding, (int)(width * 0.2), options[i],_particleSystem);
+                p.AddWidgets(os.getWidget());
+            }
+
+            //closeOptionButton
+            Button closeButton = new Button(p.Area.Left + padding, p.Area.Bottom - padding - 50, 50, "Close", delegate //Close Button of Option Windows
+            {
+                p.Visible = false;
+                //_particleSystem.ParticleProperties.StartSizeMin = val;
+            });
+            p.AddWidget(closeButton);
+            p.Visible = false; //default not visible
+            return p;
+        }
+
         private void initGui()
         {
             var skin = new Skin(_ImageMap, _Map);
@@ -58,18 +84,20 @@ namespace Sandstorm.GUI
 
             int width = Game.Window.ClientBounds.Width;
             int height = Game.Window.ClientBounds.Height;
-            _gui = new Gui(base.Game, skin, text, testSkins, testTexts)
+
+            Panel optionPanel = this.createOptionPanel(width,height);
+
+            Button openButton = new Button(width - 70, 0, 50, "Settings", delegate
             {
-                Widgets = new Widget[] {
-                             _sliderLabel = new Label((int)(0.8*width), (int)(0.8*height)+30, "Value = 0"),
-                              _slider = new Slider((int)(0.8*width), (int)(0.8*height), (int)(0.2*width), delegate(Widget slider)
-                             {
-                                _sliderLabel.Value = "Value = " + ((Slider)slider).Value;
-                            }),
+                optionPanel.Visible = true;
+                //_particleSystem.ParticleProperties.StartSizeMin = val;
+            });
+            
+            _gui = new Gui(base.Game, skin, text, testSkins, testTexts); //creat the GUI
+            _gui.AddWidget(optionPanel); //add Option Panel
+            _gui.AddWidget(openButton); //add openSettings Button
 
-                          }
-            };
-
+           
         }
         /// <summary>
         /// Allows the game component to update itself.

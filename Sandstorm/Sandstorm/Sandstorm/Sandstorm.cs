@@ -32,7 +32,7 @@ namespace Sandstorm
 
 
         private Terrain Terrain;
-        private ParticleStorm ParticleSystem;
+        private ParticleStorm _particleSystem;
         private FPSCounter FPSCounter;
         private HUD _HUD;
 
@@ -73,11 +73,11 @@ namespace Sandstorm
 
             Terrain = new Terrain(this);
 
-            ParticleSystem = new ParticleStorm(this);
+            _particleSystem = new ParticleStorm(this);
 
             FPSCounter = new FPSCounter(this);
 
-            _HUD = new HUD(this);
+            _HUD = new HUD(this,_particleSystem);
 
             
             base.Initialize();
@@ -165,17 +165,17 @@ namespace Sandstorm
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            ParticleSystem.UpdateParticles(gameTime);
+            _particleSystem.UpdateParticles(gameTime);
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
 
-            ParticleSystem.SetMatrices(Camera.ViewMatrix, Camera.ProjMatrix);
+            _particleSystem.SetMatrices(Camera.ViewMatrix, Camera.ProjMatrix);
             Terrain.SetMatrices(Camera.ViewMatrix, Camera.ProjMatrix);
             
             base.Draw(gameTime);
 
 
-            string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\n", ParticleSystem.ActiveParticles);
+            string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\n", _particleSystem.ActiveParticles);
 
             SpriteBatch.Begin();
 
