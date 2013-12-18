@@ -14,6 +14,7 @@ using System.IO;
 using Ruminate.Utils;
 using System.Globalization;
 using ParticleStormDLL;
+using System.Reflection;
 
 namespace Sandstorm.GUI
 {
@@ -23,20 +24,25 @@ namespace Sandstorm.GUI
     public class HUD : DrawableGameComponent
     {
         public Gui _gui;
-        SpriteFont _SpriteFont;
+        SpriteFont Calibri20;
+        SpriteFont Calibri16;
         Texture2D _ImageMap;
-        string _Map;        
+        string _Map;
 
         //Elements
         ParticleStorm _particleSystem = null;
 
         public HUD(Game game,ParticleStorm particleSystem) : base(game)
         {
-            _SpriteFont = Game.Content.Load<SpriteFont>("GUI\\Texture");
-            _ImageMap = Game.Content.Load<Texture2D>("GUI\\ImageMap");
-            _Map = File.OpenText("Content\\GUI\\Map.txt").ReadToEnd();
+            Calibri20 = Game.Content.Load<SpriteFont>("font\\Calibri20");
+            Calibri16 = Game.Content.Load<SpriteFont>("font\\Calibri16");
+            //_ImageMap = Game.Content.Load<Texture2D>("GUI\\ImageMap");
+            //_Map = File.OpenText("Content\\GUI\\Map.txt").ReadToEnd();
+            _ImageMap = Game.Content.Load<Texture2D>("GUI\\StormTheme");
+            _Map = File.OpenText("Content\\GUI\\StormMap.txt").ReadToEnd();
             _particleSystem = particleSystem;
-            initGui();                      
+            initGui();
+               
         }
 
         /// <summary>
@@ -48,57 +54,89 @@ namespace Sandstorm.GUI
             base.Initialize();
         }
 
-        private static int padding = 10;
-        private static int OptionPadding = 40;
-        private static String[] options = new String[] { "LifeTimeMin", "LifeTimeMax", "StartSizeMin", "StartSizeMax" };
-
-        private Panel createOptionPanel(int width,int height)
+        private void createOptionPanel(int width, int height)
         {
-            Panel p = new Panel(0, 0, (int)(width * 0.5), (int)(height * 0.5)); //Option Panel
+            Panel mainPanel = new Panel(width - 170, 0, 170, height);
+            Label head = new Label(35, 15, "ParticleSystem") { Text = "Calibri20" };
+            Panel optionPanel = new Panel(0, 50, 170, height-50);
+            ScrollBars scrollBars = new ScrollBars();
 
-            //creating different options
-            for (int i = 0; i < options.Length; i++) // create the Options Window
+            _gui.AddWidget(mainPanel);
+            mainPanel.AddWidget(head);
+            mainPanel.AddWidget(optionPanel);
+            optionPanel.AddWidget(scrollBars);
+
+            PropertyInfo[] properties = _particleSystem.ParticleProperties.GetType().GetProperties();
+            int offset = 0;
+
+            for (int i = 0; i < properties.Length; i++)
             {
-                OptionSlider os = new OptionSlider(p.Area.Left + padding, p.Area.Top + padding + i * OptionPadding, (int)(width * 0.2), options[i], 0.0f, 100.0f, _particleSystem.ParticleProperties);
+                Console.WriteLine(properties[i].PropertyType);
 
-                p.AddWidgets(os.getWidget());
+                switch (properties[i].PropertyType.ToString())
+                {
+                    case "System.Single":
+                        FloatSlider os = new FloatSlider(scrollBars,
+                                                         _particleSystem.ParticleProperties,
+                                                         properties[i].Name,
+                                                         0, 
+                                                         offset, 
+                                                         145,
+                                                         0.0f, 
+                                                         100.0f);
+                        offset += 40;
+                        break;
+                    case "Microsoft.Xna.Framework.Vector3":
+                        Vector3Slider v3s = new Vector3Slider(scrollBars,
+                                                              _particleSystem.ParticleProperties,
+                                                              properties[i].Name,
+                                                              0,
+                                                              offset,
+                                                              145,
+                                                              new Vector3(-999, -999, -999),
+                                                              new Vector3(999, 999, 999));
+                        offset += 70;
+                        break;
+                    case "Microsoft.Xna.Framework.Color":
+                        ColorSlider cs = new ColorSlider(scrollBars,
+                                                         _particleSystem.ParticleProperties,
+                                                         properties[i].Name,
+                                                         0,
+                                                         offset,
+                                                         145,
+                                                         new Color(0, 0, 0, 0),
+                                                         new Color(255, 255, 255, 255));
+                        offset += 85;
+                        break;
+                    case "System.Boolean":
+                        BooleanToggle bt = new BooleanToggle(scrollBars,
+                                                             _particleSystem.ParticleProperties,
+                                                             properties[i].Name,
+                                                             0,
+                                                             offset);
+                        offset += 40;
+                        break;
+                    
+                } 
             }
-
-            //closeOptionButton
-            Button closeButton = new Button(p.Area.Left + padding, p.Area.Bottom - padding - 50, 50, "Close", delegate //Close Button of Option Windows
-            {
-                p.Visible = false;
-                //_particleSystem.ParticleProperties.StartSizeMin = val;
-            });
-            p.AddWidget(closeButton);
-            p.Visible = false; //default not visible
-            return p;
         }
 
         private void initGui()
         {
             var skin = new Skin(_ImageMap, _Map);
-            var text = new Text(_SpriteFont, Color.White);
+            var calibri16 = new Text(Calibri16, Color.White);
+            var calibri20 = new Text(Calibri20, Color.White);
 
             var testSkins = new[] { new Tuple<string, Skin>("Skin", skin) };
-            var testTexts = new[] { new Tuple<string, Text>("Text", text) };
+            var testTexts = new[] { new Tuple<string, Text>("Calibri16", calibri16), 
+                                    new Tuple<string, Text>("Calibri20", calibri20)};
 
             int width = Game.Window.ClientBounds.Width;
             int height = Game.Window.ClientBounds.Height;
 
-            Panel optionPanel = this.createOptionPanel(width,height);
+            _gui = new Gui(base.Game, skin, calibri16, testSkins, testTexts); //creat the GUI
+            this.createOptionPanel(width, height);
 
-            Button openButton = new Button(width - 70, 0, 50, "Settings", delegate
-            {
-                optionPanel.Visible = true;
-                //_particleSystem.ParticleProperties.StartSizeMin = val;
-            });
-            
-            _gui = new Gui(base.Game, skin, text, testSkins, testTexts); //creat the GUI
-            _gui.AddWidget(optionPanel); //add Option Panel
-            _gui.AddWidget(openButton); //add openSettings Button
-
-           
         }
         /// <summary>
         /// Allows the game component to update itself.

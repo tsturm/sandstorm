@@ -16,6 +16,7 @@ namespace Sandstorm
         public enum CameraMode
         {
             CAMERA_MODE_ORBIT,
+            CAMERA_MODE_TURNTABLE,
             CAMERA_MODE_FIRST_PERSON,
             CAMERA_MODE_FLIGHT
         }
@@ -36,7 +37,7 @@ namespace Sandstorm
         private float _fieldOfView = MathHelper.PiOver4;
         private float _orbitalDistance = 1000f;
         private Viewport _viewport;
-        private CameraMode _mode = CameraMode.CAMERA_MODE_ORBIT;
+        private CameraMode _mode = CameraMode.CAMERA_MODE_TURNTABLE;
         private Vector3 _lookAt = new Vector3(0f);
         private Vector3 _eyePos = new Vector3(0f);
         private Quaternion _orientation = new Quaternion(0f, 0f, 0f, 1f);
@@ -45,6 +46,7 @@ namespace Sandstorm
         private int _orthoHeight = 492;
 
         private float _pitch;
+        private float _yaw;
 
         private Matrix _viewMatrix = Matrix.Identity;
         private Matrix _projMatrix = Matrix.Identity;
@@ -128,6 +130,9 @@ namespace Sandstorm
 		        case CameraMode.CAMERA_MODE_ORBIT:
 			        RotateOrbital(pYaw, pPitch);
 			        break;
+                case CameraMode.CAMERA_MODE_TURNTABLE:
+                    RotateTurntable(pYaw, pPitch);
+                    break;
 		        case CameraMode.CAMERA_MODE_FIRST_PERSON:
 			        RotateFirstPerson(pYaw, pPitch);
 			        break;
@@ -185,6 +190,41 @@ namespace Sandstorm
                 Quaternion.CreateFromAxisAngle(ref WORLD_XAXIS, pitchRad, out rot);
                 Quaternion.Multiply(ref rot, ref _orientation, out _orientation);
             }
+        }
+
+        public void RotateTurntable(float pYaw, float pPitch)
+        {
+            _pitch += pPitch;
+
+            if (_pitch > 70.0f)
+            {
+                pPitch = 70.0f - (_pitch - pPitch);
+                _pitch = 70.0f;
+            }
+            else if (_pitch < 0.0f)
+            {
+                pPitch = 0.0f - (_pitch - pPitch);
+                _pitch = 0.0f;
+            }
+
+            float yawRad = MathHelper.ToRadians(pYaw);
+            float pitchRad = MathHelper.ToRadians(pPitch);
+
+            Quaternion rot;
+
+            Vector3 blub = _viewMatrix.Up;
+
+            if (yawRad != 0.0f)
+            {
+                Quaternion.CreateFromAxisAngle(ref blub, yawRad, out rot);
+                Quaternion.Multiply(ref rot, ref _orientation, out _orientation);
+            }
+
+            if (pitchRad != 0.0f)
+            {
+                Quaternion.CreateFromAxisAngle(ref WORLD_XAXIS, pitchRad, out rot);
+                Quaternion.Multiply(ref rot, ref _orientation, out _orientation);
+            }   
         }
 
         public void RotateFirstPerson(float pYaw, float pPitch)
@@ -260,7 +300,7 @@ namespace Sandstorm
             //Generate view matrix from orientation quaternion
             Matrix.CreateFromQuaternion(ref _orientation, out _viewMatrix);
 
-            if (_mode == CameraMode.CAMERA_MODE_ORBIT)
+            if (_mode == CameraMode.CAMERA_MODE_ORBIT || _mode == CameraMode.CAMERA_MODE_TURNTABLE)
             {
                 //Calculate new eye position
                 _eyePos = _lookAt + _viewMatrix.Forward * _orbitalDistance;

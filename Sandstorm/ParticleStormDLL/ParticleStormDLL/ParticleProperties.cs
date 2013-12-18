@@ -96,7 +96,7 @@ namespace ParticleStormDLL
         /// <summary>
         /// Enables or disables additive blending of a particle. The default is false.
         /// </summary>
-        public bool AdditiveBlendingEnabled { get; set; }
+        public bool AdditiveBlending { get; set; }
 
         /// <summary>
         /// Creates an instance of ParticleProperties with default values.
@@ -107,8 +107,6 @@ namespace ParticleStormDLL
             LifeTimeMax = 30.0f;
             PositionMin = new Vector3(-100, 200, -100);
             PositionMax = new Vector3(100, 200, 100);
-            //VelocityMin = new Vector3(0, 10, 0);
-            //VelocityMax = new Vector3(15, 35, 15);
             VelocityMin = new Vector3(-30, 0, -20);
             VelocityMax = new Vector3(30, 0, 20);
             StartSizeMin = 1.0f;
@@ -117,10 +115,10 @@ namespace ParticleStormDLL
             EndSizeMax = 0.0001f;
             StartColorMin = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             StartColorMax = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-            EndColorMin = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-            EndColorMax = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+            EndColorMin = new Color(1.0f, 1.0f, 1.0f, 0.0f);
+            EndColorMax = new Color(1.0f, 1.0f, 1.0f, 0.0f);
             Texture = null;
-            AdditiveBlendingEnabled = true;
+            AdditiveBlending = true;
         }
     }
 }

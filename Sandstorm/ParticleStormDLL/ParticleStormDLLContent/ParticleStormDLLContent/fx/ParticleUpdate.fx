@@ -10,6 +10,10 @@ float StartSizeMin;
 float StartSizeMax;
 float EndSizeMin;
 float EndSizeMax;
+float4 StartColorMin;
+float4 StartColorMax;
+float4 EndColorMin;
+float4 EndColorMax;
 float3 ExternalForces;
 float4 Field;
 
@@ -132,7 +136,7 @@ float3 nextFloat3(float3 min, float3 max, float2 uv, float seed)
 	return randomized;
 }
 
-float3 nextFloat4(float4 min, float4 max, float2 uv, float seed)
+float4 nextFloat4(float4 min, float4 max, float2 uv, float seed)
 {
 	float4 randomized;
 
@@ -141,10 +145,29 @@ float3 nextFloat4(float4 min, float4 max, float2 uv, float seed)
 	randomized.y = rand(uv*seed) * (max.y - min.y) + min.y;
 	seed += 7.7311;
 	randomized.z = rand(uv*seed) * (max.z - min.z) + min.z;
-	seed += 12.1498;
-	randomized.w = rand(uv*seed) * (max.z - min.z) + min.z;
+	seed += 13.4578;
+	randomized.w = rand(uv*seed) * (max.w - min.w) + min.w;
 
 	return randomized;
+}
+
+float4 unpackColor(float color)
+{
+	float r = color / 16777216.0;
+	float g = (color / 65536.0);
+	float b = (color / 256.0) - 16776960.0;
+	float a = color - 4294967040.0;
+}
+
+inline float4 EncodeFloatRGBA( float v ) {
+  float4 enc = float4(1.0, 255.0, 65025.0, 160581375.0) * v;
+  enc = frac(enc);
+  enc -= enc.yzww * float4(1.0/255.0,1.0/255.0,1.0/255.0,0.0);
+  return enc;
+}
+
+inline float DecodeFloatRGBA( float4 rgba ) {
+  return dot( rgba, float4(1.0, 1/255.0, 1/65025.0, 1/160581375.0) );
 }
 
 VSOutput PhysicsVS(VSInput Input)
@@ -172,7 +195,6 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 	float life = positionData.w;
 	float lifeFull = velocityData.w;
 
-
 	if(Input.TexCoord.y * RenderTargetSize + Input.TexCoord.x <= (ActiveParticles-1.0) * (RenderTargetSize/TotalParticles))
 	{
 		//Decrement life time
@@ -183,10 +205,12 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 		{
 			velocity = nextFloat3(float3(-2, 10, -2), float3(2, 15, 2), Input.TexCoord, 1.5784);
 			position = nextFloat3(PositionMin, PositionMax, Input.TexCoord, 12.4732);
-			life = nextFloat(LifeMin, LifeMax, Input.TexCoord, 7.1581);
+			life = lifeFull = nextFloat(LifeMin, LifeMax, Input.TexCoord, 7.1581);
 			float startSize = nextFloat(StartSizeMin, StartSizeMax, Input.TexCoord, 34.5424);
 			float endSize = nextFloat(EndSizeMin, EndSizeMax, Input.TexCoord, 2.7522);
 			size = float4(startSize, startSize, endSize, 0.0);
+			startColor = color = nextFloat4(StartColorMin, StartColorMax, Input.TexCoord, 5.4548);
+			endColor = nextFloat4(EndColorMin, EndColorMax, Input.TexCoord, 9.6472);
 		} 
 		else 
 		{

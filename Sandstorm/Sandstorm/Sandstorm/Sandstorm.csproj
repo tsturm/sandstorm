@@ -76,8 +76,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FPSCounter.cs" />
+    <Compile Include="GUI\BooleanToggle.cs" />
+    <Compile Include="GUI\ColorSlider.cs" />
     <Compile Include="GUI\HUD.cs" />
-    <Compile Include="GUI\OptionSlider.cs" />
+    <Compile Include="GUI\FloatSlider.cs" />
+    <Compile Include="GUI\Vector3Slider.cs" />
     <Compile Include="Navigation\Camera.cs" />
     <Compile Include="Navigation\CameraController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

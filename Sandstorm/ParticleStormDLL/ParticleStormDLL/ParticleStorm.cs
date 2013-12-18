@@ -327,6 +327,10 @@ namespace ParticleStormDLL
             EffectUpdate.Parameters["StartSizeMax"].SetValue(ParticleProperties.StartSizeMax);
             EffectUpdate.Parameters["EndSizeMin"].SetValue(ParticleProperties.EndSizeMin);
             EffectUpdate.Parameters["EndSizeMax"].SetValue(ParticleProperties.EndSizeMax);
+            EffectUpdate.Parameters["StartColorMin"].SetValue(ParticleProperties.StartColorMin.ToVector4());
+            EffectUpdate.Parameters["StartColorMax"].SetValue(ParticleProperties.StartColorMax.ToVector4());
+            EffectUpdate.Parameters["EndColorMin"].SetValue(ParticleProperties.StartColorMin.ToVector4());
+            EffectUpdate.Parameters["EndColorMax"].SetValue(ParticleProperties.StartColorMax.ToVector4());
             EffectUpdate.Parameters["Field"].SetValue(new Vector4(0, 0, 0, 0));
             EffectUpdate.Parameters["ElapsedTime"].SetValue((float)gameTime.ElapsedGameTime.TotalSeconds);
 
@@ -360,10 +364,10 @@ namespace ParticleStormDLL
             //GraphicsDevice.Clear(Color.Black);
 
             //Disable Depth-/Stencilbuffer
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.DepthStencilState = DepthStencilState.None;
 
             //Set BlendState
-            GraphicsDevice.BlendState = (ParticleProperties.AdditiveBlendingEnabled) ? BlendState.Additive : BlendState.Opaque;
+            GraphicsDevice.BlendState = (ParticleProperties.AdditiveBlending) ? BlendState.Additive : BlendState.Opaque;
 
             //Set ParticleMesh IndexBuffer
             GraphicsDevice.Indices = Mesh.IndexBuffer;
