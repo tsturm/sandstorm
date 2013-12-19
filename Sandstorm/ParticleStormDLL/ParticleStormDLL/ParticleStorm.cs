@@ -72,7 +72,7 @@ namespace ParticleStormDLL
             Forces = new List<BaseForce>();
 
             //Set default particle properties
-            ParticleProperties = ParticleProperties.Default;
+            ParticleProperties = ParticleProperties.Sandstorm;
 
             //Set default total particles
             TotalParticles = 1024*1024;

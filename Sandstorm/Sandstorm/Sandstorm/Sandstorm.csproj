@@ -99,6 +99,10 @@
       <Project>{AD731E39-672A-43DC-92F3-B04D5935F9A7}</Project>
       <Name>ParticleStormDLL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\SandstormKinect\SandstormKinect.csproj">
+      <Project>{5531CED4-3CCB-403F-B23C-3DF4616A441D}</Project>
+      <Name>SandstormKinect</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SandstormContent\SandstormContent.contentproj">
       <Name>SandstormContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>

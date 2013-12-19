@@ -12,6 +12,7 @@ using System.Globalization;
 
 using ParticleStormDLL;
 using Sandstorm.GUI;
+using SandstormKinect;
 
 namespace Sandstorm
 {
@@ -22,13 +23,18 @@ namespace Sandstorm
     {
         GraphicsDeviceManager graphics;
         CameraController cameraController;
+        CameraController cameraControllerOrtho;
         private SpriteBatch SpriteBatch;
         private SpriteFont SpriteFont;
+        private SandstormKinectCore Kinect { get; set; }
 
         /// <summary>
         /// Gets or Sets the camera of the scene
         /// </summary>
         public Camera Camera { get; set; }
+
+        public Camera CameraOrtho { get; set; }
+        public Camera ActiveCamera { get; set; }
 
 
         private Terrain Terrain;
@@ -71,6 +77,13 @@ namespace Sandstorm
             Camera = new Camera(GraphicsDevice.Viewport);
             cameraController = new CameraController(Camera);
 
+            CameraOrtho = new Camera(GraphicsDevice.Viewport);
+            CameraOrtho.Type = global::Sandstorm.Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
+            CameraOrtho.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), (float)Math.PI/2); 
+            cameraControllerOrtho = new CameraController(CameraOrtho);
+
+            ActiveCamera = Camera;
+
             Terrain = new Terrain(this);
 
             _particleSystem = new ParticleStorm(this);
@@ -81,6 +94,10 @@ namespace Sandstorm
 
             
             base.Initialize();
+
+            Kinect = new SandstormKinectCore(this.GraphicsDevice);
+            Kinect.SandstormKinectDepth += Handlekinect;
+            Kinect.StartKinect();
         }
 
         /// <summary>
@@ -115,6 +132,12 @@ namespace Sandstorm
             _HUD.OnResize();
         }
 
+        private void Handlekinect(object sender, SandstormKinectEvent e)
+        {
+            Terrain.HeightMap2 = e.Texture;
+            _particleSystem.terrain = e.Texture;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -139,6 +162,13 @@ namespace Sandstorm
                     graphics.ToggleFullScreen();
                 }
             }
+            else if (Keyboard.GetState().IsKeyDown(Keys.C))
+            {
+                if (ActiveCamera == Camera)
+                    ActiveCamera = CameraOrtho;
+                else
+                    ActiveCamera = Camera;
+            }
         }
 
         /// <summary>
@@ -154,7 +184,10 @@ namespace Sandstorm
 
             //Mouse camera Events only on focus and if not clicked on buttons
             if (this.IsActive && !_HUD._gui.HasMouse)
+            {
                 cameraController.Update(gameTime);
+                cameraControllerOrtho.Update(gameTime);
+            }
 
             base.Update(gameTime);
         }
@@ -169,8 +202,8 @@ namespace Sandstorm
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
 
-            _particleSystem.SetMatrices(Camera.ViewMatrix, Camera.ProjMatrix);
-            Terrain.SetMatrices(Camera.ViewMatrix, Camera.ProjMatrix);
+            _particleSystem.SetMatrices(ActiveCamera.ViewMatrix, ActiveCamera.ProjMatrix);
+            Terrain.SetMatrices(ActiveCamera.ViewMatrix, ActiveCamera.ProjMatrix);
             
             base.Draw(gameTime);
 
