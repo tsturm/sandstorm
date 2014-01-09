@@ -86,7 +86,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Sandstorm.cs" />
+    <Compile Include="Terrain\DoubleTexture.cs" />
     <Compile Include="Terrain\Terrain.cs" />
+    <Compile Include="Terrain\TerrainProperties.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

@@ -4,6 +4,8 @@ float TotalParticles;
 float RenderTargetSize;
 float3 PositionMin;
 float3 PositionMax;
+float3 VelocityMax;
+float3 VelocityMin;
 float LifeMin;
 float LifeMax;
 float StartSizeMin;
@@ -203,7 +205,7 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 		//Check if dead
 		if(life <= 0.0)
 		{
-			velocity = nextFloat3(float3(-2, 10, -2), float3(2, 15, 2), Input.TexCoord, 1.5784);
+			velocity = nextFloat3(VelocityMin, VelocityMax, Input.TexCoord, 1.5784);
 			position = nextFloat3(PositionMin, PositionMax, Input.TexCoord, 12.4732);
 			life = lifeFull = nextFloat(LifeMin, LifeMax, Input.TexCoord, 7.1581);
 			float startSize = nextFloat(StartSizeMin, StartSizeMax, Input.TexCoord, 34.5424);
@@ -224,8 +226,6 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 
 			float3 fieldDir = Field.xyz - position;
 			float3 fieldForce = normalize(fieldDir) * (Field.w / length(fieldDir));
-
-
 
 			velocity += ElapsedTime * (ExternalForces + fieldForce);
 

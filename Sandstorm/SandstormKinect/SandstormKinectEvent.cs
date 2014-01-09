@@ -74,6 +74,7 @@ namespace SandstormKinect
 
                     float value = 1.0f - ((float)(_image[index] - minofkasten) / maxofkasten);
 
+                    value = Math.Min(1, value);
                     value = Math.Max(0, value);
 
                     int index2 = ((Height - y - 1) * Width + x);

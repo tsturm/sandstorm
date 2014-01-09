@@ -19,25 +19,17 @@ namespace Sandstorm
     {
         private VertexBuffer VertexBuffer;
         private IndexBuffer IndexBuffer;
-        private Texture2D HeightMap;
-        public Texture2D HeightMap2 = null;
+
+        public DoubleTexture HeightMap { get; set; }
         private Effect Effect;
         protected Matrix ViewMatrix;
         protected Matrix ProjectionMatrix;
 
-        public Vector4 Color0 = new Vector4(0.0f, 0.0f, 0.65f, 1.0f);
-        public Vector4 Color1 = new Vector4(0.2f, 0.52f, 0.03f, 1.0f);
-        public Vector4 Color2 = new Vector4(0.9f, 0.85f, 0.34f, 1.0f);
-        public Vector4 Color3 = new Vector4(0.7f, 0.17f, 0.0f, 1.0f);
-
-        public float HeightScale = 100.0f;
-        public float ContourSpacing = 4.5f;
-        public bool DisplayContours = false;
+        public TerrainProperties TerrainProperties { get; set; }
 
         public Terrain(Game game) : base(game)
         {
-            // TODO: Construct any child components here
-            //Add ParticleSystem to the game components
+            //Add Component
             Game.Components.Add(this);
 
             //Set Default view matrix
@@ -45,6 +37,9 @@ namespace Sandstorm
 
             //Set default projection matrix
             ProjectionMatrix = Matrix.Identity;
+
+            //Set default ParticleProperties
+            TerrainProperties = TerrainProperties.Default;
         }
 
         /// <summary>
@@ -53,8 +48,6 @@ namespace Sandstorm
         /// </summary>
         public override void Initialize()
         {
-            // TODO: Add your initialization code here
-
             base.Initialize();
         }
 
@@ -65,11 +58,11 @@ namespace Sandstorm
         {
 
             Effect = Game.Content.Load<Effect>("fx\\terrain");
-            HeightMap = Game.Content.Load<Texture2D>("tex/heightmap");
+            Texture2D TmpMap = Game.Content.Load<Texture2D>("tex/heightmap");
 
-            Color[] heightMapData = new Color[HeightMap.Width * HeightMap.Height];
-            Vector4[] heightMapData2 = new Vector4[HeightMap.Width * HeightMap.Height];
-            HeightMap.GetData(heightMapData);
+            Color[] heightMapData = new Color[TmpMap.Width * TmpMap.Height];
+            Vector4[] heightMapData2 = new Vector4[TmpMap.Width * TmpMap.Height];
+            TmpMap.GetData(heightMapData);
 
             for (int i = 0; i < heightMapData.Length; i++)
             {
@@ -79,9 +72,9 @@ namespace Sandstorm
                 heightMapData2[i].W = 1.0f;
             }
 
-            HeightMap = new Texture2D(GraphicsDevice, HeightMap.Width, HeightMap.Height, false, SurfaceFormat.Vector4);
+            HeightMap = new DoubleTexture(GraphicsDevice, TmpMap.Width, TmpMap.Height, false, SurfaceFormat.Vector4);
 
-            HeightMap.SetData(heightMapData2);
+            HeightMap.TextureA.SetData(heightMapData2);
 
 
             int heightOver2 = HeightMap.Height / 2;
@@ -141,14 +134,7 @@ namespace Sandstorm
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
-
-            if (HeightMap2 != null)
-            {
-                HeightMap = HeightMap2;
-                HeightMap2 = null;
-            }
-
+            HeightMap.Swap();
             base.Update(gameTime);
         }
 
@@ -174,14 +160,14 @@ namespace Sandstorm
             Effect.Parameters["worldMatrix"].SetValue(Matrix.Identity);
             Effect.Parameters["viewMatrix"].SetValue(ViewMatrix);
             Effect.Parameters["projMatrix"].SetValue(ProjectionMatrix);
-            Effect.Parameters["heightMap"].SetValue(HeightMap);
-            Effect.Parameters["heightScale"].SetValue(HeightScale);
-            Effect.Parameters["color0"].SetValue(Color0);
-            Effect.Parameters["color1"].SetValue(Color1);
-            Effect.Parameters["color2"].SetValue(Color2);
-            Effect.Parameters["color3"].SetValue(Color3);
-            Effect.Parameters["contourSpacing"].SetValue(ContourSpacing);
-            Effect.Parameters["displayContours"].SetValue(DisplayContours);
+            Effect.Parameters["heightMap"].SetValue(HeightMap.TextureA);
+            Effect.Parameters["heightScale"].SetValue(TerrainProperties.HeightScale);
+            Effect.Parameters["color0"].SetValue(TerrainProperties.Color0);
+            Effect.Parameters["color1"].SetValue(TerrainProperties.Color1);
+            Effect.Parameters["color2"].SetValue(TerrainProperties.Color2);
+            Effect.Parameters["color3"].SetValue(TerrainProperties.Color3);
+            Effect.Parameters["contourSpacing"].SetValue(TerrainProperties.ContourSpacing);
+            Effect.Parameters["displayContours"].SetValue(TerrainProperties.ContourLines);
 
             //Begin pass
             Effect.CurrentTechnique.Passes[0].Apply();

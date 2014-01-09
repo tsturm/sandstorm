@@ -28,7 +28,7 @@ namespace ParticleStormDLL
         public List<BaseForce> Forces { get; set; }
         protected Vector3 ExternalForces;
 
-        public Texture2D terrain;
+        public Texture2D Terrain { get; set; }
 
         protected BaseMesh FullScreenQuad;
         protected BaseMesh Mesh;
@@ -78,16 +78,16 @@ namespace ParticleStormDLL
             TotalParticles = 1024*1024;
 
             //Set default emission rate
-            EmissionRate = 1075;
+            EmissionRate = 256;
 
             WaitToEmit = EmissionRate;
 
             ExternalForces = Vector3.Zero;
 
             Forces.Add(new Gravity());
-            //Forces.Add(new Wind(new Vector3(1.0f, 0.5f, 0.2f), 12.0f));
+            Forces.Add(new Wind(new Vector3(1.0f, 0.5f, 0.2f), 12.0f));
 
-            terrain = Game.Content.Load<Texture2D>("tex/heightmap");
+            Terrain = Game.Content.Load<Texture2D>("tex/heightmap");
 
             //Set Default view matrix
             ViewMatrix = Matrix.Identity;
@@ -310,7 +310,7 @@ namespace ParticleStormDLL
             //Set effect parameters
             EffectUpdate.Parameters["Positions"].SetValue(PositionsRT.TargetA);
             EffectUpdate.Parameters["Velocities"].SetValue(VelocitiesRT.TargetA);
-            EffectUpdate.Parameters["Terrain"].SetValue(terrain);
+            EffectUpdate.Parameters["Terrain"].SetValue(Terrain);
             EffectUpdate.Parameters["Sizes"].SetValue(SizesRT.TargetA);
             EffectUpdate.Parameters["Colors"].SetValue(ColorsRT.TargetA);
             EffectUpdate.Parameters["StartColors"].SetValue(StartColorsRT.TargetA);
@@ -327,6 +327,8 @@ namespace ParticleStormDLL
             EffectUpdate.Parameters["StartSizeMax"].SetValue(ParticleProperties.StartSizeMax);
             EffectUpdate.Parameters["EndSizeMin"].SetValue(ParticleProperties.EndSizeMin);
             EffectUpdate.Parameters["EndSizeMax"].SetValue(ParticleProperties.EndSizeMax);
+            EffectUpdate.Parameters["VelocityMin"].SetValue(ParticleProperties.VelocityMin);
+            EffectUpdate.Parameters["VelocityMax"].SetValue(ParticleProperties.VelocityMax);
             EffectUpdate.Parameters["StartColorMin"].SetValue(ParticleProperties.StartColorMin.ToVector4());
             EffectUpdate.Parameters["StartColorMax"].SetValue(ParticleProperties.StartColorMax.ToVector4());
             EffectUpdate.Parameters["EndColorMin"].SetValue(ParticleProperties.StartColorMin.ToVector4());

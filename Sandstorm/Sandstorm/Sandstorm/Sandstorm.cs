@@ -134,8 +134,9 @@ namespace Sandstorm
 
         private void Handlekinect(object sender, SandstormKinectEvent e)
         {
-            Terrain.HeightMap2 = e.Texture;
-            _particleSystem.terrain = e.Texture;
+            Terrain.HeightMap.TextureB = e.Texture;
+            Terrain.HeightMap.DoSwap = true;
+            _particleSystem.Terrain = e.Texture;
         }
 
         /// <summary>

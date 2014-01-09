@@ -195,7 +195,7 @@ namespace SandstormKinect
         /// </summary>
         private void DepthImage_Thread()
         {
-            bool firstFlag = true;
+            //bool firstFlag = true;
             bool depthValid = false;
 
             double diffThreshold = 10; //(this.sensor.DepthStream.FrameWidth*this.sensor.DepthStream.FrameHeight) * 5;

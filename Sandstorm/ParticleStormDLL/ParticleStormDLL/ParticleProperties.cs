@@ -20,10 +20,10 @@ namespace ParticleStormDLL
 
         public static readonly ParticleProperties Sandstorm = new ParticleProperties() 
         { 
-            LifeTimeMin = 5.0f,
-            LifeTimeMax = 30.0f,
-            PositionMin = new Vector3(-256, 150, -256),
-            PositionMax = new Vector3(256, 150, -256),
+            LifeTimeMin = 1.0f,
+            LifeTimeMax = 15.0f,
+            PositionMin = new Vector3(-256, 10, -256),
+            PositionMax = new Vector3(256, 80, -256),
             VelocityMin = new Vector3(0, 0, 50),
             VelocityMax = new Vector3(0, 0, 150),
             StartSizeMin = 1.0f,
@@ -123,14 +123,14 @@ namespace ParticleStormDLL
         /// </summary>
         public ParticleProperties()
         {
-            LifeTimeMin = 5.0f;
-            LifeTimeMax = 30.0f;
+            LifeTimeMin = 1.0f;
+            LifeTimeMax = 1.0f;
             PositionMin = new Vector3(-100, 200, -100);
             PositionMax = new Vector3(100, 200, 100);
             VelocityMin = new Vector3(-30, 0, -20);
             VelocityMax = new Vector3(30, 0, 20);
             StartSizeMin = 1.0f;
-            StartSizeMax = 5.0f;
+            StartSizeMax = 2.0f;
             EndSizeMin = 0.0001f;
             EndSizeMax = 0.0001f;
             StartColorMin = new Color(1.0f, 1.0f, 1.0f, 1.0f);

@@ -79,7 +79,7 @@ VSOutput DrawVS(VSInput Input, float2 positionTexCoord : BLENDWEIGHT)
 
 	Output.TexCoord = Input.TexCoord;
 	Output.Color = tex2Dlod(ColorSampler, float4(positionTexCoord, 0.0, 0.0));
-	Output.Life = size.w;
+	Output.Life = realPosition.w;
 
 	return Output;    
 }
