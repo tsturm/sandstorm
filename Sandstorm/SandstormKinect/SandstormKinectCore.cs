@@ -24,21 +24,28 @@ namespace SandstormKinect
         private Thread m_GrabDepthFrameThread;
 
         //images
-        private DepthImagePixel[] m_DepthPixels, m_CustomDepthPixels;
-        private byte[] m_ColorPixels;
-        private Tuple<int, int> m_Startpoint, m_Dimension;
+        private DepthImagePixel[] m_DepthPixels; //, m_CustomDepthPixels;
+        //private byte[] m_ColorPixels;
+        //private Tuple<int, int> m_Startpoint, m_Dimension;
 
-        public KinectProperties KinectProperties { get; set; }
+        //public KinectProperties KinectProperties { get; set; }
 
 
-        private GraphicsDevice m_gd;
+        //private GraphicsDevice m_gd;
 
         //misc
-        Boolean m_ToggleCustomization;
+        //Boolean m_ToggleCustomization;
+        KinectProperties m_KinectSettings;
 
         #endregion
 
         #region PROPPERTIES
+
+        public KinectProperties KinectSettings
+        {
+            get { return m_KinectSettings; }
+            set { m_KinectSettings = value; }
+        }
 
         /// <summary>
         /// get RAW DepthPixels from KinectCamera
@@ -49,60 +56,46 @@ namespace SandstormKinect
             private set { m_DepthPixels = value; }
         }
 
+        #region old_stuff
         /// <summary>
         /// get RAW ColorPixels from KinectCamera
         /// </summary>
-        public byte[] ColorPixels
-        {
-            get { return m_ColorPixels; }
-            private set { m_ColorPixels = value;  }
-        }
+        //public byte[] ColorPixels
+        //{
+        //    get { return m_ColorPixels; }
+        //    private set { m_ColorPixels = value;  }
+        //}
 
         /// <summary>
         /// get customized DepthImage (custom in size)
         /// </summary>
-        public DepthImagePixel[] CustomDepthPixels
-        {
-            get { return m_CustomDepthPixels; }
-            private set { m_CustomDepthPixels = value; }
-        }
+        //public DepthImagePixel[] CustomDepthPixels
+        //{
+        //    get { return m_CustomDepthPixels; }
+        //    private set { m_CustomDepthPixels = value; }
+        //}
 
         /// <summary>
         /// flag to Enable/Disable Events for CustomDepthPixels 
         /// </summary>
-        public Boolean ToggleCustomization
-        {
-            get { return m_ToggleCustomization; }
-            set { m_ToggleCustomization = value; }
-        }
-
-        /// <summary>
-        /// gets or sets the Startpoint for DepthImage cropping
-        /// </summary>
-        public Tuple<int, int> Startpoint
-        {
-            get { return m_Startpoint ?? (m_Startpoint = new Tuple<int, int>(0, 0)); }
-            set { m_Startpoint = value; }
-        }
-
-        /// <summary>
-        /// gets or sets the Dimension of CustomDepthImage, should be smaller than origin resolution
-        /// </summary>
-        public Tuple<int, int> Dimension
-        {
-            get { return m_Dimension ?? (m_Startpoint = new Tuple<int, int>(this.sensor.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight)); }
-            set { m_Dimension = value; }
-        }
+        //public Boolean ToggleCustomization
+        //{
+        //    get { return m_ToggleCustomization; }
+        //    set { m_ToggleCustomization = value; }
+        //}
+        #endregion
 
         #endregion
 
 
-
-        public SandstormKinectCore(GraphicsDevice gd)
+        /// <summary>
+        /// basic constructor
+        /// </summary>
+        public SandstormKinectCore()
         {
-            m_gd = gd;
-            KinectProperties = KinectProperties.Default;
+            //KinectSettings = KinectProperties.Sandstorm;
         }
+
         /// <summary>
         /// Start the Kinect Camera
         /// </summary>
@@ -124,11 +117,10 @@ namespace SandstormKinect
                 {
                     this.sensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
                     this.sensor.DepthStream.Range = DepthRange.Near;
-                    this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
-
+                    //this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
 
                     this.m_DepthPixels = new DepthImagePixel[this.sensor.DepthStream.FramePixelDataLength];
-                    this.m_ColorPixels = new byte[this.sensor.DepthStream.FramePixelDataLength * sizeof(int)];
+                    //this.m_ColorPixels = new byte[this.sensor.DepthStream.FramePixelDataLength * sizeof(int)];
 
                     // Start the sensor!
                     try
@@ -184,7 +176,7 @@ namespace SandstormKinect
 
                     m_GrabDepthFrameThread.Abort();
                     this.sensor.Stop();
-                  /*  this.sensor.Dispose();*/
+                    /* this.sensor.Dispose(); */
                 }
             }
             catch (ThreadAbortException ex)
@@ -198,6 +190,8 @@ namespace SandstormKinect
         /// </summary>
         private void DepthImage_Thread()
         {
+            #region OLD_Stuff
+            /*
             //bool firstFlag = true;
             bool depthValid = false;
 
@@ -250,22 +244,23 @@ namespace SandstormKinect
                         }
 
                         //
-                        myDepthArray.CopyTo(myPrevDepthArray, 0);*/
-
+                        myDepthArray.CopyTo(myPrevDepthArray, 0);
+                        /*
                         //send event for changed depth image
                         if (this.SandstormKinectDepth != null && (myDiffSum / (640 * 480)) > diffThreshold)
                         {
                             this.SandstormKinectDepth(this, new SandstormKinectEvent(m_gd, myDepthArray, this.sensor.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight, KinectProperties));
                             Debug.WriteLine("event sent, diff-operator = {0}", (Math.Abs(myDiffSum)/ (640*480)));
                         }
-
+                        
                         depthValid = false;
                      //   System.Threading.Thread.Sleep(1000);
                     }
 
                     //fire event 
-                    
+
                 }
+
             }
             catch (ThreadAbortException ax)
             {
@@ -275,22 +270,93 @@ namespace SandstormKinect
             {
                 Debug.WriteLine("GrabDepthFrameThread Error {0}", ex);
             }
-        
-            
+
+            */
+            #endregion
+
+            bool firstFlag = true;
+            bool depthValid = false;
+
+            short[] myDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
+            short[] myPrevDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
+
+            //prepare texture
+            Microsoft.Xna.Framework.Vector4[] data = new Microsoft.Xna.Framework.Vector4[this.KinectSettings.TargetDimension.Item1 * this.KinectSettings.TargetDimension.Item2];
+
+            try
+            {
+                while (true)
+                {
+                    depthValid = false;
+                    double myDiffSum = 0;
+
+                    using (DepthImageFrame depthFrame = this.sensor.DepthStream.OpenNextFrame(0))
+                    {
+                        if (depthFrame != null)
+                        {
+                            depthFrame.CopyDepthImagePixelDataTo(this.DepthPixels);
+                            depthValid = true;
+                        }
+                    }
+
+                    if (depthValid)
+                    {
+                        for (int i = 0; i < this.DepthPixels.Count(); i++)
+                        {
+                            if (firstFlag)
+                            {
+                                myPrevDepthArray[i] = this.DepthPixels[i].Depth;
+                                myDepthArray[i] = this.DepthPixels[i].Depth;
+                                firstFlag = false;
+                            }
+                            else
+                            {
+                                myPrevDepthArray[i] = myDepthArray[i];
+                                myDepthArray[i] = this.DepthPixels[i].Depth;
+                                myDiffSum += Math.Abs((double)myPrevDepthArray[i] - (double)myDepthArray[i]);
+                            }
+                        }
+                        //make act. Depths to new prev. Depths
+                        myDepthArray.CopyTo(myPrevDepthArray, 0);
+
+                        //look for changes within DepthImage
+                        if (this.SandstormKinectDepth != null) //&& (myDiffSum / this.DepthPixels.Count()) > this.KinectSettings.DiffThreshold)
+                        {
+                            Debug.WriteLine("KinectCore, diff-operator = {0}", (myDiffSum / this.DepthPixels.Count()));
+                            //create new Depth Texture
+                            for (int y = this.KinectSettings.Startpoint.Item2, idy = 0; y < this.KinectSettings.Startpoint.Item2 + this.KinectSettings.TargetDimension.Item2; y++, idy++)
+                            {
+                                for (int x = this.KinectSettings.Startpoint.Item1, idx = 0; x < this.KinectSettings.Startpoint.Item1 + this.KinectSettings.TargetDimension.Item1; x++, idx++)
+                                {
+                                    short depth = myDepthArray[y + x];
+                                    //todo -> Normierung
+
+                                    data[idy + idx].W = 1.0f; //ignore that
+                                    data[idy + idx].X = 1.0f;
+                                    data[idy + idx].Y = 1.0f;
+                                    data[idy + idx].Z = 1.0f;
+                                }
+                            }
+
+                            //build event
+                            SandstormKinectEvent msg = new SandstormKinectEvent();
+                            msg.TextureData = data;
+                            //fire event
+                            SandstormKinectDepth(this, msg);
+                        }
+                        depthValid = false;
+                    }
+
+                }
+            }
+            catch (ThreadAbortException ax)
+            {
+                Debug.WriteLine("GrabDepthFrameThread Aborted {0}", ax);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("GrabDepthFrameThread Error {0}", ex);
+            }
         }
-
-
-        /// <summary>
-        /// Image cropping
-        /// </summary>
-        /// <param name="_source">source Image</param>
-        /// <param name="_destination">target / destination Image</param>
-        /// <param name="_startpoint">Koordinates of Startpoint (int _x, int _y) </param>
-        /// <param name="_dimension">target Dimensions (int _width, int _height)</param>
-        internal void CropImage(DepthImagePixel _source, DepthImagePixel _destination, Tuple<int,int> _startpoint , Tuple<int, int> _dimension)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

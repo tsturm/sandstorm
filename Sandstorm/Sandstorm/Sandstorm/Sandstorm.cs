@@ -13,6 +13,9 @@ using System.Globalization;
 using ParticleStormDLL;
 using Sandstorm.GUI;
 using SandstormKinect;
+using System.Xml.Serialization;
+using System.IO;
+using System.Diagnostics;
 
 namespace Sandstorm
 {
@@ -26,7 +29,7 @@ namespace Sandstorm
         CameraController cameraControllerOrtho;
         private SpriteBatch SpriteBatch;
         private SpriteFont SpriteFont;
-        private SandstormKinectCore Kinect { get; set; }
+        private SandstormKinectCore Kinect;
 
         /// <summary>
         /// Gets or Sets the camera of the scene
@@ -87,17 +90,37 @@ namespace Sandstorm
             Terrain = new Terrain(this);
 
             _particleSystem = new ParticleStorm(this);
+            //load config
+            var obj_P = LoadXMLConfig("particle.xml", typeof(ParticleProperties));
+            _particleSystem.ParticleProperties = obj_P as ParticleProperties;
+            if (_particleSystem.ParticleProperties == null)
+            {
+                _particleSystem.ParticleProperties = ParticleProperties.Default;
+            }
+            //uncommet to create first file
+            StoreXMLConfig("output_particle_config.xml", this._particleSystem.ParticleProperties, typeof(ParticleProperties));
+
+
+            Kinect = new SandstormKinectCore();
+            //load config
+            var obj_K = LoadXMLConfig("kinect.xml", typeof(KinectProperties));
+            Kinect.KinectSettings = obj_K as KinectProperties;
+            if (Kinect.KinectSettings == null)
+            {
+                Kinect.KinectSettings = KinectProperties.Sandstorm;
+            }
+            //uncommet to create first file
+            StoreXMLConfig("output_kinect_config.xml", this.Kinect.KinectSettings , typeof(KinectProperties));
+
+            Kinect.SandstormKinectDepth += Handlekinect;
+            Kinect.StartKinect();
+
 
             FPSCounter = new FPSCounter(this);
 
             _HUD = new HUD(this, _particleSystem);
 
-
             base.Initialize();
-
-            Kinect = new SandstormKinectCore(this.GraphicsDevice);
-            Kinect.SandstormKinectDepth += Handlekinect;
-            Kinect.StartKinect();
         }
 
         /// <summary>
@@ -134,9 +157,18 @@ namespace Sandstorm
 
         private void Handlekinect(object sender, SandstormKinectEvent e)
         {
-            Terrain.HeightMap.TextureB = e.Texture;
+            Texture2D   my_Texture = new Texture2D(this.GraphicsDevice, this.Kinect.KinectSettings.TargetDimension.Item1, this.Kinect.KinectSettings.TargetDimension.Item2);
+                        my_Texture.SetData(e.TextureData);
+
+            Terrain.HeightMap.TextureB = my_Texture; 
             Terrain.HeightMap.DoSwap = true;
-            _particleSystem.Terrain = e.Texture;
+            _particleSystem.Terrain = my_Texture; 
+
+            //Terrain.HeightMap.TextureB.SetData(e.TextureData);
+            //_particleSystem.Terrain.SetData(e.TextureData);
+            //
+            //swap map
+            //Terrain.HeightMap.DoSwap = true;
         }
 
         /// <summary>
@@ -219,5 +251,65 @@ namespace Sandstorm
 
             _HUD.Draw(gameTime);
         }
+
+
+        
+        #region config handling
+
+        /// <summary>
+        /// load config from disc
+        /// </summary>
+        /// <param name="_filename"></param>
+        /// <param name="_type"></param>
+        /// <returns></returns>
+        internal Object LoadXMLConfig(String _filename, Type _type)
+        {
+            try
+            {
+                //load ParticleSettings
+                XmlSerializer mySerializer = new XmlSerializer(_type);
+                StreamReader myReader = new StreamReader(_filename);
+
+                var obj = mySerializer.Deserialize(myReader);
+                myReader.Close();
+
+                return obj;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("LoadXML", "Something gone wrong while " + _filename + " loading! " + e.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// write config to disc
+        /// </summary>
+        /// <param name="_filename"></param>
+        /// <param name="_config"></param>
+        /// <param name="_type"></param>
+        /// <returns></returns>
+        internal bool StoreXMLConfig(String _filename, Object _config, Type _type)
+        {
+            try
+            {
+                XmlSerializer mySerializer = new XmlSerializer(_type);
+                StreamWriter myWriter = new StreamWriter(_filename);
+
+                mySerializer.Serialize(myWriter, _config);
+                myWriter.Close();
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("StoreXML", "Something gone wrong while XML storing! " + e.Message);
+                return false;
+            }
+
+        }
+
+        #endregion
     }
 }

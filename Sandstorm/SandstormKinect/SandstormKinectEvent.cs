@@ -12,6 +12,10 @@ namespace SandstormKinect
     /// </summary>
     public class SandstormKinectEvent : EventArgs
     {
+
+        #region OLD_Stuff
+
+        /*
         #region FIELDS
 
         private short[] m_DepthImage;
@@ -93,6 +97,19 @@ namespace SandstormKinect
             }
             
             m_texture.SetData(data);
+        }
+
+        #endregion
+        */
+        #endregion
+
+
+        #region EVENT_PROPERTIES
+
+        public Vector4[] TextureData
+        {
+            get;
+            set;
         }
 
         #endregion
