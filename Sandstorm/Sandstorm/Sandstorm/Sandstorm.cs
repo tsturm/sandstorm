@@ -12,7 +12,9 @@ using System.Globalization;
 
 using ParticleStormDLL;
 using Sandstorm.GUI;
-using SandstormKinect;
+using System.Xml.Serialization;
+using System.IO;
+using System.Diagnostics;
 
 namespace Sandstorm
 {
@@ -23,18 +25,13 @@ namespace Sandstorm
     {
         GraphicsDeviceManager graphics;
         CameraController cameraController;
-        CameraController cameraControllerOrtho;
         private SpriteBatch SpriteBatch;
         private SpriteFont SpriteFont;
-        private SandstormKinectCore Kinect { get; set; }
 
         /// <summary>
         /// Gets or Sets the camera of the scene
         /// </summary>
         public Camera Camera { get; set; }
-
-        public Camera CameraOrtho { get; set; }
-        public Camera ActiveCamera { get; set; }
 
 
         private Terrain Terrain;
@@ -77,27 +74,38 @@ namespace Sandstorm
             Camera = new Camera(GraphicsDevice.Viewport);
             cameraController = new CameraController(Camera);
 
-            CameraOrtho = new Camera(GraphicsDevice.Viewport);
-            CameraOrtho.Type = global::Sandstorm.Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
-            CameraOrtho.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), (float)Math.PI/2); 
-            cameraControllerOrtho = new CameraController(CameraOrtho);
-
-            ActiveCamera = Camera;
-
             Terrain = new Terrain(this);
 
+
             _particleSystem = new ParticleStorm(this);
+
+            //load config
+             var obj = LoadXMLConfig("particle.xml", typeof(ParticleProperties));
+             _particleSystem.ParticleProperties = obj as ParticleProperties;
+             if (_particleSystem.ParticleProperties == null)
+             {
+                 _particleSystem.ParticleProperties = ParticleProperties.Default;
+             }
+            //uncommet to create first file
+             //StoreXMLConfig("outputconfig.xml", this._particleSystem.ParticleProperties, typeof(ParticleProperties));
+
 
             FPSCounter = new FPSCounter(this);
 
             _HUD = new HUD(this,_particleSystem);
 
-            
             base.Initialize();
+        }
 
-            Kinect = new SandstormKinectCore(this.GraphicsDevice);
-            Kinect.SandstormKinectDepth += Handlekinect;
-            Kinect.StartKinect();
+        /// <summary>
+        /// called on close
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            //basicly unused... maybe save some special config data
+            base.OnExiting(sender, args);
         }
 
         /// <summary>
@@ -163,13 +171,6 @@ namespace Sandstorm
                     graphics.ToggleFullScreen();
                 }
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.C))
-            {
-                if (ActiveCamera == Camera)
-                    ActiveCamera = CameraOrtho;
-                else
-                    ActiveCamera = Camera;
-            }
         }
 
         /// <summary>
@@ -185,10 +186,7 @@ namespace Sandstorm
 
             //Mouse camera Events only on focus and if not clicked on buttons
             if (this.IsActive && !_HUD._gui.HasMouse)
-            {
                 cameraController.Update(gameTime);
-                cameraControllerOrtho.Update(gameTime);
-            }
 
             base.Update(gameTime);
         }
@@ -203,8 +201,8 @@ namespace Sandstorm
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
 
-            _particleSystem.SetMatrices(ActiveCamera.ViewMatrix, ActiveCamera.ProjMatrix);
-            Terrain.SetMatrices(ActiveCamera.ViewMatrix, ActiveCamera.ProjMatrix);
+            _particleSystem.SetMatrices(Camera.ViewMatrix, Camera.ProjMatrix);
+            Terrain.SetMatrices(Camera.ViewMatrix, Camera.ProjMatrix);
             
             base.Draw(gameTime);
 
@@ -218,6 +216,62 @@ namespace Sandstorm
             SpriteBatch.End();
 
             _HUD.Draw(gameTime);
+        }
+
+
+        /// <summary>
+        /// load config from disc
+        /// </summary>
+        /// <param name="_filename"></param>
+        /// <param name="_type"></param>
+        /// <returns></returns>
+        private Object LoadXMLConfig(String _filename, Type _type)
+        {
+            try
+            {
+                //load ParticleSettings
+                XmlSerializer mySerializer = new XmlSerializer(_type);
+                StreamReader myReader = new StreamReader(_filename);
+
+                var obj = mySerializer.Deserialize(myReader);
+                myReader.Close();
+
+                return obj;
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine("LoadXML", "Something gone wrong while " + _filename + " loading! " + e.Message); 
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// write config to disc
+        /// </summary>
+        /// <param name="_filename"></param>
+        /// <param name="_config"></param>
+        /// <param name="_type"></param>
+        /// <returns></returns>
+        private bool StoreXMLConfig(String _filename, Object _config, Type _type)
+        {
+            try
+            {
+                XmlSerializer mySerializer = new XmlSerializer(_type);
+                StreamWriter myWriter = new StreamWriter(_filename);
+
+                mySerializer.Serialize(myWriter, _config);
+                myWriter.Close();
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("StoreXML", "Something gone wrong while XML storing! " + e.Message);
+                return false;
+            }
+            
         }
     }
 }
