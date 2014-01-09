@@ -20,6 +20,7 @@ namespace Sandstorm
         private VertexBuffer VertexBuffer;
         private IndexBuffer IndexBuffer;
         private Texture2D HeightMap;
+        public Texture2D HeightMap2 = null;
         private Effect Effect;
         protected Matrix ViewMatrix;
         protected Matrix ProjectionMatrix;
@@ -141,6 +142,12 @@ namespace Sandstorm
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
+
+            if (HeightMap2 != null)
+            {
+                HeightMap = HeightMap2;
+                HeightMap2 = null;
+            }
 
             base.Update(gameTime);
         }

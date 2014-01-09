@@ -54,8 +54,6 @@ namespace SandstormKinect
             get { return m_HeightScale; }
             set { m_HeightScale = value; }
         }
-        private float m_ContourSpacing;
-        private bool m_DisplayContoursFlag;
 
         #endregion
 
@@ -390,3 +388,4 @@ namespace SandstormKinect
             */
     }
 }
+#endregion PUBLIC METHODS

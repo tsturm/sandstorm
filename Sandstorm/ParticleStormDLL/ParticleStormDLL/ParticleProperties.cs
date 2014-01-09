@@ -21,6 +21,26 @@ namespace ParticleStormDLL
         /// </summary>
         public static readonly ParticleProperties Default = new ParticleProperties() {};
 
+        public static readonly ParticleProperties Sandstorm = new ParticleProperties() 
+        { 
+            LifeTimeMin = 5.0f,
+            LifeTimeMax = 30.0f,
+            PositionMin = new Vector3(-256, 150, -256),
+            PositionMax = new Vector3(256, 150, -256),
+            VelocityMin = new Vector3(0, 0, 50),
+            VelocityMax = new Vector3(0, 0, 150),
+            StartSizeMin = 1.0f,
+            StartSizeMax = 5.0f,
+            EndSizeMin = 5.0f,
+            EndSizeMax = 5.0f,
+            StartColorMin = new Color(1.0f, 1.0f, 1.0f, 1.0f),
+            StartColorMax = new Color(1.0f, 1.0f, 1.0f, 1.0f),
+            EndColorMin = new Color(1.0f, 1.0f, 1.0f, 0.0f),
+            EndColorMax = new Color(1.0f, 1.0f, 1.0f, 0.0f),
+            Texture = null,
+            AdditiveBlending = true
+        };
+
         /// <summary>
         /// Gets or sets the minimal life time of a particle in seconds
         /// </summary>
