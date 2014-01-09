@@ -28,6 +28,8 @@ namespace SandstormKinect
         private byte[] m_ColorPixels;
         private Tuple<int, int> m_Startpoint, m_Dimension;
 
+        public KinectProperties KinectProperties { get; set; }
+
 
         private GraphicsDevice m_gd;
 
@@ -99,6 +101,7 @@ namespace SandstormKinect
         public SandstormKinectCore(GraphicsDevice gd)
         {
             m_gd = gd;
+            KinectProperties = KinectProperties.Default;
         }
         /// <summary>
         /// Start the Kinect Camera
@@ -252,7 +255,7 @@ namespace SandstormKinect
                         //send event for changed depth image
                         if (this.SandstormKinectDepth != null && (myDiffSum / (640 * 480)) > diffThreshold)
                         {
-                            this.SandstormKinectDepth(this, new SandstormKinectEvent(m_gd, myDepthArray, this.sensor.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight));
+                            this.SandstormKinectDepth(this, new SandstormKinectEvent(m_gd, myDepthArray, this.sensor.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight, KinectProperties));
                             Debug.WriteLine("event sent, diff-operator = {0}", (Math.Abs(myDiffSum)/ (640*480)));
                         }
 

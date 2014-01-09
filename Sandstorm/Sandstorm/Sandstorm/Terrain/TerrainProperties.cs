@@ -56,7 +56,7 @@ namespace Sandstorm
         /// </summary>
         public TerrainProperties()
         {
-            Color0 = new Vector4(0.0f, 0.0f, 0.65f, 1.0f);
+            Color0 = new Vector4(0.0f, 0.0f, 0.85f, 1.0f);
             Color1 = new Vector4(0.2f, 0.52f, 0.03f, 1.0f);
             Color2 = new Vector4(0.9f, 0.85f, 0.34f, 1.0f);
             Color3 = new Vector4(0.7f, 0.17f, 0.0f, 1.0f);

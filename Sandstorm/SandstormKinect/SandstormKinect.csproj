@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KinectProperties.cs" />
     <Compile Include="SandstormKinectEvent.cs" />
     <Compile Include="SandstormKinectCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

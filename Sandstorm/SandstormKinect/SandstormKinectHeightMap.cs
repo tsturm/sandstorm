@@ -388,4 +388,4 @@ namespace SandstormKinect
             */
     }
 }
-#endregion PUBLIC METHODS
+//#endregion PUBLIC METHODS

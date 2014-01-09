@@ -72,7 +72,7 @@ namespace Sandstorm
                 heightMapData2[i].W = 1.0f;
             }
 
-            HeightMap = new DoubleTexture(GraphicsDevice, TmpMap.Width, TmpMap.Height, false, SurfaceFormat.Vector4);
+            HeightMap = new DoubleTexture(GraphicsDevice, 420, 420, false, SurfaceFormat.Vector4);
 
             HeightMap.TextureA.SetData(heightMapData2);
 

@@ -50,39 +50,42 @@ namespace SandstormKinect
 
         #region CONSTRUCTOR
 
-        public SandstormKinectEvent(GraphicsDevice gd, short[] _image, int _width, int _height)
+        public SandstormKinectEvent(GraphicsDevice gd, short[] _image, int _width, int _height, KinectProperties kp)
         { 
             this.DepthImage = _image;
             this.Width = _width;
             this.Height = _height;
 
-            m_texture = new Texture2D(gd, Width, Height, false, SurfaceFormat.Vector4);
+            m_texture = new Texture2D(gd, kp.Width, kp.Height, false, SurfaceFormat.Vector4);
 
-            Vector4[] data = new Vector4[Width * Height];
+            Vector4[] data = new Vector4[kp.Width * kp.Height];
 
             int max = 0;
             int min = Int32.MaxValue;
-            
-            const float minofkasten = 950.0f;
-            const float maxofkasten = 1300.0f - minofkasten;
 
-            for (int y = 0; y < Height; y++)
+            int startX = (Width - kp.Width) / 2;
+            int startY = (Height - kp.Height) / 2;
+
+            for (int y = startY; y < startY + kp.Height; y++)
             {
-                for (int x = 0; x < Width; x++)
+                for (int x = startX; x < startX + kp.Width; x++)
                 {
                     int index = y * Width + x;
 
-                    float value = 1.0f - ((float)(_image[index] - minofkasten) / maxofkasten);
+                    float value = 1.0f - ((float)(_image[index] - kp.MinDistance) / kp.MaxDistance);
 
                     value = Math.Min(1, value);
                     value = Math.Max(0, value);
-
-                    int index2 = ((Height - y - 1) * Width + x);
+                    
+                    int index2 = ((startY + kp.Height - 1) - (y - startY) - startY)*kp.Width + (x - startX);
 
                     data[index2].X = value;
                     data[index2].Y = value;
                     data[index2].Z = value;
                     data[index2].W = 1.0f;
+
+
+
                     max = Math.Max(_image[index], max);
                     if(_image[index] != 0)
                     min = Math.Min(_image[index], min);
