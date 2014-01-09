@@ -12,6 +12,9 @@ using System.Globalization;
 
 using ParticleStormDLL;
 using Sandstorm.GUI;
+using System.Xml.Serialization;
+using System.IO;
+using System.Diagnostics;
 
 namespace Sandstorm
 {
@@ -73,14 +76,36 @@ namespace Sandstorm
 
             Terrain = new Terrain(this);
 
+
             _particleSystem = new ParticleStorm(this);
+
+            //load config
+             var obj = LoadXMLConfig("particle.xml", typeof(ParticleProperties));
+             _particleSystem.ParticleProperties = obj as ParticleProperties;
+             if (_particleSystem.ParticleProperties == null)
+             {
+                 _particleSystem.ParticleProperties = ParticleProperties.Default;
+             }
+            //uncommet to create first file
+             //StoreXMLConfig("outputconfig.xml", this._particleSystem.ParticleProperties, typeof(ParticleProperties));
+
 
             FPSCounter = new FPSCounter(this);
 
             _HUD = new HUD(this,_particleSystem);
 
-            
             base.Initialize();
+        }
+
+        /// <summary>
+        /// called on close
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            //basicly unused... maybe save some special config data
+            base.OnExiting(sender, args);
         }
 
         /// <summary>
@@ -184,6 +209,62 @@ namespace Sandstorm
             SpriteBatch.End();
 
             _HUD.Draw(gameTime);
+        }
+
+
+        /// <summary>
+        /// load config from disc
+        /// </summary>
+        /// <param name="_filename"></param>
+        /// <param name="_type"></param>
+        /// <returns></returns>
+        private Object LoadXMLConfig(String _filename, Type _type)
+        {
+            try
+            {
+                //load ParticleSettings
+                XmlSerializer mySerializer = new XmlSerializer(_type);
+                StreamReader myReader = new StreamReader(_filename);
+
+                var obj = mySerializer.Deserialize(myReader);
+                myReader.Close();
+
+                return obj;
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine("LoadXML", "Something gone wrong while " + _filename + " loading! " + e.Message); 
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// write config to disc
+        /// </summary>
+        /// <param name="_filename"></param>
+        /// <param name="_config"></param>
+        /// <param name="_type"></param>
+        /// <returns></returns>
+        private bool StoreXMLConfig(String _filename, Object _config, Type _type)
+        {
+            try
+            {
+                XmlSerializer mySerializer = new XmlSerializer(_type);
+                StreamWriter myWriter = new StreamWriter(_filename);
+
+                mySerializer.Serialize(myWriter, _config);
+                myWriter.Close();
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("StoreXML", "Something gone wrong while XML storing! " + e.Message);
+                return false;
+            }
+            
         }
     }
 }

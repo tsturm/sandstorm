@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
+//using Microsoft.Xna.Framework;
+//using Microsoft.Xna.Framework.Graphics;
+//using Microsoft.Xna.Framework.Content;
 using SandstormKinect;
 using System.Threading;
 using System.Runtime.CompilerServices;
@@ -11,6 +11,7 @@ namespace SandstormKinect
 {
     public class SandstormKinectHeightMap
     {
+        /*
 
         #region FIELDS
 
@@ -293,7 +294,7 @@ namespace SandstormKinect
             }
         }
         */
-
+        /*
         /// <summary>
         /// get Height at Point XY
         /// </summary>
@@ -378,10 +379,14 @@ namespace SandstormKinect
             }
             return 0;
         }*/
+        /*
+                public int getWidth()
+                {
+                    return m_HeightMap.Width;
+                }
+            }
 
-        public int getWidth()
-        {
-            return m_HeightMap.Width;
-        }
+                #endregion
+            */
     }
 }

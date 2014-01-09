@@ -8,9 +8,12 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Xml.Serialization;
 
 namespace ParticleStormDLL
 {
+    [Serializable()]
+    [XmlRootAttribute("ParticleProperties", Namespace = "sandstorm.h-da.de", IsNullable = false)]
     public class ParticleProperties
     {
         /// <summary>
