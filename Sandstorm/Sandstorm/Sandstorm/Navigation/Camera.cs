@@ -46,7 +46,7 @@ namespace Sandstorm
         private int _orthoHeight = 492;
 
         private float _pitch;
-        private float _yaw;
+        //private float _yaw;
 
         private Matrix _viewMatrix = Matrix.Identity;
         private Matrix _projMatrix = Matrix.Identity;

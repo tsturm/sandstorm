@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace SandstormKinect.Util
 {
+    [Serializable()]
+    [XmlRootAttribute("MyTuple", Namespace = "sandstorm.h-da.de", IsNullable = false)]
     public class MyTuple<T1, T2>
     {
         MyTuple() { }

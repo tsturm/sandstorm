@@ -5,6 +5,8 @@ using System.Text;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using SandstormKinect.Util;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace SandstormKinect
 {

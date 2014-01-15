@@ -391,6 +391,8 @@ namespace ParticleStormDLL
             }
             else
             {
+                if(ParticleProperties.Texture.Width == 0)
+                     ParticleProperties.Texture = ContentManager.Load<Texture2D>("Simple");
                 EffectDraw.CurrentTechnique = EffectDraw.Techniques["DrawTextured"];
                 EffectDraw.Parameters["diffuseMap"].SetValue(ParticleProperties.Texture);
             }

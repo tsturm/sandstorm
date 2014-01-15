@@ -13,7 +13,7 @@ using System.Xml.Serialization;
 namespace ParticleStormDLL
 {
     [Serializable()]
-    [XmlRootAttribute("ParticleProperties", Namespace = "sandstorm.h-da.de", IsNullable = false)]
+    [XmlRootAttribute("ParticleProperties", Namespace = "sandstorm.h-da.de", IsNullable = true)]
     public class ParticleProperties
     {
         /// <summary>

@@ -121,7 +121,7 @@ namespace Sandstorm.GUI
             }
         }
 
-        private void initGui()
+        public void initGui()
         {
             var skin = new Skin(_ImageMap, _Map);
             var calibri16 = new Text(Calibri16, Color.White);

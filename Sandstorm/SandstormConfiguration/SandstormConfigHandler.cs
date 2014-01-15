@@ -17,9 +17,11 @@ namespace SandstormConfiguration
             //return default config
             return new SandstormConfiguration();
         }
+        
 
         public bool StoreConfiguration(SandstormConfiguration config) 
         {
+
 
 
             //return if export has been ok

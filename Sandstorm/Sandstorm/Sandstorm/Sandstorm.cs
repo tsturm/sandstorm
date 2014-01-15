@@ -16,6 +16,9 @@ using SandstormKinect;
 using System.Xml.Serialization;
 using System.IO;
 using System.Diagnostics;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml;
+using System.Text;
 
 namespace Sandstorm
 {
@@ -66,6 +69,57 @@ namespace Sandstorm
 
             // Subscribe to the game window's ClientSizeChanged event.
             Window.ClientSizeChanged += new EventHandler<EventArgs>(OnResize);
+        }
+
+
+        private static XmlSerializer particleProps = new XmlSerializer(typeof(ParticleProperties));
+        private static XmlSerializer kinectProps = new XmlSerializer(typeof(KinectProperties));
+        private static XmlSerializer terrainProps = new XmlSerializer(typeof(TerrainProperties));
+
+        private void saveConfig()
+        {
+            saveObject(ParticleSystem.ParticleProperties,particleProps);
+            saveObject(Kinect.KinectSettings,kinectProps);
+            saveObject(Terrain.TerrainProperties,terrainProps);
+        }
+
+        private void loadConfig()
+        {            
+            String path = null;
+            
+            //ParticleProperties
+            path = ParticleSystem.ParticleProperties.GetType().Name + ".xml";
+            if(File.Exists(path))
+                ParticleSystem.ParticleProperties = (ParticleProperties) loadObject(path,particleProps);
+            
+            //KinectProperties
+            path = Kinect.KinectSettings.GetType().Name + ".xml";
+            if(File.Exists(path))
+                Kinect.KinectSettings = (KinectProperties)loadObject(path, kinectProps);
+            
+            //KinectProperties
+            path = Terrain.TerrainProperties.GetType().Name + ".xml";
+            if(File.Exists(path))
+                Terrain.TerrainProperties = (TerrainProperties)loadObject(path, terrainProps);
+
+            _HUD.initGui();
+        }
+
+        private void saveObject(Object o,XmlSerializer serializer)
+        {
+            Stream fs = new FileStream(o.GetType().Name + ".xml", FileMode.Create);
+            XmlWriter writer = new XmlTextWriter(fs, Encoding.Unicode);
+            serializer.Serialize(writer, o);
+            writer.Close();
+        }
+
+        private Object loadObject(String filename, XmlSerializer serializer)
+        {
+            FileStream fs = new FileStream(filename, FileMode.Open);
+            XmlReader reader = XmlReader.Create(fs);
+            Object o = serializer.Deserialize(reader);
+            fs.Close();
+            return o;
         }
 
         /// <summary>
@@ -121,6 +175,8 @@ namespace Sandstorm
             _HUD = new HUD(this, ParticleSystem);
 
             base.Initialize();
+
+            loadConfig();
         }
 
         /// <summary>
@@ -197,6 +253,14 @@ namespace Sandstorm
                     ActiveCamera = CameraOrtho;
                 else
                     ActiveCamera = Camera;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                this.saveConfig();
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.L))
+            {
+                this.loadConfig();
             }
         }
 
