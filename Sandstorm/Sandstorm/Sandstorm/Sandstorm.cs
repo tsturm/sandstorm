@@ -95,7 +95,7 @@ namespace Sandstorm
             ParticleSystem.ParticleProperties = obj_P as ParticleProperties;
             if (ParticleSystem.ParticleProperties == null)
             {
-                ParticleSystem.ParticleProperties = ParticleProperties.Default;
+                ParticleSystem.ParticleProperties = ParticleProperties.Sandstorm;
             }
             //uncommet to create first file
             StoreXMLConfig("output_particle_config.xml", this.ParticleSystem.ParticleProperties, typeof(ParticleProperties));

@@ -75,8 +75,19 @@ namespace Sandstorm.GUI
 
                 switch (properties[i].PropertyType.ToString())
                 {
+                    case "System.Int32":
+                        IntSlider iS = new IntSlider(scrollBars,
+                                                     _particleSystem.ParticleProperties,
+                                                     properties[i].Name,
+                                                     0,
+                                                     offset,
+                                                     145,
+                                                     0,
+                                                     2000);
+                        offset += 40;
+                        break;
                     case "System.Single":
-                        FloatSlider os = new FloatSlider(scrollBars,
+                        FloatSlider oS = new FloatSlider(scrollBars,
                                                          _particleSystem.ParticleProperties,
                                                          properties[i].Name,
                                                          0, 
@@ -87,7 +98,7 @@ namespace Sandstorm.GUI
                         offset += 40;
                         break;
                     case "Microsoft.Xna.Framework.Vector3":
-                        Vector3Slider v3s = new Vector3Slider(scrollBars,
+                        Vector3Slider v3S = new Vector3Slider(scrollBars,
                                                               _particleSystem.ParticleProperties,
                                                               properties[i].Name,
                                                               0,
@@ -98,7 +109,7 @@ namespace Sandstorm.GUI
                         offset += 85;
                         break;
                     case "Microsoft.Xna.Framework.Color":
-                        ColorSlider cs = new ColorSlider(scrollBars,
+                        ColorSlider cS = new ColorSlider(scrollBars,
                                                          _particleSystem.ParticleProperties,
                                                          properties[i].Name,
                                                          0,
@@ -116,7 +127,8 @@ namespace Sandstorm.GUI
                                                              offset);
                         offset += 40;
                         break;
-                    
+                    case "Microsoft.Xna.Framework.Graphics.Texture2D":
+                        break;      
                 } 
             }
         }

@@ -153,25 +153,6 @@ float4 nextFloat4(float4 min, float4 max, float2 uv, float seed)
 	return randomized;
 }
 
-float4 unpackColor(float color)
-{
-	float r = color / 16777216.0;
-	float g = (color / 65536.0);
-	float b = (color / 256.0) - 16776960.0;
-	float a = color - 4294967040.0;
-}
-
-inline float4 EncodeFloatRGBA( float v ) {
-  float4 enc = float4(1.0, 255.0, 65025.0, 160581375.0) * v;
-  enc = frac(enc);
-  enc -= enc.yzww * float4(1.0/255.0,1.0/255.0,1.0/255.0,0.0);
-  return enc;
-}
-
-inline float DecodeFloatRGBA( float4 rgba ) {
-  return dot( rgba, float4(1.0, 1/255.0, 1/65025.0, 1/160581375.0) );
-}
-
 VSOutput PhysicsVS(VSInput Input)
 {	
 	VSOutput Output = (VSOutput)0;

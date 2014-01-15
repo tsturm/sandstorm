@@ -23,6 +23,7 @@ namespace ParticleStormDLL
 
         public static readonly ParticleProperties Sandstorm = new ParticleProperties() 
         { 
+            EmissionRate = 256,
             LifeTimeMin = 1.0f,
             LifeTimeMax = 15.0f,
             PositionMin = new Vector3(-256, 10, -256),
@@ -40,6 +41,11 @@ namespace ParticleStormDLL
             Texture = null,
             AdditiveBlending = true
         };
+
+        /// <summary>
+        /// Gets or sets the emission rate per second
+        /// </summary>
+        public int EmissionRate { get; set; }
 
         /// <summary>
         /// Gets or sets the minimal life time of a particle in seconds
@@ -126,6 +132,7 @@ namespace ParticleStormDLL
         /// </summary>
         public ParticleProperties()
         {
+            EmissionRate = 256;
             LifeTimeMin = 1.0f;
             LifeTimeMax = 1.0f;
             PositionMin = new Vector3(-100, 200, -100);
