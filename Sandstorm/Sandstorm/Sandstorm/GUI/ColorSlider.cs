@@ -93,15 +93,13 @@ namespace Sandstorm.GUI
         public void OnValueChangedR(Widget widget)
         {
             //Update value
-            Value = new Color((float)Min.R + ((Slider)widget).Value * (float)Max.R, Value.G, Value.B, Value.A);
-
-            Vector4 asVector = Value.ToVector4();
+            Value = new Color((byte)(((Slider)widget).Value * (float)Max.R), Value.G, Value.B, Value.A);
 
             //Update label
-            Label.Value = Text + "\n[" + (asVector.X).ToString("n1", CultureInfo.InvariantCulture) + ", " +
-                                         (asVector.Y).ToString("n1", CultureInfo.InvariantCulture) + ", " +
-                                         (asVector.Z).ToString("n1", CultureInfo.InvariantCulture) + ", " +
-                                         (asVector.W).ToString("n1", CultureInfo.InvariantCulture) + "]";
+            Label.Value = Text + "\n[" + ((float)Value.R / 255.0f).ToString("n1", CultureInfo.InvariantCulture) + ", " +
+                                         ((float)Value.G / 255.0f).ToString("n1", CultureInfo.InvariantCulture) + ", " +
+                                         ((float)Value.B / 255.0f).ToString("n1", CultureInfo.InvariantCulture) + ", " +
+                                         ((float)Value.A / 255.0f).ToString("n1", CultureInfo.InvariantCulture) + "]";
 
             //Update connected property
             Property.SetValue(PropertyOwner, Value, null);
@@ -114,7 +112,7 @@ namespace Sandstorm.GUI
         public void OnValueChangedG(Widget widget)
         {
             //Update value
-            Value = new Color(Value.R, Min.G + ((Slider)widget).Value * Max.G, Value.B, Value.A);
+            Value = new Color(Value.R, (byte)(((Slider)widget).Value * Max.G), Value.B, Value.A);
 
             //Update label
             Label.Value = Text + "\n[" + ((float)Value.R / 255.0f).ToString("n1", CultureInfo.InvariantCulture) + ", " +
@@ -133,7 +131,7 @@ namespace Sandstorm.GUI
         public void OnValueChangedB(Widget widget)
         {
             //Update value
-            Value = new Color(Value.R, Value.G, Min.B + ((Slider)widget).Value * Max.B, Value.A);
+            Value = new Color(Value.R, Value.G, (byte)(((Slider)widget).Value * Max.B), Value.A);
 
             //Update label
             Label.Value = Text + "\n[" + ((float)Value.R / 255.0f).ToString("n1", CultureInfo.InvariantCulture) + ", " +
@@ -152,7 +150,7 @@ namespace Sandstorm.GUI
         public void OnValueChangedA(Widget widget)
         {
             //Update value
-            Value = new Color(Value.R, Value.G, Value.B, Min.A + ((Slider)widget).Value * Max.A);
+            Value = new Color(Value.R, Value.G, Value.B, (byte)(((Slider)widget).Value * Max.A));
 
             //Update label
             Label.Value = Text + "\n[" + ((float)Value.R / 255.0f).ToString("n1", CultureInfo.InvariantCulture) + ", " +
