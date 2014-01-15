@@ -18,7 +18,6 @@ namespace ParticleStormDLL
 
         public int TotalParticles { get; set; }
         public int ActiveParticles { get; private set; }
-        public int EmissionRate { get; set; }
 
         protected Randomizer Randomizer;
 
@@ -77,10 +76,7 @@ namespace ParticleStormDLL
             //Set default total particles
             TotalParticles = 1024*1024;
 
-            //Set default emission rate
-            EmissionRate = 256;
-
-            WaitToEmit = EmissionRate;
+            WaitToEmit = ParticleProperties.EmissionRate;
 
             ExternalForces = Vector3.Zero;
 
@@ -246,9 +242,9 @@ namespace ParticleStormDLL
             //if (Elapsed >= TimeSpan.FromSeconds(1))
             //{
             //    Elapsed = TimeSpan.FromSeconds(0);
-            //    if (ActiveParticles + EmissionRate < TotalParticles)
+            //    if (ActiveParticles + ParticleProperties.EmissionRate < TotalParticles)
             //    {
-            //        WaitToEmit += EmissionRate;
+            //        WaitToEmit += ParticleProperties.EmissionRate;
             //    }
             //    else
             //    {
@@ -263,7 +259,7 @@ namespace ParticleStormDLL
 
             Heightmap.Swap();
 
-            if (ActiveParticles < TotalParticles) ActiveParticles = (int)(gameTime.TotalGameTime.TotalSeconds * EmissionRate);
+            if (ActiveParticles < TotalParticles) ActiveParticles = (int)(gameTime.TotalGameTime.TotalSeconds * ParticleProperties.EmissionRate);
 
             //Reset accumulated external forces
             ExternalForces = new Vector3(0.0f, 0.0f, 0.0f);
@@ -345,13 +341,20 @@ namespace ParticleStormDLL
             //Begin first effect pass
             EffectUpdate.CurrentTechnique.Passes[0].Apply();
 
-            //Draw full screen quad
-            GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 
-                                                 0, 
-                                                 0, 
-                                                 FullScreenQuad.VertexCount, 
-                                                 0, 
-                                                 FullScreenQuad.PrimitiveCount);
+            foreach (EffectPass pass in EffectUpdate.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+
+                //Draw full screen quad
+                GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList,
+                                                     0,
+                                                     0,
+                                                     FullScreenQuad.VertexCount,
+                                                     0,
+                                                     FullScreenQuad.PrimitiveCount);
+            }
+
+            
 
             PositionsRT.Swap();
             VelocitiesRT.Swap();

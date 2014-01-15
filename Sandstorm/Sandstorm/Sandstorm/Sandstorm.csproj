@@ -78,6 +78,7 @@
     <Compile Include="FPSCounter.cs" />
     <Compile Include="GUI\BooleanToggle.cs" />
     <Compile Include="GUI\ColorSlider.cs" />
+    <Compile Include="GUI\IntSlider.cs" />
     <Compile Include="GUI\HUD.cs" />
     <Compile Include="GUI\FloatSlider.cs" />
     <Compile Include="GUI\Vector3Slider.cs" />
