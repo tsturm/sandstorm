@@ -95,7 +95,7 @@ namespace Sandstorm.GUI
                                                               145,
                                                               new Vector3(-999, -999, -999),
                                                               new Vector3(999, 999, 999));
-                        offset += 70;
+                        offset += 85;
                         break;
                     case "Microsoft.Xna.Framework.Color":
                         ColorSlider cs = new ColorSlider(scrollBars,
@@ -106,7 +106,7 @@ namespace Sandstorm.GUI
                                                          145,
                                                          new Color(0, 0, 0, 0),
                                                          new Color(255, 255, 255, 255));
-                        offset += 85;
+                        offset += 100;
                         break;
                     case "System.Boolean":
                         BooleanToggle bt = new BooleanToggle(scrollBars,

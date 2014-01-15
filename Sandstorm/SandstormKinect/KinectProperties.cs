@@ -66,7 +66,7 @@ namespace SandstormKinect
         public static readonly KinectProperties Default = new KinectProperties()
         {
             Startpoint =  Tuple.Create(0, 0),
-            TargetDimension = Tuple.Create(640, 480),
+            TargetDimension = Tuple.Create(420, 420),
             HiLevelDistance = 950.0f,
             LowLevelDistance = 1250.0f
 

@@ -106,12 +106,18 @@ namespace SandstormKinect
 
         #region EVENT_PROPERTIES
 
-        public Vector4[] TextureData
+        public Microsoft.Xna.Framework.Vector4[] TextureData
         {
             get;
             set;
         }
 
         #endregion
+
+        public SandstormKinectEvent(Microsoft.Xna.Framework.Vector4[] texData)
+        {
+            //set data
+            TextureData = texData;
+        }
     }
 }

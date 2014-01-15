@@ -93,6 +93,7 @@
     <Compile Include="ParticleProperties.cs" />
     <Compile Include="Utils\BitPacker.cs" />
     <Compile Include="Utils\DoubleTarget.cs" />
+    <Compile Include="Utils\DoubleTexture.cs" />
     <Compile Include="Utils\PropertyValue.cs" />
     <Compile Include="Utils\Randomizer.cs" />
     <Compile Include="VertexDeclarations\VertexInstance.cs" />

@@ -55,15 +55,17 @@ namespace Sandstorm.GUI
             Max = max;
 
             //Create new label
-            Label = new Label(posX, posY, Text);
+            Label = new Label(posX, posY, Text + "\n[" + Value.X.ToString("n1", CultureInfo.InvariantCulture) + ", " +
+                                                         Value.Y.ToString("n1", CultureInfo.InvariantCulture) + ", " +
+                                                         Value.Z.ToString("n1", CultureInfo.InvariantCulture) + "]");
 
             //Add label to parent
             parent.AddWidget(Label);
 
             //Create new slider
-            SliderX = new Slider(posX, posY + 20, width);
-            SliderY = new Slider(posX, posY + 35, width);
-            SliderZ = new Slider(posX, posY + 50, width);
+            SliderX = new Slider(posX, posY + 35, width);
+            SliderY = new Slider(posX, posY + 50, width);
+            SliderZ = new Slider(posX, posY + 65, width);
 
             //Add ValueChanged event handler
             SliderX.ValueChanged += OnValueChangedX;
@@ -74,9 +76,9 @@ namespace Sandstorm.GUI
             parent.AddWidgets(new Widget[]{SliderX, SliderY, SliderZ});
 
             //Set slider initial value (must set after AddWidget!)
-            SliderX.Value = Value.X / Max.X;
-            SliderY.Value = Value.Y / Max.Y;
-            SliderZ.Value = Value.Z / Max.Z; 
+            SliderX.Value = (Value.X + Max.X) / (Max.X * 2.0f);
+            SliderY.Value = (Value.Y + Max.Y) / (Max.Y * 2.0f);
+            SliderZ.Value = (Value.Z + Max.Z) / (Max.Z * 2.0f); 
         }
 
         /// <summary>
@@ -86,10 +88,12 @@ namespace Sandstorm.GUI
         public void OnValueChangedX(Widget widget)
         {
             //Update value
-            Value = new Vector3(Min.X + ((Slider)widget).Value * Max.X, Value.Y, Value.Z);
+            Value = new Vector3( (((Slider)widget).Value * (Max.X * 2.0f)) - Max.X, Value.Y, Value.Z);
 
             //Update label
-            Label.Value = Text;
+            Label.Value = Text + "\n[" + Value.X.ToString("n1", CultureInfo.InvariantCulture) + ", " +
+                                         Value.Y.ToString("n1", CultureInfo.InvariantCulture) + ", " +
+                                         Value.Z.ToString("n1", CultureInfo.InvariantCulture) + "]";
 
             //Update connected property
             Property.SetValue(PropertyOwner, Value, null);
@@ -102,10 +106,12 @@ namespace Sandstorm.GUI
         public void OnValueChangedY(Widget widget)
         {
             //Update value
-            Value = new Vector3(Value.X, Min.Y + ((Slider)widget).Value * Max.Y, Value.Z);
+            Value = new Vector3(Value.X, (((Slider)widget).Value * (Max.Y * 2.0f)) - Max.Y, Value.Z);
 
             //Update label
-            Label.Value = Text;
+            Label.Value = Text + "\n[" + Value.X.ToString("n1", CultureInfo.InvariantCulture) + ", " +
+                                         Value.Y.ToString("n1", CultureInfo.InvariantCulture) + ", " +
+                                         Value.Z.ToString("n1", CultureInfo.InvariantCulture) + "]";
 
             //Update connected property
             Property.SetValue(PropertyOwner, Value, null);
@@ -118,10 +124,12 @@ namespace Sandstorm.GUI
         public void OnValueChangedZ(Widget widget)
         {
             //Update value
-            Value = new Vector3(Value.X, Value.Y, Min.Z + ((Slider)widget).Value * Max.Z);
+            Value = new Vector3(Value.X, Value.Y, (((Slider)widget).Value * (Max.Z * 2.0f)) - Max.Z);
 
             //Update label
-            Label.Value = Text;
+            Label.Value = Text + "\n[" + Value.X.ToString("n1", CultureInfo.InvariantCulture) + ", " +
+                                         Value.Y.ToString("n1", CultureInfo.InvariantCulture) + ", " +
+                                         Value.Z.ToString("n1", CultureInfo.InvariantCulture) + "]";
 
             //Update connected property
             Property.SetValue(PropertyOwner, Value, null);

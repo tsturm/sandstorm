@@ -41,7 +41,7 @@ namespace Sandstorm
 
 
         private Terrain Terrain;
-        private ParticleStorm _particleSystem;
+        private ParticleStorm ParticleSystem;
         private FPSCounter FPSCounter;
         private HUD _HUD;
 
@@ -89,16 +89,16 @@ namespace Sandstorm
 
             Terrain = new Terrain(this);
 
-            _particleSystem = new ParticleStorm(this);
+            ParticleSystem = new ParticleStorm(this);
             //load config
             var obj_P = LoadXMLConfig("particle.xml", typeof(ParticleProperties));
-            _particleSystem.ParticleProperties = obj_P as ParticleProperties;
-            if (_particleSystem.ParticleProperties == null)
+            ParticleSystem.ParticleProperties = obj_P as ParticleProperties;
+            if (ParticleSystem.ParticleProperties == null)
             {
-                _particleSystem.ParticleProperties = ParticleProperties.Default;
+                ParticleSystem.ParticleProperties = ParticleProperties.Default;
             }
             //uncommet to create first file
-            StoreXMLConfig("output_particle_config.xml", this._particleSystem.ParticleProperties, typeof(ParticleProperties));
+            StoreXMLConfig("output_particle_config.xml", this.ParticleSystem.ParticleProperties, typeof(ParticleProperties));
 
 
             Kinect = new SandstormKinectCore();
@@ -110,15 +110,15 @@ namespace Sandstorm
                 Kinect.KinectSettings = KinectProperties.Sandstorm;
             }
             //uncommet to create first file
-            StoreXMLConfig("output_kinect_config.xml", this.Kinect.KinectSettings , typeof(KinectProperties));
+            //StoreXMLConfig("output_kinect_config.xml", this.Kinect.KinectSettings , typeof(KinectProperties));
 
-            Kinect.SandstormKinectDepth += Handlekinect;
+            Kinect.SandstormKinectDepth +=new EventHandler<SandstormKinectEvent>(Handlekinect);
             Kinect.StartKinect();
 
 
             FPSCounter = new FPSCounter(this);
 
-            _HUD = new HUD(this, _particleSystem);
+            _HUD = new HUD(this, ParticleSystem);
 
             base.Initialize();
         }
@@ -157,18 +157,14 @@ namespace Sandstorm
 
         private void Handlekinect(object sender, SandstormKinectEvent e)
         {
-            Texture2D   my_Texture = new Texture2D(this.GraphicsDevice, this.Kinect.KinectSettings.TargetDimension.Item1, this.Kinect.KinectSettings.TargetDimension.Item2);
-                        my_Texture.SetData(e.TextureData);
+            Texture2D my_Texture = new Texture2D(this.GraphicsDevice, this.Kinect.KinectSettings.TargetDimension.Item1, this.Kinect.KinectSettings.TargetDimension.Item2, false, SurfaceFormat.Vector4);
+            my_Texture.SetData(e.TextureData);
 
             Terrain.HeightMap.TextureB = my_Texture; 
             Terrain.HeightMap.DoSwap = true;
-            _particleSystem.Terrain = my_Texture; 
 
-            //Terrain.HeightMap.TextureB.SetData(e.TextureData);
-            //_particleSystem.Terrain.SetData(e.TextureData);
-            //
-            //swap map
-            //Terrain.HeightMap.DoSwap = true;
+            ParticleSystem.Heightmap.TextureB = my_Texture;
+            ParticleSystem.Heightmap.DoSwap = true; 
         }
 
         /// <summary>
@@ -231,17 +227,17 @@ namespace Sandstorm
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            _particleSystem.UpdateParticles(gameTime);
+            ParticleSystem.UpdateParticles(gameTime);
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
 
-            _particleSystem.SetMatrices(ActiveCamera.ViewMatrix, ActiveCamera.ProjMatrix);
+            ParticleSystem.SetMatrices(ActiveCamera.ViewMatrix, ActiveCamera.ProjMatrix);
             Terrain.SetMatrices(ActiveCamera.ViewMatrix, ActiveCamera.ProjMatrix);
 
             base.Draw(gameTime);
 
 
-            string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\n", _particleSystem.ActiveParticles);
+            string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\n", ParticleSystem.ActiveParticles);
 
             SpriteBatch.Begin();
 

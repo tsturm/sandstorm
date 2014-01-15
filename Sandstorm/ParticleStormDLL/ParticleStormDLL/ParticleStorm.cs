@@ -28,7 +28,7 @@ namespace ParticleStormDLL
         public List<BaseForce> Forces { get; set; }
         protected Vector3 ExternalForces;
 
-        public Texture2D Terrain { get; set; }
+        public DoubleTexture Heightmap { get; set; }
 
         protected BaseMesh FullScreenQuad;
         protected BaseMesh Mesh;
@@ -87,8 +87,6 @@ namespace ParticleStormDLL
             Forces.Add(new Gravity());
             //Forces.Add(new Wind(new Vector3(1.0f, 0.5f, 0.2f), 12.0f));
 
-            Terrain = Game.Content.Load<Texture2D>("tex/heightmap");
-
             //Set Default view matrix
             ViewMatrix = Matrix.Identity;
 
@@ -105,6 +103,8 @@ namespace ParticleStormDLL
 
             GraphicsDevice.DeviceResetting += new EventHandler<EventArgs>(OnDeviceResetting);
             GraphicsDevice.DeviceReset += new EventHandler<EventArgs>(OnDeviceReset);
+
+            
         }
 
         /// <summary>
@@ -119,6 +119,10 @@ namespace ParticleStormDLL
             FullScreenQuad = new Quad(GraphicsDevice);
 
             ParticleProperties.Texture = ContentManager.Load<Texture2D>("Simple");
+
+            Heightmap = new DoubleTexture(GraphicsDevice, 420, 420, false, SurfaceFormat.Vector4);
+            Heightmap.TextureA = Game.Content.Load<Texture2D>("tex/heightmap");
+            Heightmap.TextureB = Game.Content.Load<Texture2D>("tex/heightmap");
 
             GenerateRenderTargets();
         }
@@ -257,6 +261,8 @@ namespace ParticleStormDLL
             //    ActiveParticles = WaitToEmit;
             //}
 
+            Heightmap.Swap();
+
             if (ActiveParticles < TotalParticles) ActiveParticles = (int)(gameTime.TotalGameTime.TotalSeconds * EmissionRate);
 
             //Reset accumulated external forces
@@ -310,7 +316,7 @@ namespace ParticleStormDLL
             //Set effect parameters
             EffectUpdate.Parameters["Positions"].SetValue(PositionsRT.TargetA);
             EffectUpdate.Parameters["Velocities"].SetValue(VelocitiesRT.TargetA);
-            EffectUpdate.Parameters["Terrain"].SetValue(Terrain);
+            EffectUpdate.Parameters["Terrain"].SetValue(Heightmap.TextureA);
             EffectUpdate.Parameters["Sizes"].SetValue(SizesRT.TargetA);
             EffectUpdate.Parameters["Colors"].SetValue(ColorsRT.TargetA);
             EffectUpdate.Parameters["StartColors"].SetValue(StartColorsRT.TargetA);
