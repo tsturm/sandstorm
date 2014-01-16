@@ -227,7 +227,7 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 				if(distance<=0.0f)
 				{
 					velocity = (velocity - ((2.0f * dot(velocity, normal)) * normal));
-					float friction = 0.0f;
+					float friction = 1.0f;
 					velocity = (1.0f-friction)*velocity;
 					velocity = float3(velocity.x,0,velocity.z);
 					velocity += normal*abs(distance);

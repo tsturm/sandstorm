@@ -294,7 +294,7 @@ namespace SandstormKinect
 
             //textureData
             Microsoft.Xna.Framework.Vector4[] TextureData = new Microsoft.Xna.Framework.Vector4[this.KinectSettings.TargetDimension.Item1 * this.KinectSettings.TargetDimension.Item2];
-            Texture2D my_Texture = new Texture2D(this.GraphicsDevice, this.KinectSettings.TargetDimension.Item1, this.KinectSettings.TargetDimension.Item2, false, SurfaceFormat.Vector4);
+            
 
             //borders
             int yBorderTarget = (this.sensor.DepthStream.FrameHeight / 2) - (this.KinectSettings.TargetDimension.Item2 / 2) + this.KinectSettings.TargetDimension.Item2;
@@ -343,7 +343,7 @@ namespace SandstormKinect
                         //look for changes within DepthImage
                         if (this.SandstormKinectDepth != null && (myDiffSum / this.DepthPixels.Count()) > this.KinectSettings.DiffThreshold)
                         {
-                            Debug.WriteLine("KinectCore", "calc new DepthData");
+                            //Debug.WriteLine("KinectCore", "calc new DepthData");
                             //Debug.WriteLine("KinectCore, diff-operator = {0}", (myDiffSum / this.DepthPixels.Count()));
                             //create new Depth Texture
                             for (int y = yBorderBegin, idy = this.KinectSettings.TargetDimension.Item2 - 1; y < yBorderTarget; y++, idy--)
@@ -363,10 +363,11 @@ namespace SandstormKinect
                                  }
                             }
                             //fire event
+                            Texture2D my_Texture = new Texture2D(this.GraphicsDevice, this.KinectSettings.TargetDimension.Item1, this.KinectSettings.TargetDimension.Item2, false, SurfaceFormat.Vector4);
                             my_Texture.SetData(TextureData);
                             this.SandstormKinectDepth(this, new SandstormKinectEvent(my_Texture));
                             //wait a bit
-                            Thread.Sleep(250);
+                            //Thread.Sleep(250);
                         }
                         depthValid = false;
                     }

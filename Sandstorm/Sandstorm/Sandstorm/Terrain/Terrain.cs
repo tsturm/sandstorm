@@ -75,6 +75,7 @@ namespace Sandstorm
             HeightMap = new DoubleTexture(GraphicsDevice, 420, 420, false, SurfaceFormat.Vector4);
 
             HeightMap.TextureA.SetData(heightMapData2);
+            HeightMap.TextureB.SetData(heightMapData2);
 
 
             int heightOver2 = HeightMap.Height / 2;
