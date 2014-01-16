@@ -81,7 +81,7 @@ namespace ParticleStormDLL
             ExternalForces = Vector3.Zero;
 
             Forces.Add(new Gravity());
-            //Forces.Add(new Wind(new Vector3(1.0f, 0.5f, 0.2f), 12.0f));
+            Forces.Add(new Wind(new Vector3(0.0f, 0.0f, 1.0f), 50.0f));
 
             //Set Default view matrix
             ViewMatrix = Matrix.Identity;
