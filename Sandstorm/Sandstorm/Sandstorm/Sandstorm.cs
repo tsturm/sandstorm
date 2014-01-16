@@ -226,42 +226,69 @@ namespace Sandstorm
         /// <summary>
         /// 
         /// </summary>
+        KeyboardState oldState = Keyboard.GetState();
         private void HandleInput()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            KeyboardState newState = Keyboard.GetState();
+            if (newState.IsKeyDown(Keys.Escape))
             {
                 Exit();
             }
+            else if (newState.IsKeyDown(Keys.F11))
+            {
+                if (!oldState.IsKeyDown(Keys.F11))
+                {
+                    if (graphics.IsFullScreen)
+                    {
+                        graphics.PreferredBackBufferWidth = 800;
+                        graphics.PreferredBackBufferHeight = 480;
+                        graphics.ToggleFullScreen();
+                    }
+                    else
+                    {
+                        graphics.PreferredBackBufferWidth = GraphicsDevice.Adapter.CurrentDisplayMode.Width;
+                        graphics.PreferredBackBufferHeight = GraphicsDevice.Adapter.CurrentDisplayMode.Height;
+                        graphics.ToggleFullScreen();
+                    }
+                }
+            }
             else if (Keyboard.GetState().IsKeyDown(Keys.F11))
             {
-                if (graphics.IsFullScreen)
+                if (!oldState.IsKeyDown(Keys.F11))
                 {
-                    graphics.PreferredBackBufferWidth = 800;
-                    graphics.PreferredBackBufferHeight = 480;
-                    graphics.ToggleFullScreen();
-                }
-                else
-                {
-                    graphics.PreferredBackBufferWidth = GraphicsDevice.Adapter.CurrentDisplayMode.Width;
-                    graphics.PreferredBackBufferHeight = GraphicsDevice.Adapter.CurrentDisplayMode.Height;
-                    graphics.ToggleFullScreen();
+                    if (ActiveCamera == Camera)
+                        ActiveCamera = CameraOrtho;
+                    else
+                        ActiveCamera = Camera;
                 }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.C))
             {
-                if (ActiveCamera == Camera)
-                    ActiveCamera = CameraOrtho;
-                else
-                    ActiveCamera = Camera;
+                if (!oldState.IsKeyDown(Keys.C))
+                {
+                    if (ActiveCamera == Camera)
+                        ActiveCamera = CameraOrtho;
+                    else
+                        ActiveCamera = Camera;
+                }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                this.saveConfig();
+                if (!oldState.IsKeyDown(Keys.S))
+                {
+                    this.saveConfig();
+                }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.L))
             {
-                this.loadConfig();
+                if (!oldState.IsKeyDown(Keys.L))
+                {
+                    this.loadConfig();
+                }
             }
+
+            // Update saved state.
+            oldState = newState;
         }
 
         /// <summary>
