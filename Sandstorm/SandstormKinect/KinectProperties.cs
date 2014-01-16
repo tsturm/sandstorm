@@ -69,6 +69,7 @@ namespace SandstormKinect
         {
             Startpoint =  Tuple.Create(0, 0),
             TargetDimension = Tuple.Create(420, 420),
+            DiffThreshold = 10,
             NearLevelDistance = 990.0f,
             FarLevelDistance = 1250.0f
 
@@ -79,7 +80,7 @@ namespace SandstormKinect
             //sandstorm  standart values here
             Startpoint = Tuple.Create(100, 20),
             TargetDimension = Tuple.Create(420, 420),
-            DiffThreshold = 10,
+            DiffThreshold = 5,
             NearLevelDistance = 970.0f,
             FarLevelDistance = 1260.0f
         };

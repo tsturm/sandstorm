@@ -118,12 +118,19 @@ namespace SandstormKinect
             set;
         }
 
+        public Texture2D Texture2
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         public SandstormKinectEvent(Texture2D tex)
         {
             //set data
             this.Texture = tex;
+            this.Texture2 = tex;
         }
     }
 }

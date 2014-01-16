@@ -213,12 +213,14 @@ namespace Sandstorm
         {
             //Texture2D my_Texture = new Texture2D(this.GraphicsDevice, this.Kinect.KinectSettings.TargetDimension.Item1, this.Kinect.KinectSettings.TargetDimension.Item2, false, SurfaceFormat.Vector4);
             //my_Texture.SetData(e.TextureData);
-
-            Terrain.HeightMap.TextureB = e.Texture; 
-            Terrain.HeightMap.DoSwap = true;
-
-            ParticleSystem.Heightmap.TextureB = e.Texture;
-            ParticleSystem.Heightmap.DoSwap = true; 
+            if (!Terrain.HeightMap.DoSwap && !ParticleSystem.Heightmap.DoSwap)
+            {
+                Terrain.HeightMap.TextureB = e.Texture;
+                ParticleSystem.Heightmap.TextureB = e.Texture;
+                Terrain.HeightMap.DoSwap = true;
+                ParticleSystem.Heightmap.DoSwap = true;
+            }
+            
         }
 
         /// <summary>

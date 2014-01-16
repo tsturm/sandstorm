@@ -365,7 +365,9 @@ namespace SandstormKinect
                             //fire event
                             Texture2D my_Texture = new Texture2D(this.GraphicsDevice, this.KinectSettings.TargetDimension.Item1, this.KinectSettings.TargetDimension.Item2, false, SurfaceFormat.Vector4);
                             my_Texture.SetData(TextureData);
-                            this.SandstormKinectDepth(this, new SandstormKinectEvent(my_Texture));
+                            SandstormKinectEvent e1 = new SandstormKinectEvent(my_Texture);
+                            this.SandstormKinectDepth(this, e1);
+
                             //wait a bit
                             //Thread.Sleep(250);
                         }
