@@ -75,9 +75,64 @@ PixelToFrame TerrainPS(VertexToPixel Input)
 	
 	Output.Color = Input.Color;
 
-	if(displayContours && fmod(Input.PosWS.y, contourSpacing) < 1.0)
+	if(displayContours/*&& fmod(Input.PosWS.y, contourSpacing) < 1.0*/)
 	{
-		Output.Color = float4(0.2 * Input.Color.rgb, 1.0);
+		float contourLineFactor = 1.0f/35.0f;
+		float2 fragCoord = Input.TexCoord;
+		float pixelOffset = 1.0f/(420.0f);
+		/*float corner0=tex2D(TextureSampler,float2(fragCoord.x,fragCoord.y)).r*256.0f;
+		float corner1=tex2D(TextureSampler,float2(fragCoord.x+pixelOffset,fragCoord.y)).r*256.0f;
+		float corner2=tex2D(TextureSampler,float2(fragCoord.x,fragCoord.y+pixelOffset)).r*256.0f;
+		float corner3=tex2D(TextureSampler,float2(fragCoord.x+pixelOffset,fragCoord.y+pixelOffset)).r*256.0f;
+	
+		// Calculate the elevation range of the pixel's area
+		float elMin=min(min(corner0,corner1),min(corner2,corner3));
+		float elMax=max(max(corner0,corner1),max(corner2,corner3));
+	
+		// Check if the pixel's area crosses at least one contour line: 
+		//if(floor(elMin*contourLineFactor)!=floor(elMax*contourLineFactor))
+		if(floor(elMin*contourLineFactor)!=floor(elMax*contourLineFactor))
+		{
+				// Topographic contour lines are rendered in black:
+				Output.Color=float4(0.0,0.0,0.0,1.0);
+		}*/
+		
+	/* Calculate the contour line interval containing each pixel corner by evaluating the half-pixel offset elevation texture: */
+	float corner0=floor(tex2D(TextureSampler,float2(fragCoord.x,fragCoord.y)).r*256.0f*contourLineFactor);
+	float corner1=floor(tex2D(TextureSampler,float2(fragCoord.x+pixelOffset,fragCoord.y)).r*256.0f*contourLineFactor);
+	float corner2=floor(tex2D(TextureSampler,float2(fragCoord.x,fragCoord.y+pixelOffset)).r*256.0f*contourLineFactor);
+	float corner3=floor(tex2D(TextureSampler,float2(fragCoord.x+pixelOffset,fragCoord.y+pixelOffset)).r*256.0f*contourLineFactor);
+	
+	/* Find all pixel edges that cross at least one contour line: */
+	int edgeMask=0;
+	int numEdges=0;
+	if(corner0!=corner1)
+		{
+		edgeMask+=1;
+		++numEdges;
+		}
+	if(corner2!=corner3)
+		{
+		edgeMask+=2;
+		++numEdges;
+		}
+	if(corner0!=corner2)
+		{
+		edgeMask+=4;
+		++numEdges;
+		}
+	if(corner1!=corner3)
+		{
+		edgeMask+=8;
+		++numEdges;
+		}
+	
+	/* Check for all cases in which the pixel should be colored as a topographic contour line: */
+	if(numEdges>2||edgeMask==3||edgeMask==12||(numEdges==2&&fmod(floor(fragCoord.x)+floor(fragCoord.y),2.0)==0.0))
+		{
+		/* Topographic contour lines are rendered in black: */
+		Output.Color=float4(0.0,0.0,0.0,1.0);
+		}
 	}
 
 	return Output;
