@@ -169,6 +169,8 @@ namespace Sandstorm
             Effect.Parameters["color3"].SetValue(TerrainProperties.Color3);
             Effect.Parameters["contourSpacing"].SetValue(TerrainProperties.ContourSpacing);
             Effect.Parameters["displayContours"].SetValue(TerrainProperties.ContourLines);
+            Effect.Parameters["textureWidth"].SetValue(HeightMap.TextureB.Width);
+            Effect.Parameters["textureHeight"].SetValue(HeightMap.TextureB.Height);
 
             //Begin pass
             Effect.CurrentTechnique.Passes[0].Apply();

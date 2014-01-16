@@ -65,7 +65,7 @@ namespace Sandstorm
             Color2 = new Vector4(0.9f, 0.85f, 0.34f, 1.0f);
             Color3 = new Vector4(0.7f, 0.17f, 0.0f, 1.0f);
             HeightScale = 84.0f;
-            ContourSpacing = 4.5f;
+            ContourSpacing = 35.0f;
             ContourLines = true;
         }
     }
