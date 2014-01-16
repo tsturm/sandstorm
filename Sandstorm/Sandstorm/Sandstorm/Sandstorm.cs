@@ -167,7 +167,7 @@ namespace Sandstorm
             //StoreXMLConfig("output_kinect_config.xml", this.Kinect.KinectSettings , typeof(KinectProperties));
 
             Kinect.SandstormKinectDepth +=new EventHandler<SandstormKinectEvent>(Handlekinect);
-            Kinect.StartKinect();
+            Kinect.StartKinect(this.GraphicsDevice);
 
 
             FPSCounter = new FPSCounter(this);
@@ -213,13 +213,14 @@ namespace Sandstorm
 
         private void Handlekinect(object sender, SandstormKinectEvent e)
         {
-            Texture2D my_Texture = new Texture2D(this.GraphicsDevice, this.Kinect.KinectSettings.TargetDimension.Item1, this.Kinect.KinectSettings.TargetDimension.Item2, false, SurfaceFormat.Vector4);
-            my_Texture.SetData(e.TextureData);
+            Debug.WriteLine("Sandstorm", "handle new DepthData");
+            //Texture2D my_Texture = new Texture2D(this.GraphicsDevice, this.Kinect.KinectSettings.TargetDimension.Item1, this.Kinect.KinectSettings.TargetDimension.Item2, false, SurfaceFormat.Vector4);
+            //my_Texture.SetData(e.TextureData);
 
-            Terrain.HeightMap.TextureB = my_Texture; 
+            Terrain.HeightMap.TextureB = e.Texture; 
             Terrain.HeightMap.DoSwap = true;
 
-            ParticleSystem.Heightmap.TextureB = my_Texture;
+            ParticleSystem.Heightmap.TextureB = e.Texture;
             ParticleSystem.Heightmap.DoSwap = true; 
         }
 

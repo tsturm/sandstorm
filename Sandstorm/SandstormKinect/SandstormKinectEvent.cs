@@ -112,12 +112,18 @@ namespace SandstormKinect
             set;
         }
 
+        public Texture2D Texture
+        {
+            get;
+            set;
+        }
+
         #endregion
 
-        public SandstormKinectEvent(Microsoft.Xna.Framework.Vector4[] texData)
+        public SandstormKinectEvent(Texture2D tex)
         {
             //set data
-            TextureData = texData;
+            this.Texture = tex;
         }
     }
 }

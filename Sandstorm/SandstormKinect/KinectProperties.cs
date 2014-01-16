@@ -41,12 +41,12 @@ namespace SandstormKinect
         /// <summary>
         /// Wert, ab wo die Kinect etwas sieht
         /// </summary>
-        public float HiLevelDistance { get; set; }
+        public float NearLevelDistance { get; set; }
 
         /// <summary>
         /// Wert, wie weit die Kinect etwas sieht
         /// </summary>
-        public float LowLevelDistance { get; set; }
+        public float FarLevelDistance { get; set; }
 
 
         /// CAMERA STUFF!!!!
@@ -69,8 +69,8 @@ namespace SandstormKinect
         {
             Startpoint =  Tuple.Create(0, 0),
             TargetDimension = Tuple.Create(420, 420),
-            HiLevelDistance = 950.0f,
-            LowLevelDistance = 1250.0f
+            NearLevelDistance = 990.0f,
+            FarLevelDistance = 1250.0f
 
         };
 
@@ -79,9 +79,9 @@ namespace SandstormKinect
             //sandstorm  standart values here
             Startpoint = Tuple.Create(100, 20),
             TargetDimension = Tuple.Create(420, 420),
-            DiffThreshold = 100,
-            HiLevelDistance = 1025.0f,
-            LowLevelDistance = 1225.0f
+            DiffThreshold = 10,
+            NearLevelDistance = 970.0f,
+            FarLevelDistance = 1260.0f
         };
 
     }
