@@ -257,7 +257,7 @@ namespace ParticleStormDLL
             //    ActiveParticles = WaitToEmit;
             //}
 
-            Heightmap.Swap();
+
 
             if (ActiveParticles < TotalParticles) ActiveParticles = (int)(gameTime.TotalGameTime.TotalSeconds * ParticleProperties.EmissionRate);
 
@@ -269,6 +269,8 @@ namespace ParticleStormDLL
             {
                 ExternalForces += force.Update(gameTime);
             }
+
+            Heightmap.Swap();
 
             base.Update(gameTime);
         }
