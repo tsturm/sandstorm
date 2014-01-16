@@ -175,8 +175,6 @@ namespace Sandstorm
             _HUD = new HUD(this, ParticleSystem);
 
             base.Initialize();
-
-            loadConfig();
         }
 
         /// <summary>

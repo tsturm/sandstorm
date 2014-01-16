@@ -224,14 +224,22 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 				float3 vec2 = float3(nextPosition.x,tex2D(TerrainSampler, float2(nextPosition.x/420.0+0.5,(nextPosition.z+1)/420.0+0.5)).x*100,nextPosition.z+1);
 				float3 normal = -normalize(cross(vec1-vec0,vec2-vec0));//float3(0.0f,1.0f,0.0f));
 				float distance = heightPositionParticle - heightPositionMap;
+				
 				if(distance<=0.0f)
 				{
 					velocity = (velocity - ((2.0f * dot(velocity, normal)) * normal));
 					float friction = 1.0f;
 					velocity = (1.0f-friction)*velocity;
 					velocity = float3(velocity.x,0,velocity.z);
-					velocity += normal*abs(distance);
+					//velocity += normal*abs(distance);
+					
+					position.y=heightPositionMap;
 				}
+				else
+				{
+					velocity = ((distance/100)*(velocity - ((2.0f * dot(velocity, normal)) * normal)))+((1-distance/100)*velocity);
+				}
+				velocity.y=0;
 			}
 		}
 	}
