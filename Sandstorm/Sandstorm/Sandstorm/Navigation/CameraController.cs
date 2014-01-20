@@ -90,7 +90,7 @@ namespace Sandstorm
                     {
                         int delta = _scrollWheel - mouseState.ScrollWheelValue;
 
-                        _camera.Zoom(delta * 0.5f);
+                        _camera.Zoom(delta * 0.25f);
 
                         _scrollWheel = mouseState.ScrollWheelValue;
                     }
@@ -104,19 +104,19 @@ namespace Sandstorm
 
                     if (keyState.IsKeyDown(Keys.Left))
                     {
-                        _camera.Horizontal(-.5f);
+                        _camera.Horizontal(-.25f);
                     }
                     else if (keyState.IsKeyDown(Keys.Right))
                     {
-                        _camera.Horizontal(.5f);
+                        _camera.Horizontal(.25f);
                     }
                     else if (keyState.IsKeyDown(Keys.Up))
                     {
-                        _camera.Vertical(.5f);
+                        _camera.Vertical(.25f);
                     }
                     else if (keyState.IsKeyDown(Keys.Down))
                     {
-                        _camera.Vertical(-.5f);
+                        _camera.Vertical(-.25f);
                     }
                     else if (keyState.IsKeyDown(Keys.Add))
                     {

@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleStormDLL", "Particl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleStormDLLContent", "ParticleStormDLL\ParticleStormDLLContent\ParticleStormDLLContent\ParticleStormDLLContent.contentproj", "{3607C4EA-3757-4AA2-B1C7-49F0DC379496}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandstormConfiguration", "SandstormConfiguration\SandstormConfiguration.csproj", "{3A0F9408-0160-445E-BA3F-C57EA83DFBBB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,15 +67,6 @@ Global
 		{3607C4EA-3757-4AA2-B1C7-49F0DC379496}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{3607C4EA-3757-4AA2-B1C7-49F0DC379496}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{3607C4EA-3757-4AA2-B1C7-49F0DC379496}.Release|x86.ActiveCfg = Debug|Any CPU
-		{3A0F9408-0160-445E-BA3F-C57EA83DFBBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A0F9408-0160-445E-BA3F-C57EA83DFBBB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{3A0F9408-0160-445E-BA3F-C57EA83DFBBB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{3A0F9408-0160-445E-BA3F-C57EA83DFBBB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3A0F9408-0160-445E-BA3F-C57EA83DFBBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A0F9408-0160-445E-BA3F-C57EA83DFBBB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A0F9408-0160-445E-BA3F-C57EA83DFBBB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3A0F9408-0160-445E-BA3F-C57EA83DFBBB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{3A0F9408-0160-445E-BA3F-C57EA83DFBBB}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

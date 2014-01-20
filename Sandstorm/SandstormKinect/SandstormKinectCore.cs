@@ -38,12 +38,14 @@ namespace SandstormKinect
         KinectProperties m_KinectSettings;
 
         //private Microsoft.Xna.Framework.Vector4[] m_TextureData;
+        private Object thisLock = new Object();
 
         #endregion
 
         #region PROPPERTIES
 
         private GraphicsDevice GraphicsDevice { get; set; }
+        private Texture2D TextureKinect { get; set; }
 
         public KinectProperties KinectSettings
         {
@@ -108,7 +110,7 @@ namespace SandstormKinect
         /// <summary>
         /// Start the Kinect Camera
         /// </summary>
-        public void StartKinect(GraphicsDevice graphicsDevice)
+        public void StartKinect() //GraphicsDevice graphicsDevice, Texture2D tex)
         {
             try
             {
@@ -146,7 +148,9 @@ namespace SandstormKinect
                 if (this.sensor.DepthStream.IsEnabled)
                 {
                     //link Graphicsdevice
-                    this.GraphicsDevice = graphicsDevice;
+                    //this.GraphicsDevice = graphicsDevice;
+                    //link texture
+                    //this.TextureKinect = tex;
 
                     //build DepthStream Thread
                     if (m_GrabDepthFrameThread != null)
@@ -202,107 +206,27 @@ namespace SandstormKinect
         /// </summary>
         private void DepthImage_Thread()
         {
-            #region OLD_Stuff
-            /*
-            //bool firstFlag = true;
-            bool depthValid = false;
 
-            double diffThreshold = 10; //(this.sensor.DepthStream.FrameWidth*this.sensor.DepthStream.FrameHeight) * 5;
-            short[] myDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
-            short[] myPrevDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
-  
-            try
-            {
-                while (true)
-                {
-                    depthValid = false;
-                    double myDiffSum = 0;
-
-                    using (DepthImageFrame depthFrame = this.sensor.DepthStream.OpenNextFrame(0))
-                    {
-                        if (depthFrame != null)
-                        {
-                            depthFrame.CopyDepthImagePixelDataTo(this.DepthPixels);
-                            depthValid = true;
-                        }
-                    }
-                    
-                    if (depthValid)
-                    {
-                        for (int i=0; i< this.DepthPixels.Count(); i++)
-                        {
-                            //if (firstFlag)
-                            //{
-                            //    myPrevDepthArray[i] = this.DepthPixels[i].Depth;
-                            //    myDepthArray[i] = this.DepthPixels[i].Depth;
-                            //    firstFlag = false;
-                            //}
-                            //else
-                            //{
-                                myPrevDepthArray[i] = myDepthArray[i];
-                                myDepthArray[i] = this.DepthPixels[i].Depth;
-                                myDiffSum += Math.Abs( (double)myPrevDepthArray[i] - (double)myDepthArray[i]);
-
-                            //}
-                        }
-
-                        /*for (int y = Bounds.Y; y < Bounds.Y + Bounds.Height; y++)
-                        {
-                            for (int x = Bounds.X, idx = 0; x < Bounds.X + Bounds.Width; x++, idx++)
-                            {
-                                myDepthArray[idx] = this.DepthPixels[y * this.sensor.DepthStream.FrameWidth + x].Depth;
-                                myDiffSum += Math.Abs((double)myPrevDepthArray[idx] - (double)myDepthArray[idx]);
-                            }
-                        }
-
-                        //
-                        myDepthArray.CopyTo(myPrevDepthArray, 0);
-                        /*
-                        //send event for changed depth image
-                        if (this.SandstormKinectDepth != null && (myDiffSum / (640 * 480)) > diffThreshold)
-                        {
-                            this.SandstormKinectDepth(this, new SandstormKinectEvent(m_gd, myDepthArray, this.sensor.DepthStream.FrameWidth, this.sensor.DepthStream.FrameHeight, KinectProperties));
-                            Debug.WriteLine("event sent, diff-operator = {0}", (Math.Abs(myDiffSum)/ (640*480)));
-                        }
-                        
-                        depthValid = false;
-                     //   System.Threading.Thread.Sleep(1000);
-                    }
-
-                    //fire event 
-
-                }
-
-            }
-            catch (ThreadAbortException ax)
-            {
-                Debug.WriteLine("GrabDepthFrameThread Aborted {0}",ax);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("GrabDepthFrameThread Error {0}", ex);
-            }
-
-            */
-            #endregion
-
-            bool firstFlag = true;
-            bool depthValid = false;
+            bool firstFlag = true;  //need to check the first frame, fro later comparision
+            bool depthValid = false; //if a valid depth frame was received
 
             short[] myDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
             short[] myPrevDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
 
             //textureData
             Microsoft.Xna.Framework.Vector4[] TextureData = new Microsoft.Xna.Framework.Vector4[this.KinectSettings.TargetDimension.Item1 * this.KinectSettings.TargetDimension.Item2];
-            
+            //Texture2D myTexture = new Texture2D(this.GraphicsDevice, this.KinectSettings.TargetDimension.Item1, this.KinectSettings.TargetDimension.Item2, false, SurfaceFormat.Vector4);
 
             //borders
+            // -> KinectImage / CroppedImage ist based on ImageCenter
             int yBorderTarget = (this.sensor.DepthStream.FrameHeight / 2) - (this.KinectSettings.TargetDimension.Item2 / 2) + this.KinectSettings.TargetDimension.Item2;
             int yBorderBegin = (this.sensor.DepthStream.FrameHeight / 2) - (this.KinectSettings.TargetDimension.Item2 / 2);
             int xBorderTarget = (this.sensor.DepthStream.FrameWidth / 2) - (this.KinectSettings.TargetDimension.Item1 / 2) + this.KinectSettings.TargetDimension.Item1;
             int xBorderBegin = (this.sensor.DepthStream.FrameWidth / 2) - (this.KinectSettings.TargetDimension.Item1 / 2);
-            //
+            
+            //misc
             float value;
+            
 
             try
             {
@@ -362,12 +286,17 @@ namespace SandstormKinect
                                     TextureData[idy * this.KinectSettings.TargetDimension.Item1 + idx] = new Microsoft.Xna.Framework.Vector4(value, value, value, 1.0f);
                                  }
                             }
-                            //fire event
-                            Texture2D my_Texture = new Texture2D(this.GraphicsDevice, this.KinectSettings.TargetDimension.Item1, this.KinectSettings.TargetDimension.Item2, false, SurfaceFormat.Vector4);
-                            my_Texture.SetData(TextureData);
-                            SandstormKinectEvent e1 = new SandstormKinectEvent(my_Texture);
-                            this.SandstormKinectDepth(this, e1);
 
+                            //Set Data for Event
+                            //this.TextureKinect.SetData(TextureData);
+                            //this.TextureKinect.Name = "kinect";
+   
+                            //lock (thisLock)
+                            //{
+                                //fire Event
+                                //SandstormKinectEvent ev = new SandstormKinectEvent(myTexture);
+                                this.SandstormKinectDepth(this, new SandstormKinectEvent(TextureData));
+                            //}
                             //wait a bit
                             //Thread.Sleep(250);
                         }

@@ -84,6 +84,7 @@
     <Compile Include="GUI\Vector3Slider.cs" />
     <Compile Include="Navigation\Camera.cs" />
     <Compile Include="Navigation\CameraController.cs" />
+    <Compile Include="Navigation\CameraProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Sandstorm.cs" />

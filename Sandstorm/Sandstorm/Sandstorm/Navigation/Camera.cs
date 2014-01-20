@@ -5,6 +5,7 @@ using System.Xml.Serialization;
 using System;
 using System.IO;
 using System.Text;
+using Sandstorm.Navigation;
 
 namespace Sandstorm
 {
@@ -28,6 +29,8 @@ namespace Sandstorm
         }
         private Camera() { }
 
+        public CameraProperties CameraSettings { get; set; }
+
         private Vector3 WORLD_XAXIS = new Vector3(1f, 0f, 0f);
         private Vector3 WORLD_YAXIS = new Vector3(0f, 1f, 0f);
         private Vector3 WORLD_ZAXIS = new Vector3(0f, 0f, 1f);
@@ -48,11 +51,15 @@ namespace Sandstorm
         private float _pitch;
         //private float _yaw;
 
-        private Matrix _viewMatrix = Matrix.Identity;
-        private Matrix _projMatrix = Matrix.Identity;
+        private Matrix _viewMatrix;
+        private Matrix _projMatrix;
 
         public Camera(Viewport pViewPort)
         {
+            this.CameraSettings = CameraProperties.Default;
+            this._viewMatrix = CameraSettings.ViewMatrix;
+            this._projMatrix = CameraSettings.ProjectionMatrix;
+
             _viewport = pViewPort;
 
             UpdateViewMatrix();
@@ -312,7 +319,7 @@ namespace Sandstorm
                                                   -Vector3.Dot(_viewMatrix.Forward, _eyePos));
         }
 
-
+        /*
         public static Camera LoadCamera(ProjectionType pCamera,int width,int height)
         {
             switch (pCamera)
@@ -352,6 +359,7 @@ namespace Sandstorm
             return null;
         }
 
+   
         private static Camera readCamera(string filename)
         {
             FileStream fs = new FileStream(filename, FileMode.Open);
@@ -373,6 +381,7 @@ namespace Sandstorm
             _serializer.Serialize(writer, c);
             writer.Close();
         }
+
         public static void saveCamera(ProjectionType pCamera,Camera c)
         {
             switch (pCamera)
@@ -391,6 +400,7 @@ namespace Sandstorm
                     break;
             }
         }
+         */
     }
 
 
