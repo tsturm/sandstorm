@@ -437,5 +437,13 @@ namespace ParticleStormDLL
 
             base.Draw(gameTime);
         }
+
+        /// <summary>
+        /// Reset all particles
+        /// </summary>
+        public void Reset()
+        {
+            GenerateRenderTargets();
+        }
     }
 }

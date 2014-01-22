@@ -232,6 +232,13 @@ namespace Sandstorm
                     this.LoadEverythingFromXML();
                 }
             }
+            else if (Keyboard.GetState().IsKeyDown(Keys.R))
+            {
+                if (!oldState.IsKeyDown(Keys.R))
+                {
+                    ParticleSystem.Reset();
+                }
+            }
 
             // Update saved state.
             oldState = newState;
