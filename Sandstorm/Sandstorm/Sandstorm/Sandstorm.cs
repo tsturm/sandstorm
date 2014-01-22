@@ -335,7 +335,7 @@ namespace Sandstorm
             {
                 this.Camera.CameraSettings = CameraProperties.Default;
             }
-
+            _HUD.initGui();
             Debug.WriteLine("LoadXML", "All XML Files read!");
         }
 
