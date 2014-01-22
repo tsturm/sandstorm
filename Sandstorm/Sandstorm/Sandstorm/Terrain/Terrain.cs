@@ -163,10 +163,10 @@ namespace Sandstorm
             Effect.Parameters["projMatrix"].SetValue(ProjectionMatrix);
             Effect.Parameters["heightMap"].SetValue(HeightMap.TextureA);
             Effect.Parameters["heightScale"].SetValue(TerrainProperties.HeightScale);
-            Effect.Parameters["color0"].SetValue(TerrainProperties.Color0);
-            Effect.Parameters["color1"].SetValue(TerrainProperties.Color1);
-            Effect.Parameters["color2"].SetValue(TerrainProperties.Color2);
-            Effect.Parameters["color3"].SetValue(TerrainProperties.Color3);
+            Effect.Parameters["color0"].SetValue(TerrainProperties.Color0.ToVector4());
+            Effect.Parameters["color1"].SetValue(TerrainProperties.Color1.ToVector4());
+            Effect.Parameters["color2"].SetValue(TerrainProperties.Color2.ToVector4());
+            Effect.Parameters["color3"].SetValue(TerrainProperties.Color3.ToVector4());
             Effect.Parameters["contourSpacing"].SetValue(TerrainProperties.ContourSpacing);
             Effect.Parameters["displayContours"].SetValue(TerrainProperties.ContourLines);
             Effect.Parameters["textureWidth"].SetValue(HeightMap.TextureB.Width);

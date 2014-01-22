@@ -119,6 +119,11 @@ namespace Sandstorm
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             SpriteFont = Content.Load<SpriteFont>("font\\Font");
+
+            _HUD.AddSubMenu(ParticleSystem.ParticleProperties);
+            _HUD.AddSubMenu(Terrain.TerrainProperties);
+            _HUD.AddSubMenu(Kinect.KinectSettings);
+            _HUD.Hide();
         }
 
         /// <summary>
@@ -175,6 +180,19 @@ namespace Sandstorm
         KeyboardState oldState = Keyboard.GetState();
         private void HandleInput()
         {
+            MouseState mouseState = Mouse.GetState();
+
+            if (mouseState.X > Window.ClientBounds.Width - 30)
+            {
+                _HUD.Show();
+            }
+            else if (mouseState.X < Window.ClientBounds.Width - 170)
+            {
+                _HUD.Hide();
+            }
+
+
+
             KeyboardState newState = Keyboard.GetState();
             if (newState.IsKeyDown(Keys.Escape))
             {

@@ -80,11 +80,11 @@ namespace Sandstorm.GUI
             parent.AddWidgets(new Widget[]{SliderR, SliderG, SliderB, SliderA});
 
             //Set slider initial value (must set after AddWidget!)
-            SliderR.Value = Value.R / Max.R;
-            SliderG.Value = Value.G / Max.G;
-            SliderB.Value = Value.B / Max.B;
-            SliderA.Value = Value.A / Max.A;
-        }
+            SliderR.Value = (float)Value.R / (float)Max.R;
+            SliderG.Value = (float)Value.G / (float)Max.G;
+            SliderB.Value = (float)Value.B / (float)Max.B;
+            SliderA.Value = (float)Value.A / (float)Max.A;
+        }                     
 
         /// <summary>
         /// Handles r-component slider ValueChanged event.
