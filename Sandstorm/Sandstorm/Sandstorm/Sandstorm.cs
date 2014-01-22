@@ -96,7 +96,7 @@ namespace Sandstorm
             Kinect = new SandstormKinectCore();
 
             FPSCounter = new FPSCounter(this);
-            _HUD = new HUD(this, ParticleSystem);
+            _HUD = new HUD(this);
 
             //load configs
             this.LoadEverythingFromXML();
@@ -106,7 +106,7 @@ namespace Sandstorm
             Kinect.StartKinect();
             
             //init GUI
-            _HUD.initGui();
+            _HUD.InitGui();
 
             base.Initialize();
         }
@@ -123,7 +123,6 @@ namespace Sandstorm
             _HUD.AddSubMenu(ParticleSystem.ParticleProperties);
             _HUD.AddSubMenu(Terrain.TerrainProperties);
             _HUD.AddSubMenu(Kinect.KinectSettings);
-            _HUD.Hide();
         }
 
         /// <summary>
@@ -190,8 +189,6 @@ namespace Sandstorm
             {
                 _HUD.Hide();
             }
-
-
 
             KeyboardState newState = Keyboard.GetState();
             if (newState.IsKeyDown(Keys.Escape))
@@ -274,7 +271,7 @@ namespace Sandstorm
             _HUD.Update(gameTime);
 
             //Mouse camera Events only on focus and if not clicked on buttons
-            if (this.IsActive && !_HUD._gui.HasMouse)
+            if (this.IsActive && !_HUD.GUI.HasMouse)
             {
                 if(ActiveCamera == CameraOrtho)
                     cameraControllerOrtho.Update(gameTime);
@@ -365,7 +362,7 @@ namespace Sandstorm
                 this.CameraOrtho.UpdateViewMatrix();
                 this.CameraOrtho.UpdateProjectionMatrix();
             }
-            _HUD.initGui();
+            _HUD.InitGui();
             Debug.WriteLine("LoadXML", "All XML Files read!");
         }
 
