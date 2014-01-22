@@ -252,6 +252,13 @@ namespace Sandstorm
                     _HUD.InitGui();
                 }
             }
+            else if (Keyboard.GetState().IsKeyDown(Keys.P))
+            {
+                if (!oldState.IsKeyDown(Keys.P))
+                {
+                    ParticleSystem.DoDraw = !ParticleSystem.DoDraw;
+                }
+            }
 
             // Update saved state.
             oldState = newState;
