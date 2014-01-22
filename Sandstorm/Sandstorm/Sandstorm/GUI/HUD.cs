@@ -35,7 +35,7 @@ namespace Sandstorm.GUI
         private List<Object> _Items;
         private bool _Visible;
 
-        private int _MenuOffset; //340;
+        public int MenuOffset { get; set; }
 
         /// <summary>
         /// 
@@ -43,7 +43,7 @@ namespace Sandstorm.GUI
         /// <param name="game"></param>
         public HUD(Game game) : base(game)
         {
-            _MenuOffset = 170;
+            MenuOffset = 170;
             _Items = new List<Object>();
             _Calibri20 = Game.Content.Load<SpriteFont>("font\\Calibri20");
             _Calibri16 = Game.Content.Load<SpriteFont>("font\\Calibri16");
@@ -60,7 +60,7 @@ namespace Sandstorm.GUI
             base.Initialize();
         }
 
-        public void InitGui(bool beamer = false)
+        public void InitGui()
         {
             _Visible = true;
 
@@ -82,7 +82,7 @@ namespace Sandstorm.GUI
 
         private void CreateMainMenu(int width, int height)
         {
-            _MainMenu = new Panel(width - _MenuOffset, 0, 170, height);
+            _MainMenu = new Panel(width - MenuOffset, 0, 175, height);
             _MainContent = new ScrollBars();
             Label head = new Label(5, 15, "Options") { Text = "Calibri20" };
             Panel optionPanel = new Panel(0, 50, 170, height - 50);
@@ -108,7 +108,7 @@ namespace Sandstorm.GUI
 
         private Widget CreateSubMenu(int width, int height, Object item, string label)
         {
-            Panel subPanel = new Panel(width - 170, 0, 170, height);
+            Panel subPanel = new Panel(width - MenuOffset, 0, 175, height);
             Label head = new Label(5, 15, label) { Text = "Calibri20" };
             Panel optionPanel = new Panel(0, 50, 170, height - 50);
             ScrollBars scrollBars = new ScrollBars();

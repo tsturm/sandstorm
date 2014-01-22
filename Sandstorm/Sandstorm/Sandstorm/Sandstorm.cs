@@ -181,11 +181,11 @@ namespace Sandstorm
         {
             MouseState mouseState = Mouse.GetState();
 
-            if (mouseState.X > Window.ClientBounds.Width - 30)
+            if (mouseState.X > Window.ClientBounds.Width - (_HUD.MenuOffset - 140))
             {
                 _HUD.Show();
             }
-            else if (mouseState.X < Window.ClientBounds.Width - 170)
+            else if (mouseState.X < Window.ClientBounds.Width - _HUD.MenuOffset)
             {
                 _HUD.Hide();
             }
@@ -211,16 +211,6 @@ namespace Sandstorm
                         graphics.PreferredBackBufferHeight = GraphicsDevice.Adapter.CurrentDisplayMode.Height;
                         graphics.ToggleFullScreen();
                     }
-                }
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.F11))
-            {
-                if (!oldState.IsKeyDown(Keys.F11))
-                {
-                    if (ActiveCamera == Camera)
-                        ActiveCamera = CameraOrtho;
-                    else
-                        ActiveCamera = Camera;
                 }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.C))
@@ -252,6 +242,14 @@ namespace Sandstorm
                 if (!oldState.IsKeyDown(Keys.R))
                 {
                     ParticleSystem.Reset();
+                }
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.H))
+            {
+                if (!oldState.IsKeyDown(Keys.H))
+                {
+                    _HUD.MenuOffset = (_HUD.MenuOffset == 170) ? 340 : 170;
+                    _HUD.InitGui();
                 }
             }
 
