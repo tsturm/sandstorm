@@ -97,18 +97,30 @@ namespace Sandstorm
         /// <param name="gameTime">Time passed since the last call to Draw.</param>
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            GraphicsDevice.BlendState = BlendState.Opaque;
+            try
+            {
+                GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                GraphicsDevice.BlendState = BlendState.Opaque;
 
-            string text = string.Format(CultureInfo.CurrentCulture, "FPS: {0}\n", FrameRate);
+                string text = string.Format(CultureInfo.CurrentCulture, "FPS: {0}\n", FrameRate);
 
-            SpriteBatch.Begin();
+                SpriteBatch.Begin();
 
-            SpriteBatch.DrawString(SpriteFont, text, new Vector2(10, 5), Color.White);
+                SpriteBatch.DrawString(SpriteFont, text, new Vector2(10, 5), Color.White);
 
-            SpriteBatch.End();
+                SpriteBatch.End();
 
-            Frames++;
+                Frames++;
+            }
+            catch (ObjectDisposedException e)
+            {
+                Console.WriteLine("ObjectDisposed FPS-Counter!" + e);
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine("InvalidOperationException FPS-Counter!" + e);
+            }
+            base.Draw(gameTime);
         }
     }
 }

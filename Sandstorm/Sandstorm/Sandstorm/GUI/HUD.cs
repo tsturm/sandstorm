@@ -31,7 +31,6 @@ namespace Sandstorm.GUI
         Panel MainMenu;
         ScrollBars MainContent;
         List<Tuple<Widget, string>> SubMenus = new List<Tuple<Widget,string>>();
-        bool Visible = true;
         int MenuOffset = 170; //340;
 
         //Elements
@@ -334,8 +333,19 @@ namespace Sandstorm.GUI
 
         public override void Draw(GameTime gameTime)
         {
-            if (_gui != null) 
-                _gui.Draw();
+            try
+            {
+                if (_gui != null)
+                    _gui.Draw();
+            }
+            catch (ObjectDisposedException e)
+            {
+                Console.WriteLine("ObjectDisposed HUD!" + e );
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine("InvalidOperationException HUD!" + e);
+            }
             base.Draw(gameTime);
         }
 

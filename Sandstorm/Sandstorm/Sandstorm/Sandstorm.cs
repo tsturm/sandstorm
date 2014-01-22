@@ -130,7 +130,9 @@ namespace Sandstorm
         /// UnloadContent will be called once per game and is the place to unload
         /// all content.
         /// </summary>
-        protected override void UnloadContent() { }
+        protected override void UnloadContent() {
+            Kinect.Exit();
+        }
 
         /// <summary>
         /// Handles Window resizing
@@ -152,24 +154,12 @@ namespace Sandstorm
         {
             if (    Terrain.HeightMap != null && ParticleSystem.Heightmap != null 
                 && !Terrain.HeightMap.DoSwap && !ParticleSystem.Heightmap.DoSwap
-                && e.TextureData.Length == (this.Kinect.KinectSettings.TargetDimension.Item1 * this.Kinect.KinectSettings.TargetDimension.Item2)
                 )
             {
-                //super ugly
-                Vector4[] tmp1 = (Vector4[]) e.TextureData.Clone();
-                Vector4[] tmp2 = (Vector4[]) e.TextureData.Clone();
-
-                    //if (this.myKinectTexture != null && this.myKinectTexture.Name == "kinect")
-                    //{
-                        //this.myKinectTexture.GetData(tmp1);
-                        //this.myKinectTexture.GetData(tmp2);
-                        //this.myKinectTexture.Dispose();
-
-                        Terrain.HeightMap.TextureB.SetData(tmp1);
-                        //ParticleSystem.Heightmap.TextureB.SetData(tmp2); //= e.Texture;
-                        Terrain.HeightMap.DoSwap = true;
-                        //ParticleSystem.Heightmap.DoSwap = true;
-                   // }
+                ParticleSystem.Heightmap.TextureB.SetData(e.TextureData);
+                ParticleSystem.Heightmap.DoSwap = true;
+                Terrain.HeightMap.TextureB.SetData(e.TextureData);
+                Terrain.HeightMap.DoSwap = true;
             }
             
         }
@@ -292,25 +282,34 @@ namespace Sandstorm
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            ParticleSystem.UpdateParticles(gameTime);
-            GraphicsDevice.SetRenderTarget(null);
-            GraphicsDevice.Clear(Color.Black);
+            try
+            {
+                ParticleSystem.UpdateParticles(gameTime);
+                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.Clear(Color.Black);
 
-            ParticleSystem.SetMatrices(ActiveCamera.CameraSettings.ViewMatrix, ActiveCamera.CameraSettings.ProjectionMatrix);
-            Terrain.SetMatrices(ActiveCamera.CameraSettings.ViewMatrix, ActiveCamera.CameraSettings.ProjectionMatrix);
+                ParticleSystem.SetMatrices(ActiveCamera.CameraSettings.ViewMatrix, ActiveCamera.CameraSettings.ProjectionMatrix);
+                Terrain.SetMatrices(ActiveCamera.CameraSettings.ViewMatrix, ActiveCamera.CameraSettings.ProjectionMatrix);
 
+                base.Draw(gameTime);
+
+
+                string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\nProjectionType: {1}\nCameraName: {2}\nCameraMode: {3}", ParticleSystem.ActiveParticles, ActiveCamera.CameraSettings.ProjectionType, ActiveCamera.CameraSettings.CameraName, ActiveCamera.CameraSettings.CameraMode);
+
+                SpriteBatch.Begin();
+
+                SpriteBatch.DrawString(SpriteFont, text, new Vector2(10, 25), Color.White);
+
+                SpriteBatch.End();
+
+                _HUD.Draw(gameTime);
+
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine("InvalidOperationException Sandstorm " + e);
+            }
             base.Draw(gameTime);
-
-
-            string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\nProjectionType: {1}\nCameraName: {2}\nCameraMode: {3}", ParticleSystem.ActiveParticles, ActiveCamera.CameraSettings.ProjectionType,ActiveCamera.CameraSettings.CameraName,ActiveCamera.CameraSettings.CameraMode);
-
-            SpriteBatch.Begin();
-
-            SpriteBatch.DrawString(SpriteFont, text, new Vector2(10, 25), Color.White);
-
-            SpriteBatch.End();
-
-            _HUD.Draw(gameTime);
         }
 
 

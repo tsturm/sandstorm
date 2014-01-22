@@ -7,11 +7,13 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace SandstormKinect
 {
     public class SandstormKinectCore
     {
+        private Boolean exitThread = false;
 
         #region FIELDS
 
@@ -25,13 +27,6 @@ namespace SandstormKinect
 
         //images
         private DepthImagePixel[] m_DepthPixels; //, m_CustomDepthPixels;
-        //private byte[] m_ColorPixels;
-        //private Tuple<int, int> m_Startpoint, m_Dimension;
-
-        //public KinectProperties KinectProperties { get; set; }
-
-
-        //private GraphicsDevice m_gd;
 
         //misc
         //Boolean m_ToggleCustomization;
@@ -43,10 +38,7 @@ namespace SandstormKinect
         #endregion
 
         #region PROPPERTIES
-
-        private GraphicsDevice GraphicsDevice { get; set; }
-        private Texture2D TextureKinect { get; set; }
-
+        
         public KinectProperties KinectSettings
         {
             get { return m_KinectSettings; }
@@ -98,23 +90,13 @@ namespace SandstormKinect
 
         #endregion
 
-
-        /// <summary>
-        /// basic constructor
-        /// </summary>
-        public SandstormKinectCore()
-        {
-            //KinectSettings = KinectProperties.Sandstorm;
-        }
-
         /// <summary>
         /// Start the Kinect Camera
         /// </summary>
-        public void StartKinect() //GraphicsDevice graphicsDevice, Texture2D tex)
+        public void StartKinect()
         {
             try
             {
-
                 foreach (var potentialSensor in KinectSensor.KinectSensors)
                 {
                     if (potentialSensor.Status == KinectStatus.Connected)
@@ -147,11 +129,6 @@ namespace SandstormKinect
                 //start thread
                 if (this.sensor.DepthStream.IsEnabled)
                 {
-                    //link Graphicsdevice
-                    //this.GraphicsDevice = graphicsDevice;
-                    //link texture
-                    //this.TextureKinect = tex;
-
                     //build DepthStream Thread
                     if (m_GrabDepthFrameThread != null)
                     {
@@ -205,18 +182,8 @@ namespace SandstormKinect
         /// Thread who receives the DepthImage an process the basic image
         /// </summary>
         private void DepthImage_Thread()
-        {
-
-            bool firstFlag = true;  //need to check the first frame, fro later comparision
-            bool depthValid = false; //if a valid depth frame was received
-
-            short[] myDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
-            short[] myPrevDepthArray = new short[this.sensor.DepthStream.FrameWidth * this.sensor.DepthStream.FrameHeight];
-
-            //textureData
+        {            
             Microsoft.Xna.Framework.Vector4[] TextureData = new Microsoft.Xna.Framework.Vector4[this.KinectSettings.TargetDimension.Item1 * this.KinectSettings.TargetDimension.Item2];
-            //Texture2D myTexture = new Texture2D(this.GraphicsDevice, this.KinectSettings.TargetDimension.Item1, this.KinectSettings.TargetDimension.Item2, false, SurfaceFormat.Vector4);
-
             //borders
             // -> KinectImage / CroppedImage ist based on ImageCenter
             int yBorderTarget = (this.sensor.DepthStream.FrameHeight / 2) - (this.KinectSettings.TargetDimension.Item2 / 2) + this.KinectSettings.TargetDimension.Item2;
@@ -230,80 +197,42 @@ namespace SandstormKinect
 
             try
             {
-                while (true)
+                while (!exitThread)
                 {
-                    depthValid = false;
-                    double myDiffSum = 0;
-
                     using (DepthImageFrame depthFrame = this.sensor.DepthStream.OpenNextFrame(0))
                     {
                         if (depthFrame != null)
                         {
-                            depthFrame.CopyDepthImagePixelDataTo(this.DepthPixels);
-                            depthValid = true;
-                        }
-                    }
+                                depthFrame.CopyDepthImagePixelDataTo(this.DepthPixels);
 
-                    if (depthValid)
-                    {
-                        for (int i = 0; i < this.DepthPixels.Count(); i++)
-                        {
-                            if (firstFlag)
-                            {
-                                myPrevDepthArray[i] = this.DepthPixels[i].Depth;
-                                myDepthArray[i] = this.DepthPixels[i].Depth;
-                                firstFlag = false;
-                            }
-                            else
-                            {
-                                myPrevDepthArray[i] = myDepthArray[i];
-                                myDepthArray[i] = this.DepthPixels[i].Depth;
-                                myDiffSum += Math.Abs((double)myPrevDepthArray[i] - (double)myDepthArray[i]);
-                            }
-                        }
-                        //make act. Depths to new prev. Depths
-                        myDepthArray.CopyTo(myPrevDepthArray, 0);
-
-                        //look for changes within DepthImage
-                        if (this.SandstormKinectDepth != null && (myDiffSum / this.DepthPixels.Count()) > this.KinectSettings.DiffThreshold)
-                        {
-                            //Debug.WriteLine("KinectCore", "calc new DepthData");
-                            //Debug.WriteLine("KinectCore, diff-operator = {0}", (myDiffSum / this.DepthPixels.Count()));
-                            //create new Depth Texture
-                            for (int y = yBorderBegin, idy = this.KinectSettings.TargetDimension.Item2 - 1; y < yBorderTarget; y++, idy--)
-                            {
-                                for (int x = xBorderBegin, idx = 0; x < xBorderTarget; x++, idx++)
+                                for (int y = yBorderBegin, idy = this.KinectSettings.TargetDimension.Item2 - 1; y < yBorderTarget; y++, idy--)
                                 {
-                                    short depth = myDepthArray[y * this.sensor.DepthStream.FrameWidth + x];
-                                    
-                                    //todo -> Normierung
-                                    if (depth > this.KinectSettings.NearLevelDistance)
+                                    for (int x = xBorderBegin, idx = 0; x < xBorderTarget; x++, idx++)
                                     {
-                                        value = 1.0f - ((depth - this.KinectSettings.NearLevelDistance) / (this.KinectSettings.FarLevelDistance - this.KinectSettings.NearLevelDistance));
-                                        value = Math.Min(1, value);
-                                        value = Math.Max(0, value);
-                                    } else value = 1.0f;
-                                    TextureData[idy * this.KinectSettings.TargetDimension.Item1 + idx] = new Microsoft.Xna.Framework.Vector4(value, value, value, 1.0f);
-                                 }
+                                        short depth = this.DepthPixels[y * this.sensor.DepthStream.FrameWidth + x].Depth;
+                                    
+                                        //todo -> Normierung
+                                        if (depth > this.KinectSettings.NearLevelDistance)
+                                        {
+                                            value = 1.0f - ((depth - this.KinectSettings.NearLevelDistance) / (this.KinectSettings.FarLevelDistance - this.KinectSettings.NearLevelDistance));
+                                            value = Math.Min(1, value);
+                                            value = Math.Max(0, value);
+                                        } else value = 1.0f;
+                                        TextureData[idy * this.KinectSettings.TargetDimension.Item1 + idx] = new Microsoft.Xna.Framework.Vector4(value, value, value, 1.0f);
+                                     }
+                                }
+
+                                SandstormKinectEvent ev = new SandstormKinectEvent(TextureData);
+                                this.SandstormKinectDepth(this, ev);                                
                             }
 
-                            //Set Data for Event
-                            //this.TextureKinect.SetData(TextureData);
-                            //this.TextureKinect.Name = "kinect";
-   
-                            //lock (thisLock)
-                            //{
-                                //fire Event
-                                //SandstormKinectEvent ev = new SandstormKinectEvent(myTexture);
-                                this.SandstormKinectDepth(this, new SandstormKinectEvent(TextureData));
-                            //}
-                            //wait a bit
-                            //Thread.Sleep(250);
-                        }
-                        depthValid = false;
                     }
 
                 }
+            }
+            catch (ObjectDisposedException e)
+            {
+                Console.WriteLine("ObjectDisposed KinectThread!" + e);
             }
             catch (ThreadAbortException ax)
             {
@@ -313,6 +242,11 @@ namespace SandstormKinect
             {
                 Debug.WriteLine("GrabDepthFrameThread Error {0}", ex);
             }
+        }
+
+        public void Exit()
+        {
+            this.exitThread = true;
         }
     }
 }
