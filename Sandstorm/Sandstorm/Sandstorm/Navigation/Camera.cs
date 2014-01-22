@@ -12,53 +12,34 @@ namespace Sandstorm
     [Serializable] 
     public class Camera
     {
-        static XmlSerializer _serializer = new XmlSerializer(typeof(Camera));
-
-        public enum CameraMode
-        {
-            CAMERA_MODE_ORBIT,
-            CAMERA_MODE_TURNTABLE,
-            CAMERA_MODE_FIRST_PERSON,
-            CAMERA_MODE_FLIGHT
-        }
-
-        public enum ProjectionType
-        {
-            PERSPECTIVE_PROJECTION,
-            ORTHOGRAPHIC_PROJECTION
-        }
+        private static Vector3 WORLD_XAXIS = new Vector3(1f, 0f, 0f);
+        private static Vector3 WORLD_YAXIS = new Vector3(0f, 1f, 0f);
+        private static Vector3 WORLD_ZAXIS = new Vector3(0f, 0f, 1f);
+        
         private Camera() { }
 
-        public CameraProperties CameraSettings { get; set; }
-
-        private Vector3 WORLD_XAXIS = new Vector3(1f, 0f, 0f);
-        private Vector3 WORLD_YAXIS = new Vector3(0f, 1f, 0f);
-        private Vector3 WORLD_ZAXIS = new Vector3(0f, 0f, 1f);
+        private CameraProperties _cameraSettings = null;
+        public CameraProperties CameraSettings { get { return this._cameraSettings; } set { this._cameraSettings = value; } }
 
         private float _farPlane = 10000f;
         private float _nearPlane = .1f;
         private float _fieldOfView = MathHelper.PiOver4;
         private float _orbitalDistance = 1000f;
         private Viewport _viewport;
-        private CameraMode _mode = CameraMode.CAMERA_MODE_TURNTABLE;
         private Vector3 _lookAt = new Vector3(0f);
         private Vector3 _eyePos = new Vector3(0f);
         private Quaternion _orientation = new Quaternion(0f, 0f, 0f, 1f);
-        private ProjectionType _type = ProjectionType.PERSPECTIVE_PROJECTION;
         private int _orthoWidth = 492;
         private int _orthoHeight = 492;
 
         private float _pitch;
-        //private float _yaw;
 
-        private Matrix _viewMatrix;
-        private Matrix _projMatrix;
-
-        public Camera(Viewport pViewPort)
+        public Camera(Viewport pViewPort,ProjectionType type,String cameraName = "Unknown")
         {
-            this.CameraSettings = CameraProperties.Default;
-            this._viewMatrix = CameraSettings.ViewMatrix;
-            this._projMatrix = CameraSettings.ProjectionMatrix;
+          //  this.CameraSettings = CameraProperties.Default.MemberwiseClone();
+            this.CameraSettings = new CameraProperties();
+            this.CameraSettings.ProjectionType = type;
+            this.CameraSettings.CameraName = cameraName;
 
             _viewport = pViewPort;
 
@@ -106,44 +87,20 @@ namespace Sandstorm
             }
         }
 
-        public CameraMode Mode
-        {
-            get { return _mode; }
-            set { _mode = value; }
-        }
-
-        public ProjectionType Type
-        {
-            get { return _type; }
-            set { _type = value; UpdateProjectionMatrix(); }
-        }
-
-        public Matrix ViewMatrix
-        {
-            get { return _viewMatrix; }
-            set { _viewMatrix = value; }
-        }
-
-        public Matrix ProjMatrix
-        {
-            get { return _projMatrix; }
-            set { _projMatrix = value; }
-        }
-
         public void Rotate(float pYaw, float pPitch, float pRoll = 0f)
         {
-	        switch (_mode)
+	        switch (CameraSettings.CameraMode)
 	        {
-		        case CameraMode.CAMERA_MODE_ORBIT:
+		        case CAMERA_MODE.CAMERA_MODE_ORBIT:
 			        RotateOrbital(pYaw, pPitch);
 			        break;
-                case CameraMode.CAMERA_MODE_TURNTABLE:
+                case CAMERA_MODE.CAMERA_MODE_TURNTABLE:
                     RotateTurntable(pYaw, pPitch);
                     break;
-		        case CameraMode.CAMERA_MODE_FIRST_PERSON:
+                case CAMERA_MODE.CAMERA_MODE_FIRST_PERSON:
 			        RotateFirstPerson(pYaw, pPitch);
 			        break;
-                case CameraMode.CAMERA_MODE_FLIGHT:
+                case CAMERA_MODE.CAMERA_MODE_FLIGHT:
 			        //TODO
 			        break;
 		        default:
@@ -156,18 +113,18 @@ namespace Sandstorm
         public void Horizontal(float factor)
         {
             Matrix trans = Matrix.CreateTranslation(factor, 0f, 0f);
-            _viewMatrix = Matrix.Multiply(_viewMatrix, trans);
+            CameraSettings.ViewMatrix = Matrix.Multiply(CameraSettings.ViewMatrix, trans);
         }
 
         public void Vertical(float factor)
         {
             Matrix trans = Matrix.CreateTranslation(0f, factor, 0f);
-            _viewMatrix = Matrix.Multiply(_viewMatrix, trans);
+            CameraSettings.ViewMatrix = Matrix.Multiply(CameraSettings.ViewMatrix, trans);
         }
 
         public void Zoom(float pFactor)
         {
-            if (_type == ProjectionType.PERSPECTIVE_PROJECTION)
+            if (CameraSettings.ProjectionType == ProjectionType.PERSPECTIVE_PROJECTION)
             {
                 _orbitalDistance += pFactor;
                 UpdateViewMatrix();
@@ -219,7 +176,7 @@ namespace Sandstorm
 
             Quaternion rot;
 
-            Vector3 blub = _viewMatrix.Up;
+            Vector3 blub = CameraSettings.ViewMatrix.Up;
 
             if (yawRad != 0.0f)
             {
@@ -288,13 +245,13 @@ namespace Sandstorm
                 height = _orthoHeight;
             }
 
-            switch (_type)
+            switch (CameraSettings.ProjectionType)
             {
                 case ProjectionType.PERSPECTIVE_PROJECTION:
-                    Matrix.CreatePerspectiveFieldOfView(_fieldOfView, _viewport.AspectRatio, _nearPlane, _farPlane, out _projMatrix);
+                    Matrix.CreatePerspectiveFieldOfView(_fieldOfView, _viewport.AspectRatio, _nearPlane, _farPlane, out CameraSettings._projMatrix);
                     break;
                 case ProjectionType.ORTHOGRAPHIC_PROJECTION:
-                    Matrix.CreateOrthographic(width, height, _nearPlane, _farPlane, out _projMatrix);
+                    Matrix.CreateOrthographic(width, height, _nearPlane, _farPlane, out CameraSettings._projMatrix);
                     break;
             }
         }
@@ -305,102 +262,19 @@ namespace Sandstorm
             Quaternion.Normalize(ref _orientation, out _orientation);
 
             //Generate view matrix from orientation quaternion
-            Matrix.CreateFromQuaternion(ref _orientation, out _viewMatrix);
+            Matrix.CreateFromQuaternion(ref _orientation, out CameraSettings._viewMatrix);
 
-            if (_mode == CameraMode.CAMERA_MODE_ORBIT || _mode == CameraMode.CAMERA_MODE_TURNTABLE)
+            if (CameraSettings.CameraMode == CAMERA_MODE.CAMERA_MODE_ORBIT || CameraSettings.CameraMode == CAMERA_MODE.CAMERA_MODE_TURNTABLE)
             {
                 //Calculate new eye position
-                _eyePos = _lookAt + _viewMatrix.Forward * _orbitalDistance;
+                _eyePos = _lookAt + CameraSettings.ViewMatrix.Forward * _orbitalDistance;
             }
 
             //Set the translation
-            _viewMatrix.Translation = new Vector3(-Vector3.Dot(_viewMatrix.Right, _eyePos),
-                                                  -Vector3.Dot(_viewMatrix.Up, _eyePos),
-                                                  -Vector3.Dot(_viewMatrix.Forward, _eyePos));
+            CameraSettings._viewMatrix.Translation = new Vector3(-Vector3.Dot(CameraSettings.ViewMatrix.Right, _eyePos),
+                                                  -Vector3.Dot(CameraSettings.ViewMatrix.Up, _eyePos),
+                                                  -Vector3.Dot(CameraSettings.ViewMatrix.Forward, _eyePos));
         }
-
-        /*
-        public static Camera LoadCamera(ProjectionType pCamera,int width,int height)
-        {
-            switch (pCamera)
-            {
-                case ProjectionType.ORTHOGRAPHIC_PROJECTION:
-                    {
-                        if (File.Exists("ortho.xml"))
-                            return readCamera("ortho.xml");
-                        else
-                        {
-                            // Create orthographic camera for the beamer
-                            Camera c = new Camera(new Viewport(0, 0, width, height));
-                            //_orthoCamera.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
-                            Quaternion rot1 = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
-                            Quaternion rot2 = Quaternion.CreateFromAxisAngle(new Vector3(0, 1, 0), MathHelper.Pi);
-
-                            c.Orientation = Quaternion.Multiply(rot1, rot2);
-                            c.Type = Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
-                            return c;
-                        }
-                    }
-                case ProjectionType.PERSPECTIVE_PROJECTION:
-                    {
-                        if (File.Exists("persp.xml"))
-                            return readCamera("persp.xml");
-                        else
-                        {
-                            // Create perspective camera for the editor
-                            Camera c = new Camera(new Viewport(0, 0, width, height));
-                            c.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver4);
-                            return c;
-                        }
-                    }
-                default:
-                    break;
-            }
-            return null;
-        }
-
-   
-        private static Camera readCamera(string filename)
-        {
-            FileStream fs = new FileStream(filename, FileMode.Open);
-            XmlReader reader = XmlReader.Create(fs);
-
-            // Declare an object variable of the type to be deserialized.
-            Camera i;
-
-            // Use the Deserialize method to restore the object's state.
-            i = (Camera)_serializer.Deserialize(reader);
-            fs.Close();
-            return i;
-        }
-        private static void writeCamera(string filename,Camera c)
-        {
-            Stream fs = new FileStream(filename, FileMode.Create);
-            XmlWriter writer = new XmlTextWriter(fs, Encoding.Unicode);
-            // Serialize using the XmlTextWriter.
-            _serializer.Serialize(writer, c);
-            writer.Close();
-        }
-
-        public static void saveCamera(ProjectionType pCamera,Camera c)
-        {
-            switch (pCamera)
-            {
-                case ProjectionType.ORTHOGRAPHIC_PROJECTION:
-                    {
-                        writeCamera("ortho.xml", c);
-                    }
-                    break;
-                case ProjectionType.PERSPECTIVE_PROJECTION:
-                    {
-                        writeCamera("persp.xml", c);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-         */
     }
 
 

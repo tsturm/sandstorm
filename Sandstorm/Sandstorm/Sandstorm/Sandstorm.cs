@@ -38,10 +38,11 @@ namespace Sandstorm
         /// <summary>
         /// Gets or Sets the camera of the scene
         /// </summary>
-        public Camera Camera { get; set; }
+        private Camera Camera { get; set; }
+        private Camera CameraOrtho { get; set; }
 
-        public Camera CameraOrtho { get; set; }
-        public Camera ActiveCamera { get; set; }
+        //reference of ortho / normal
+        private Camera ActiveCamera { get; set; }
 
 
         private Terrain Terrain;
@@ -81,11 +82,10 @@ namespace Sandstorm
         /// </summary>
         protected override void Initialize()
         {
-            Camera = new Camera(GraphicsDevice.Viewport);
+            Camera = new Camera(GraphicsDevice.Viewport, ProjectionType.PERSPECTIVE_PROJECTION, "PC");
             cameraController = new CameraController(Camera);
 
-            CameraOrtho = new Camera(GraphicsDevice.Viewport);
-            CameraOrtho.Type = global::Sandstorm.Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
+            CameraOrtho = new Camera(GraphicsDevice.Viewport,ProjectionType.ORTHOGRAPHIC_PROJECTION,"Beamer");
             CameraOrtho.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), (float)Math.PI / 2);
             cameraControllerOrtho = new CameraController(CameraOrtho);
 
@@ -250,6 +250,13 @@ namespace Sandstorm
                     this.LoadEverythingFromXML();
                 }
             }
+            else if (Keyboard.GetState().IsKeyDown(Keys.R))
+            {
+                if (!oldState.IsKeyDown(Keys.R))
+                {
+                    ParticleSystem.Reset();
+                }
+            }
 
             // Update saved state.
             oldState = newState;
@@ -269,8 +276,11 @@ namespace Sandstorm
             //Mouse camera Events only on focus and if not clicked on buttons
             if (this.IsActive && !_HUD._gui.HasMouse)
             {
-                cameraController.Update(gameTime);
-                cameraControllerOrtho.Update(gameTime);
+                if(ActiveCamera == CameraOrtho)
+                    cameraControllerOrtho.Update(gameTime);
+                else if(ActiveCamera == Camera)
+                    cameraController.Update(gameTime);
+                
             }
 
             base.Update(gameTime);
@@ -286,13 +296,13 @@ namespace Sandstorm
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
 
-            ParticleSystem.SetMatrices(ActiveCamera.ViewMatrix, ActiveCamera.ProjMatrix);
-            Terrain.SetMatrices(ActiveCamera.ViewMatrix, ActiveCamera.ProjMatrix);
+            ParticleSystem.SetMatrices(ActiveCamera.CameraSettings.ViewMatrix, ActiveCamera.CameraSettings.ProjectionMatrix);
+            Terrain.SetMatrices(ActiveCamera.CameraSettings.ViewMatrix, ActiveCamera.CameraSettings.ProjectionMatrix);
 
             base.Draw(gameTime);
 
 
-            string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\n", ParticleSystem.ActiveParticles);
+            string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\nProjectionType: {1}\nCameraName: {2}\nCameraMode: {3}", ParticleSystem.ActiveParticles, ActiveCamera.CameraSettings.ProjectionType,ActiveCamera.CameraSettings.CameraName,ActiveCamera.CameraSettings.CameraMode);
 
             SpriteBatch.Begin();
 
@@ -314,7 +324,7 @@ namespace Sandstorm
             StoreXMLConfig(this.ParticleSystem.ParticleProperties);
             StoreXMLConfig(this.Kinect.KinectSettings);
             StoreXMLConfig(this.Terrain.TerrainProperties);
-            StoreXMLConfig(this.Camera.CameraSettings);
+            StoreXMLConfig(this.CameraOrtho.CameraSettings);
 
             Debug.WriteLine("StoreXML", "All XML Files written!");
         }
@@ -348,12 +358,14 @@ namespace Sandstorm
             }
 
             obj = LoadXMLConfig(typeof(CameraProperties));
-            this.Camera.CameraSettings = obj as CameraProperties;
-            if (this.Camera.CameraSettings == null)
+            this.CameraOrtho.CameraSettings = obj as CameraProperties;
+            if (this.CameraOrtho.CameraSettings == null)
             {
-                this.Camera.CameraSettings = CameraProperties.Default;
+                this.CameraOrtho.CameraSettings = CameraProperties.DefaultOrtho;
+                this.CameraOrtho.UpdateViewMatrix();
+                this.CameraOrtho.UpdateProjectionMatrix();
             }
-
+            _HUD.initGui();
             Debug.WriteLine("LoadXML", "All XML Files read!");
         }
 
