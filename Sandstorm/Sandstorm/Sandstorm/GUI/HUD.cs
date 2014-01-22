@@ -23,22 +23,31 @@ namespace Sandstorm.GUI
     /// </summary>
     public class HUD : DrawableGameComponent
     {
-        public Gui GUI;
-        SpriteFont Calibri20;
-        SpriteFont Calibri16;
-        Texture2D _ImageMap;
-        string _Map;
-        Panel MainMenu;
-        ScrollBars MainContent;
-        List<Object> Items = new List<Object>();
-        bool Visible = true;
-        int MenuOffset = 170; //340;
+        public Gui GUI { get; set; }
 
+        private SpriteFont _Calibri20;
+        private SpriteFont _Calibri16;
+        private Texture2D _ImageMap;
+        private string _Map;
+
+        private Panel _MainMenu;
+        private ScrollBars _MainContent;
+        private List<Object> _Items;
+        private bool _Visible;
+
+        private int _MenuOffset; //340;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="game"></param>
         public HUD(Game game) : base(game)
         {
-            Calibri20 = Game.Content.Load<SpriteFont>("font\\Calibri20");
-            Calibri16 = Game.Content.Load<SpriteFont>("font\\Calibri16");
-            _ImageMap = Game.Content.Load<Texture2D>("GUI\\StormTheme");
+            _MenuOffset = 170;
+            _Items = new List<Object>();
+            _Calibri20 = Game.Content.Load<SpriteFont>("font\\Calibri20");
+            _Calibri16 = Game.Content.Load<SpriteFont>("font\\Calibri16");
+            _ImageMap = Game.Content.Load<Texture2D>("GUI\\StormThemePurple");
             _Map = File.OpenText("Content\\GUI\\StormMap.txt").ReadToEnd();       
         }
 
@@ -53,11 +62,11 @@ namespace Sandstorm.GUI
 
         public void InitGui(bool beamer = false)
         {
-            Visible = true;
+            _Visible = true;
 
             var skin = new Skin(_ImageMap, _Map);
-            var calibri16 = new Text(Calibri16, Color.White);
-            var calibri20 = new Text(Calibri20, Color.White);
+            var calibri16 = new Text(_Calibri16, Color.White);
+            var calibri20 = new Text(_Calibri20, Color.White);
 
             var testSkins = new[] { new Tuple<string, Skin>("Skin", skin) };
             var testTexts = new[] { new Tuple<string, Text>("Calibri16", calibri16), 
@@ -73,25 +82,25 @@ namespace Sandstorm.GUI
 
         private void CreateMainMenu(int width, int height)
         {
-            MainMenu = new Panel(width - MenuOffset, 0, 170, height);
-            MainContent = new ScrollBars();
+            _MainMenu = new Panel(width - _MenuOffset, 0, 170, height);
+            _MainContent = new ScrollBars();
             Label head = new Label(5, 15, "Options") { Text = "Calibri20" };
             Panel optionPanel = new Panel(0, 50, 170, height - 50);
 
-            GUI.AddWidget(MainMenu);
-            MainMenu.AddWidget(head);
-            MainMenu.AddWidget(optionPanel);
-            optionPanel.AddWidget(MainContent);
+            GUI.AddWidget(_MainMenu);
+            _MainMenu.AddWidget(head);
+            _MainMenu.AddWidget(optionPanel);
+            optionPanel.AddWidget(_MainContent);
 
-            for (int i=0; i<Items.Count; i++)
+            for (int i=0; i<_Items.Count; i++)
             {
-                string label = Items[i].GetType().Name.Substring(0, Items[i].GetType().Name.IndexOf("Properties"));
+                string label = _Items[i].GetType().Name.Substring(0, _Items[i].GetType().Name.IndexOf("Properties"));
 
-                Widget subMenu = CreateSubMenu(width, height, Items[i], label);
+                Widget subMenu = CreateSubMenu(width, height, _Items[i], label);
 
-                MainContent.AddWidget(new Button(0, 30 * i, 170-15, label, buttonEvent: delegate(Widget widget)
+                _MainContent.AddWidget(new Button(0, 30 * i, 170-15, label, buttonEvent: delegate(Widget widget)
                 {
-                    HideWidget(MainMenu);
+                    HideWidget(_MainMenu);
                     ShowWidget(subMenu);
                 }));
             }
@@ -113,8 +122,6 @@ namespace Sandstorm.GUI
 
             for (int i = 0, offset = 0; i < properties.Length; i++)
             {
-                Console.WriteLine(properties[i].PropertyType);
-
                 switch (properties[i].PropertyType.ToString())
                 {
                     case "System.Int32":
@@ -183,8 +190,8 @@ namespace Sandstorm.GUI
         /// <param name="value"></param>
         public void AddSubMenu(Object item)
         {
-            Items.Add(item);
-            Visible = true;
+            _Items.Add(item);
+            _Visible = true;
             InitGui();
         }
 
@@ -193,10 +200,10 @@ namespace Sandstorm.GUI
         /// </summary>
         public void Show()
         {
-            if (!Visible)
+            if (!_Visible)
             {
-                ShowWidget(MainMenu);
-                Visible = true;
+                ShowWidget(_MainMenu);
+                _Visible = true;
             }
         }
 
@@ -205,13 +212,13 @@ namespace Sandstorm.GUI
         /// </summary>
         public void Hide()
         {
-            if (Visible)
+            if (_Visible)
             {
                 foreach(Widget widget in GUI.Widgets)
                 {
                     HideWidget(widget);
                 }
-                Visible = false;
+                _Visible = false;
             }
         }
 
