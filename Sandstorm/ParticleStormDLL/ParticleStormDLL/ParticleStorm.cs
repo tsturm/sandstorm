@@ -16,6 +16,7 @@ namespace ParticleStormDLL
     {
         public ParticleProperties ParticleProperties { get; set; }
 
+        public bool DoDraw { get; set; }
         public int TotalParticles { get; set; }
         public int ActiveParticles { get; private set; }
 
@@ -63,6 +64,8 @@ namespace ParticleStormDLL
             //Create content manager
             ContentManager = new ResourceContentManager(game.Services, Resource1.ResourceManager);
             ContentManager.RootDirectory = "Resources";
+
+            DoDraw = true;
 
             //Initialize randomizer
             Randomizer = new Randomizer();
@@ -117,11 +120,25 @@ namespace ParticleStormDLL
             FullScreenQuad = new Quad(GraphicsDevice);
 
             ParticleProperties.Texture = ContentManager.Load<Texture2D>("Simple");
+            
+            Texture2D TmpMap = Game.Content.Load<Texture2D>("tex/heightmap");
+
+            Color[] heightMapData = new Color[TmpMap.Width * TmpMap.Height];
+            Vector4[] heightMapData2 = new Vector4[TmpMap.Width * TmpMap.Height];
+            TmpMap.GetData(heightMapData);
+
+            for (int i = 0; i < heightMapData.Length; i++)
+            {
+                heightMapData2[i].X = heightMapData[i].R / 255f;
+                heightMapData2[i].Y = heightMapData[i].G / 255f;
+                heightMapData2[i].Z = heightMapData[i].B / 255f;
+                heightMapData2[i].W = 1.0f;
+            }
 
             Heightmap = new DoubleTexture(GraphicsDevice, 420, 420, false, SurfaceFormat.Vector4);
-            Heightmap.TextureA = Game.Content.Load<Texture2D>("tex/heightmap");
-            Heightmap.TextureB = Game.Content.Load<Texture2D>("tex/heightmap");
 
+            Heightmap.TextureA.SetData(heightMapData2);
+            Heightmap.TextureB.SetData(heightMapData2);
             GenerateRenderTargets();
         }
 
@@ -283,87 +300,95 @@ namespace ParticleStormDLL
         /// <param name="gameTime"></param>
         public void UpdateParticles(GameTime gameTime)
         {
-            //Set RenderTarget
-            GraphicsDevice.SetRenderTargets(new RenderTargetBinding(PositionsRT.TargetB),
-                                            new RenderTargetBinding(VelocitiesRT.TargetB),
-                                            new RenderTargetBinding(SizesRT.TargetB),
-                                            new RenderTargetBinding(ColorsRT.TargetB));
-
-            //Clear RenderTarget
-            GraphicsDevice.Clear(Color.Black);
-
-            //Disable Depth-/Stencilbuffer
-            GraphicsDevice.DepthStencilState = DepthStencilState.None;
-
-            //Set BlendState
-            GraphicsDevice.BlendState = BlendState.Opaque;
-
-            //Set VertexSamplerStates
-            GraphicsDevice.VertexSamplerStates[0] = SamplerState.PointClamp;
-            GraphicsDevice.VertexSamplerStates[1] = SamplerState.PointClamp;
-            GraphicsDevice.VertexSamplerStates[2] = SamplerState.PointClamp;
-            GraphicsDevice.VertexSamplerStates[3] = SamplerState.PointClamp;
-
-            //Set Indexbuffer
-            GraphicsDevice.Indices = FullScreenQuad.IndexBuffer;
-
-            //Set Vertexbuffer
-            GraphicsDevice.SetVertexBuffer(FullScreenQuad.VertexBuffer);
-
-            //Set effect technique
-            EffectUpdate.CurrentTechnique = EffectUpdate.Techniques["Update"];
-
-            //Set effect parameters
-            EffectUpdate.Parameters["Positions"].SetValue(PositionsRT.TargetA);
-            EffectUpdate.Parameters["Velocities"].SetValue(VelocitiesRT.TargetA);
-            EffectUpdate.Parameters["Terrain"].SetValue(Heightmap.TextureA);
-            EffectUpdate.Parameters["Sizes"].SetValue(SizesRT.TargetA);
-            EffectUpdate.Parameters["Colors"].SetValue(ColorsRT.TargetA);
-            EffectUpdate.Parameters["StartColors"].SetValue(StartColorsRT.TargetA);
-            EffectUpdate.Parameters["EndColors"].SetValue(EndColorsRT.TargetA);
-            EffectUpdate.Parameters["ActiveParticles"].SetValue(ActiveParticles);
-            EffectUpdate.Parameters["TotalParticles"].SetValue(TotalParticles);
-            EffectUpdate.Parameters["RenderTargetSize"].SetValue(RenderTargetSize);
-            EffectUpdate.Parameters["ExternalForces"].SetValue(ExternalForces);
-            EffectUpdate.Parameters["PositionMin"].SetValue(ParticleProperties.PositionMin);
-            EffectUpdate.Parameters["PositionMax"].SetValue(ParticleProperties.PositionMax);
-            EffectUpdate.Parameters["LifeMin"].SetValue(ParticleProperties.LifeTimeMin);
-            EffectUpdate.Parameters["LifeMax"].SetValue(ParticleProperties.LifeTimeMax);
-            EffectUpdate.Parameters["StartSizeMin"].SetValue(ParticleProperties.StartSizeMin);
-            EffectUpdate.Parameters["StartSizeMax"].SetValue(ParticleProperties.StartSizeMax);
-            EffectUpdate.Parameters["EndSizeMin"].SetValue(ParticleProperties.EndSizeMin);
-            EffectUpdate.Parameters["EndSizeMax"].SetValue(ParticleProperties.EndSizeMax);
-            EffectUpdate.Parameters["VelocityMin"].SetValue(ParticleProperties.VelocityMin);
-            EffectUpdate.Parameters["VelocityMax"].SetValue(ParticleProperties.VelocityMax);
-            EffectUpdate.Parameters["StartColorMin"].SetValue(ParticleProperties.StartColorMin.ToVector4());
-            EffectUpdate.Parameters["StartColorMax"].SetValue(ParticleProperties.StartColorMax.ToVector4());
-            EffectUpdate.Parameters["EndColorMin"].SetValue(ParticleProperties.StartColorMin.ToVector4());
-            EffectUpdate.Parameters["EndColorMax"].SetValue(ParticleProperties.StartColorMax.ToVector4());
-            EffectUpdate.Parameters["Field"].SetValue(new Vector4(0, 0, 0, 0));
-            EffectUpdate.Parameters["ElapsedTime"].SetValue((float)gameTime.ElapsedGameTime.TotalSeconds);
-
-            //Begin first effect pass
-            EffectUpdate.CurrentTechnique.Passes[0].Apply();
-
-            foreach (EffectPass pass in EffectUpdate.CurrentTechnique.Passes)
+            try
             {
-                pass.Apply();
 
-                //Draw full screen quad
-                GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList,
-                                                     0,
-                                                     0,
-                                                     FullScreenQuad.VertexCount,
-                                                     0,
-                                                     FullScreenQuad.PrimitiveCount);
+                //Set RenderTarget
+                GraphicsDevice.SetRenderTargets(new RenderTargetBinding(PositionsRT.TargetB),
+                                                new RenderTargetBinding(VelocitiesRT.TargetB),
+                                                new RenderTargetBinding(SizesRT.TargetB),
+                                                new RenderTargetBinding(ColorsRT.TargetB));
+
+                //Clear RenderTarget
+                GraphicsDevice.Clear(Color.Black);
+
+                //Disable Depth-/Stencilbuffer
+                GraphicsDevice.DepthStencilState = DepthStencilState.None;
+
+                //Set BlendState
+                GraphicsDevice.BlendState = BlendState.Opaque;
+
+                //Set VertexSamplerStates
+                GraphicsDevice.VertexSamplerStates[0] = SamplerState.PointClamp;
+                GraphicsDevice.VertexSamplerStates[1] = SamplerState.PointClamp;
+                GraphicsDevice.VertexSamplerStates[2] = SamplerState.PointClamp;
+                GraphicsDevice.VertexSamplerStates[3] = SamplerState.PointClamp;
+
+                //Set Indexbuffer
+                GraphicsDevice.Indices = FullScreenQuad.IndexBuffer;
+
+                //Set Vertexbuffer
+                GraphicsDevice.SetVertexBuffer(FullScreenQuad.VertexBuffer);
+
+                //Set effect technique
+                EffectUpdate.CurrentTechnique = EffectUpdate.Techniques["Update"];
+
+                //Set effect parameters
+                EffectUpdate.Parameters["Positions"].SetValue(PositionsRT.TargetA);
+                EffectUpdate.Parameters["Velocities"].SetValue(VelocitiesRT.TargetA);
+                EffectUpdate.Parameters["Terrain"].SetValue(Heightmap.TextureA);
+                EffectUpdate.Parameters["Sizes"].SetValue(SizesRT.TargetA);
+                EffectUpdate.Parameters["Colors"].SetValue(ColorsRT.TargetA);
+                EffectUpdate.Parameters["StartColors"].SetValue(StartColorsRT.TargetA);
+                EffectUpdate.Parameters["EndColors"].SetValue(EndColorsRT.TargetA);
+                EffectUpdate.Parameters["ActiveParticles"].SetValue(ActiveParticles);
+                EffectUpdate.Parameters["TotalParticles"].SetValue(TotalParticles);
+                EffectUpdate.Parameters["RenderTargetSize"].SetValue(RenderTargetSize);
+                EffectUpdate.Parameters["ExternalForces"].SetValue(ExternalForces);
+                EffectUpdate.Parameters["PositionMin"].SetValue(ParticleProperties.PositionMin);
+                EffectUpdate.Parameters["PositionMax"].SetValue(ParticleProperties.PositionMax);
+                EffectUpdate.Parameters["LifeMin"].SetValue(ParticleProperties.LifeTimeMin);
+                EffectUpdate.Parameters["LifeMax"].SetValue(ParticleProperties.LifeTimeMax);
+                EffectUpdate.Parameters["StartSizeMin"].SetValue(ParticleProperties.StartSizeMin);
+                EffectUpdate.Parameters["StartSizeMax"].SetValue(ParticleProperties.StartSizeMax);
+                EffectUpdate.Parameters["EndSizeMin"].SetValue(ParticleProperties.EndSizeMin);
+                EffectUpdate.Parameters["EndSizeMax"].SetValue(ParticleProperties.EndSizeMax);
+                EffectUpdate.Parameters["VelocityMin"].SetValue(ParticleProperties.VelocityMin);
+                EffectUpdate.Parameters["VelocityMax"].SetValue(ParticleProperties.VelocityMax);
+                EffectUpdate.Parameters["StartColorMin"].SetValue(ParticleProperties.StartColorMin.ToVector4());
+                EffectUpdate.Parameters["StartColorMax"].SetValue(ParticleProperties.StartColorMax.ToVector4());
+                EffectUpdate.Parameters["EndColorMin"].SetValue(ParticleProperties.StartColorMin.ToVector4());
+                EffectUpdate.Parameters["EndColorMax"].SetValue(ParticleProperties.StartColorMax.ToVector4());
+                EffectUpdate.Parameters["Field"].SetValue(new Vector4(0, 0, 0, 0));
+                EffectUpdate.Parameters["ElapsedTime"].SetValue((float)gameTime.ElapsedGameTime.TotalSeconds);
+
+                //Begin first effect pass
+                EffectUpdate.CurrentTechnique.Passes[0].Apply();
+
+                foreach (EffectPass pass in EffectUpdate.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+
+                    //Draw full screen quad
+                    GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList,
+                                                         0,
+                                                         0,
+                                                         FullScreenQuad.VertexCount,
+                                                         0,
+                                                         FullScreenQuad.PrimitiveCount);
+                }
+
+
+
+                PositionsRT.Swap();
+                VelocitiesRT.Swap();
+                SizesRT.Swap();
+                ColorsRT.Swap();
             }
-
-            
-
-            PositionsRT.Swap();
-            VelocitiesRT.Swap();
-            SizesRT.Swap();
-            ColorsRT.Swap();
+            catch (ObjectDisposedException e)
+            {
+                Console.WriteLine("ObjectDisposed ParticleStorm!" + e);
+            }
         }
 
         /// <summary>
@@ -391,7 +416,7 @@ namespace ParticleStormDLL
             GraphicsDevice.SetVertexBuffers(new VertexBufferBinding(Mesh.VertexBuffer, 0, 0),
                                             new VertexBufferBinding(InstanceBuffer, 0, 1));
 
-            /*//Set effect technique
+            //Set effect technique
             if (ParticleProperties.Texture == null) 
             {
                 EffectDraw.CurrentTechnique = EffectDraw.Techniques["Draw"];
@@ -402,10 +427,7 @@ namespace ParticleStormDLL
                      ParticleProperties.Texture = ContentManager.Load<Texture2D>("Simple");
                 EffectDraw.CurrentTechnique = EffectDraw.Techniques["DrawTextured"];
                 EffectDraw.Parameters["diffuseMap"].SetValue(ParticleProperties.Texture);
-            }*/
-            ParticleProperties.Texture = ContentManager.Load<Texture2D>("AlienBug");
-            EffectDraw.CurrentTechnique = EffectDraw.Techniques["DrawTextured"];
-            EffectDraw.Parameters["diffuseMap"].SetValue(ParticleProperties.Texture);
+            }
 
             EffectDraw.Parameters["ViewMatrix"].SetValue(ViewMatrix);
             EffectDraw.Parameters["projMatrix"].SetValue(ProjectionMatrix);
@@ -426,15 +448,6 @@ namespace ParticleStormDLL
                                                    ActiveParticles);
         }
 
-        /*/// <summary>
-        /// 
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public Texture2D HeigthMapNormals(Texture2D heightmap)
-        {
-
-        }*/
-
         /// <summary>
         /// Called when the DrawableGameComponent needs to be drawn.
         /// </summary>
@@ -452,7 +465,7 @@ namespace ParticleStormDLL
             }
             else
             {
-                if (ActiveParticles > 0 && ActiveParticles < (1024 * 1024))
+                if (DoDraw && ActiveParticles > 0 && ActiveParticles < (1024 * 1024))
                 {
                     DrawParticles(gameTime);
                 }
