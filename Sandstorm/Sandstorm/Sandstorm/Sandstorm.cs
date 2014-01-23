@@ -96,7 +96,7 @@ namespace Sandstorm
             Kinect = new SandstormKinectCore();
 
             FPSCounter = new FPSCounter(this);
-            _HUD = new HUD(this, ParticleSystem);
+            _HUD = new HUD(this);
 
             //load configs
             this.LoadEverythingFromXML();
@@ -106,7 +106,7 @@ namespace Sandstorm
             Kinect.StartKinect();
             
             //init GUI
-            _HUD.initGui();
+            _HUD.InitGui();
 
             base.Initialize();
         }
@@ -123,7 +123,6 @@ namespace Sandstorm
             _HUD.AddSubMenu(ParticleSystem.ParticleProperties);
             _HUD.AddSubMenu(Terrain.TerrainProperties);
             _HUD.AddSubMenu(Kinect.KinectSettings);
-            _HUD.Hide();
         }
 
         /// <summary>
@@ -172,16 +171,14 @@ namespace Sandstorm
         {
             MouseState mouseState = Mouse.GetState();
 
-            if (mouseState.X > Window.ClientBounds.Width - 30)
+            if (mouseState.X > Window.ClientBounds.Width - (_HUD.MenuOffset - 140))
             {
                 _HUD.Show();
             }
-            else if (mouseState.X < Window.ClientBounds.Width - 170)
+            else if (mouseState.X < Window.ClientBounds.Width - _HUD.MenuOffset)
             {
                 _HUD.Hide();
             }
-
-
 
             KeyboardState newState = Keyboard.GetState();
             if (newState.IsKeyDown(Keys.Escape))
@@ -204,16 +201,6 @@ namespace Sandstorm
                         graphics.PreferredBackBufferHeight = GraphicsDevice.Adapter.CurrentDisplayMode.Height;
                         graphics.ToggleFullScreen();
                     }
-                }
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.F11))
-            {
-                if (!oldState.IsKeyDown(Keys.F11))
-                {
-                    if (ActiveCamera == Camera)
-                        ActiveCamera = CameraOrtho;
-                    else
-                        ActiveCamera = Camera;
                 }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.C))
@@ -247,6 +234,21 @@ namespace Sandstorm
                     ParticleSystem.Reset();
                 }
             }
+            else if (Keyboard.GetState().IsKeyDown(Keys.H))
+            {
+                if (!oldState.IsKeyDown(Keys.H))
+                {
+                    _HUD.MenuOffset = (_HUD.MenuOffset == 170) ? 340 : 170;
+                    _HUD.InitGui();
+                }
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.P))
+            {
+                if (!oldState.IsKeyDown(Keys.P))
+                {
+                    ParticleSystem.DoDraw = !ParticleSystem.DoDraw;
+                }
+            }
 
             // Update saved state.
             oldState = newState;
@@ -264,7 +266,7 @@ namespace Sandstorm
             _HUD.Update(gameTime);
 
             //Mouse camera Events only on focus and if not clicked on buttons
-            if (this.IsActive && !_HUD._gui.HasMouse)
+            if (this.IsActive && !_HUD.GUI.HasMouse)
             {
                 if(ActiveCamera == CameraOrtho)
                     cameraControllerOrtho.Update(gameTime);
@@ -364,7 +366,7 @@ namespace Sandstorm
                 this.CameraOrtho.UpdateViewMatrix();
                 this.CameraOrtho.UpdateProjectionMatrix();
             }
-            _HUD.initGui();
+            _HUD.InitGui();
             Debug.WriteLine("LoadXML", "All XML Files read!");
         }
 

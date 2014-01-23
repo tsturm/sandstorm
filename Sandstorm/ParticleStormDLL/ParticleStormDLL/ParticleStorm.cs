@@ -16,6 +16,7 @@ namespace ParticleStormDLL
     {
         public ParticleProperties ParticleProperties { get; set; }
 
+        public bool DoDraw { get; set; }
         public int TotalParticles { get; set; }
         public int ActiveParticles { get; private set; }
 
@@ -63,6 +64,8 @@ namespace ParticleStormDLL
             //Create content manager
             ContentManager = new ResourceContentManager(game.Services, Resource1.ResourceManager);
             ContentManager.RootDirectory = "Resources";
+
+            DoDraw = true;
 
             //Initialize randomizer
             Randomizer = new Randomizer();
@@ -453,13 +456,9 @@ namespace ParticleStormDLL
             try
             {
 
-                //Set Backbuffer as RenderTarget
-                GraphicsDevice.SetRenderTarget(null);
-
-                if (ActiveParticles > 0 && ActiveParticles < (1024 * 1024))
-                {
-                    DrawParticles(gameTime);
-                }
+            if (DoDraw && ActiveParticles > 0 && ActiveParticles < (1024*1024))
+            {              
+                DrawParticles(gameTime);
             }
             
             catch (ObjectDisposedException e)
