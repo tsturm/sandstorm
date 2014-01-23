@@ -124,30 +124,31 @@ namespace SandstormKinect
                     {
                         this.sensor = null;
                     }
+
+                    //start thread
+                    if (this.sensor != null && this.sensor.DepthStream.IsEnabled)
+                    {
+                        //build DepthStream Thread
+                        if (m_GrabDepthFrameThread != null)
+                        {
+                            m_GrabDepthFrameThread.Abort();
+                            m_GrabDepthFrameThread.Join();
+                        }
+                        m_GrabDepthFrameThread = new Thread(new ThreadStart(this.DepthImage_Thread));
+                        m_GrabDepthFrameThread.Name = "GrabDepthFrameWorkerThread";
+
+                        //go go go
+                        m_GrabDepthFrameThread.Start();
+
+                        //Debug thread status
+                        if (m_GrabDepthFrameThread.IsAlive)
+                        {
+                            Debug.WriteLine("thread is alive");
+                        }
+                        else Debug.WriteLine("something gone wrong with thread!");
+                    }
                 }
 
-                //start thread
-                if (this.sensor.DepthStream.IsEnabled)
-                {
-                    //build DepthStream Thread
-                    if (m_GrabDepthFrameThread != null)
-                    {
-                        m_GrabDepthFrameThread.Abort();
-                        m_GrabDepthFrameThread.Join();
-                    }
-                    m_GrabDepthFrameThread = new Thread(new ThreadStart(this.DepthImage_Thread));
-                    m_GrabDepthFrameThread.Name = "GrabDepthFrameWorkerThread";
-
-                    //go go go
-                    m_GrabDepthFrameThread.Start();
-
-                    //Debug thread status
-                    if (m_GrabDepthFrameThread.IsAlive)
-                    {
-                        Debug.WriteLine("thread is alive");
-                    }
-                    else Debug.WriteLine("something gone wrong with thread!");
-                }
             
             }
             catch (Exception ex)

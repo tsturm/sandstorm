@@ -155,9 +155,13 @@ namespace Sandstorm
                 && !Terrain.HeightMap.DoSwap && !ParticleSystem.Heightmap.DoSwap
                 )
             {
+                /*Vector4[] tmp = (Vector4[]) e.TextureData.Clone();
+                Vector4[] tmp2 = (Vector4[]) e.TextureData.Clone();
+                ParticleSystem.Heightmap.TextureB.SetData(tmp);
+                Terrain.HeightMap.TextureB.SetData(tmp2);*/
                 ParticleSystem.Heightmap.TextureB.SetData(e.TextureData);
-                ParticleSystem.Heightmap.DoSwap = true;
                 Terrain.HeightMap.TextureB.SetData(e.TextureData);
+                ParticleSystem.Heightmap.DoSwap = true;
                 Terrain.HeightMap.DoSwap = true;
             }
             

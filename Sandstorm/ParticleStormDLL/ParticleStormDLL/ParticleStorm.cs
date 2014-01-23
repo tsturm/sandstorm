@@ -456,11 +456,11 @@ namespace ParticleStormDLL
             try
             {
 
-            if (DoDraw && ActiveParticles > 0 && ActiveParticles < (1024*1024))
-            {              
-                DrawParticles(gameTime);
+                if (DoDraw && ActiveParticles > 0 && ActiveParticles < (1024 * 1024))
+                {
+                    DrawParticles(gameTime);
+                }
             }
-            
             catch (ObjectDisposedException e)
             {
                 Console.WriteLine("ObjectDisposed MainThread!" + e);
