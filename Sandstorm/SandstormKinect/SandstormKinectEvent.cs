@@ -15,7 +15,7 @@ namespace SandstormKinect
 
         #region EVENT_PROPERTIES
 
-        public Microsoft.Xna.Framework.Vector4[] TextureData
+        public Vector4[] TextureData
         {
             get;
             set;

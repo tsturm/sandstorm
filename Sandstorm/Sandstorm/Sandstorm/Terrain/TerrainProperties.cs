@@ -23,22 +23,22 @@ namespace Sandstorm
         /// <summary>
         /// 
         /// </summary>
-        public Vector4 Color0 { get; set; }
+        public Color Color0 { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public Vector4 Color1 { get; set; }
+        public Color Color1 { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public Vector4 Color2 { get; set; }
+        public Color Color2 { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public Vector4 Color3 { get; set; }
+        public Color Color3 { get; set; }
 
         /// <summary>
         /// 
@@ -60,10 +60,10 @@ namespace Sandstorm
         /// </summary>
         public TerrainProperties()
         {
-            Color0 = new Vector4(0.0f, 0.0f, 0.85f, 1.0f);
-            Color1 = new Vector4(0.2f, 0.52f, 0.03f, 1.0f);
-            Color2 = new Vector4(0.9f, 0.85f, 0.34f, 1.0f);
-            Color3 = new Vector4(0.7f, 0.17f, 0.0f, 1.0f);
+            Color0 = new Color(0.0f, 0.0f, 0.85f, 1.0f);
+            Color1 = new Color(0.2f, 0.52f, 0.03f, 1.0f);
+            Color2 = new Color(0.9f, 0.85f, 0.34f, 1.0f);
+            Color3 = new Color(0.7f, 0.17f, 0.0f, 1.0f);
             HeightScale = 84.0f;
             ContourSpacing = 35.0f;
             ContourLines = true;

@@ -145,38 +145,44 @@ namespace Sandstorm
         /// <param name="gameTime">Time passed since the last call to Draw.</param>
         public override void Draw(GameTime gameTime)
         {
-            //Set Backbuffer as RenderTarget
-            GraphicsDevice.SetRenderTarget(null);
+            try
+            {
+                //Set Backbuffer as RenderTarget
+                GraphicsDevice.SetRenderTarget(null);
 
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            GraphicsDevice.BlendState = BlendState.Opaque;
-            RasterizerState rs = new RasterizerState();
-            rs.CullMode = CullMode.None;
-            GraphicsDevice.RasterizerState = rs;
+                GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                GraphicsDevice.BlendState = BlendState.Opaque;
+                RasterizerState rs = new RasterizerState();
+                rs.CullMode = CullMode.None;
+                GraphicsDevice.RasterizerState = rs;
 
-            GraphicsDevice.SetVertexBuffer(VertexBuffer);
-            GraphicsDevice.Indices = IndexBuffer;
+                GraphicsDevice.SetVertexBuffer(VertexBuffer);
+                GraphicsDevice.Indices = IndexBuffer;
 
-            Effect.CurrentTechnique = Effect.Techniques["Terrain"];
-            Effect.Parameters["worldMatrix"].SetValue(Matrix.Identity);
-            Effect.Parameters["viewMatrix"].SetValue(ViewMatrix);
-            Effect.Parameters["projMatrix"].SetValue(ProjectionMatrix);
-            Effect.Parameters["heightMap"].SetValue(HeightMap.TextureA);
-            Effect.Parameters["heightScale"].SetValue(TerrainProperties.HeightScale);
-            Effect.Parameters["color0"].SetValue(TerrainProperties.Color0);
-            Effect.Parameters["color1"].SetValue(TerrainProperties.Color1);
-            Effect.Parameters["color2"].SetValue(TerrainProperties.Color2);
-            Effect.Parameters["color3"].SetValue(TerrainProperties.Color3);
-            Effect.Parameters["contourSpacing"].SetValue(TerrainProperties.ContourSpacing);
-            Effect.Parameters["displayContours"].SetValue(TerrainProperties.ContourLines);
-            Effect.Parameters["textureWidth"].SetValue(HeightMap.TextureB.Width);
-            Effect.Parameters["textureHeight"].SetValue(HeightMap.TextureB.Height);
+                Effect.CurrentTechnique = Effect.Techniques["Terrain"];
+                Effect.Parameters["worldMatrix"].SetValue(Matrix.Identity);
+                Effect.Parameters["viewMatrix"].SetValue(ViewMatrix);
+                Effect.Parameters["projMatrix"].SetValue(ProjectionMatrix);
+                Effect.Parameters["heightMap"].SetValue(HeightMap.TextureA);
+                Effect.Parameters["heightScale"].SetValue(TerrainProperties.HeightScale);
+                Effect.Parameters["color0"].SetValue(TerrainProperties.Color0.ToVector4());
+                Effect.Parameters["color1"].SetValue(TerrainProperties.Color1.ToVector4());
+                Effect.Parameters["color2"].SetValue(TerrainProperties.Color2.ToVector4());
+                Effect.Parameters["color3"].SetValue(TerrainProperties.Color3.ToVector4());
+                Effect.Parameters["contourSpacing"].SetValue(TerrainProperties.ContourSpacing);
+                Effect.Parameters["displayContours"].SetValue(TerrainProperties.ContourLines);
+                Effect.Parameters["textureWidth"].SetValue(HeightMap.TextureB.Width);
+                Effect.Parameters["textureHeight"].SetValue(HeightMap.TextureB.Height);
 
-            //Begin pass
-            Effect.CurrentTechnique.Passes[0].Apply();
+                //Begin pass
+                Effect.CurrentTechnique.Passes[0].Apply();
 
-            GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, VertexBuffer.VertexCount, 0, IndexBuffer.IndexCount / 3);
-
+                GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, VertexBuffer.VertexCount, 0, IndexBuffer.IndexCount / 3);
+            }
+            catch (ObjectDisposedException e)
+            {
+                Console.WriteLine("ObjectDisposed MainThread (Draw)!" + e);
+            }
             base.Draw(gameTime);
 
         }

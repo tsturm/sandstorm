@@ -23,26 +23,33 @@ namespace Sandstorm.GUI
     /// </summary>
     public class HUD : DrawableGameComponent
     {
-        public Gui _gui;
-        SpriteFont Calibri20;
-        SpriteFont Calibri16;
-        Texture2D _ImageMap;
-        string _Map;
+        public Gui GUI { get; set; }
 
-        //Elements
-        ParticleStorm _particleSystem = null;
+        private SpriteFont _Calibri20;
+        private SpriteFont _Calibri16;
+        private Texture2D _ImageMap;
+        private string _Map;
 
-        public HUD(Game game,ParticleStorm particleSystem) : base(game)
+        private Panel _MainMenu;
+        private ScrollBars _MainContent;
+        private List<Object> _Items;
+        private bool _Visible;
+
+        public int MenuOffset { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="game"></param>
+        public HUD(Game game)
+            : base(game)
         {
-            Calibri20 = Game.Content.Load<SpriteFont>("font\\Calibri20");
-            Calibri16 = Game.Content.Load<SpriteFont>("font\\Calibri16");
-            //_ImageMap = Game.Content.Load<Texture2D>("GUI\\ImageMap");
-            //_Map = File.OpenText("Content\\GUI\\Map.txt").ReadToEnd();
-            _ImageMap = Game.Content.Load<Texture2D>("GUI\\StormTheme");
+            MenuOffset = 170;
+            _Items = new List<Object>();
+            _Calibri20 = Game.Content.Load<SpriteFont>("font\\Calibri20");
+            _Calibri16 = Game.Content.Load<SpriteFont>("font\\Calibri16");
+            _ImageMap = Game.Content.Load<Texture2D>("GUI\\StormThemePurple");
             _Map = File.OpenText("Content\\GUI\\StormMap.txt").ReadToEnd();
-            _particleSystem = particleSystem;
-            initGui();
-               
         }
 
         /// <summary>
@@ -54,30 +61,73 @@ namespace Sandstorm.GUI
             base.Initialize();
         }
 
-        private void createOptionPanel(int width, int height)
+        public void InitGui()
         {
-            Panel mainPanel = new Panel(width - 170, 0, 170, height);
-            Label head = new Label(35, 15, "ParticleSystem") { Text = "Calibri20" };
-            Panel optionPanel = new Panel(0, 50, 170, height-50);
+            _Visible = true;
+
+            var skin = new Skin(_ImageMap, _Map);
+            var calibri16 = new Text(_Calibri16, Color.White);
+            var calibri20 = new Text(_Calibri20, Color.White);
+
+            var testSkins = new[] { new Tuple<string, Skin>("Skin", skin) };
+            var testTexts = new[] { new Tuple<string, Text>("Calibri16", calibri16), 
+                                    new Tuple<string, Text>("Calibri20", calibri20)};
+            int width = Game.Window.ClientBounds.Width;
+            int height = Game.Window.ClientBounds.Height;
+
+            GUI = new Gui(base.Game, skin, calibri16, testSkins, testTexts);
+
+            CreateMainMenu(width, height);
+            Hide();
+        }
+
+        private void CreateMainMenu(int width, int height)
+        {
+            _MainMenu = new Panel(width - MenuOffset, 0, 175, height);
+            _MainContent = new ScrollBars();
+            Label head = new Label(5, 15, "Options") { Text = "Calibri20" };
+            Panel optionPanel = new Panel(0, 50, 170, height - 50);
+
+            GUI.AddWidget(_MainMenu);
+            _MainMenu.AddWidget(head);
+            _MainMenu.AddWidget(optionPanel);
+            optionPanel.AddWidget(_MainContent);
+
+            for (int i = 0; i < _Items.Count; i++)
+            {
+                string label = _Items[i].GetType().Name.Substring(0, _Items[i].GetType().Name.IndexOf("Properties"));
+
+                Widget subMenu = CreateSubMenu(width, height, _Items[i], label);
+
+                _MainContent.AddWidget(new Button(0, 30 * i, 170 - 15, label, buttonEvent: delegate(Widget widget)
+                {
+                    HideWidget(_MainMenu);
+                    ShowWidget(subMenu);
+                }));
+            }
+        }
+
+        private Widget CreateSubMenu(int width, int height, Object item, string label)
+        {
+            Panel subPanel = new Panel(width - MenuOffset, 0, 175, height);
+            Label head = new Label(5, 15, label) { Text = "Calibri20" };
+            Panel optionPanel = new Panel(0, 50, 170, height - 50);
             ScrollBars scrollBars = new ScrollBars();
 
-            _gui.AddWidget(mainPanel);
-            mainPanel.AddWidget(head);
-            mainPanel.AddWidget(optionPanel);
+            GUI.AddWidget(subPanel);
+            subPanel.AddWidget(head);
+            subPanel.AddWidget(optionPanel);
             optionPanel.AddWidget(scrollBars);
 
-            PropertyInfo[] properties = _particleSystem.ParticleProperties.GetType().GetProperties();
-            int offset = 0;
+            PropertyInfo[] properties = item.GetType().GetProperties();
 
-            for (int i = 0; i < properties.Length; i++)
+            for (int i = 0, offset = 0; i < properties.Length; i++)
             {
-                Console.WriteLine(properties[i].PropertyType);
-
                 switch (properties[i].PropertyType.ToString())
                 {
                     case "System.Int32":
                         IntSlider iS = new IntSlider(scrollBars,
-                                                     _particleSystem.ParticleProperties,
+                                                     item,
                                                      properties[i].Name,
                                                      0,
                                                      offset,
@@ -88,18 +138,18 @@ namespace Sandstorm.GUI
                         break;
                     case "System.Single":
                         FloatSlider oS = new FloatSlider(scrollBars,
-                                                         _particleSystem.ParticleProperties,
+                                                         item,
                                                          properties[i].Name,
-                                                         0, 
-                                                         offset, 
+                                                         0,
+                                                         offset,
                                                          145,
-                                                         0.0f, 
+                                                         0.0f,
                                                          100.0f);
                         offset += 40;
                         break;
                     case "Microsoft.Xna.Framework.Vector3":
                         Vector3Slider v3S = new Vector3Slider(scrollBars,
-                                                              _particleSystem.ParticleProperties,
+                                                              item,
                                                               properties[i].Name,
                                                               0,
                                                               offset,
@@ -110,7 +160,7 @@ namespace Sandstorm.GUI
                         break;
                     case "Microsoft.Xna.Framework.Color":
                         ColorSlider cS = new ColorSlider(scrollBars,
-                                                         _particleSystem.ParticleProperties,
+                                                         item,
                                                          properties[i].Name,
                                                          0,
                                                          offset,
@@ -121,58 +171,109 @@ namespace Sandstorm.GUI
                         break;
                     case "System.Boolean":
                         BooleanToggle bt = new BooleanToggle(scrollBars,
-                                                             _particleSystem.ParticleProperties,
+                                                             item,
                                                              properties[i].Name,
                                                              0,
                                                              offset);
                         offset += 40;
                         break;
                     case "Microsoft.Xna.Framework.Graphics.Texture2D":
-                        break;      
-                } 
+                        break;
+                }
+            }
+
+            return subPanel;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        public void AddSubMenu(Object item)
+        {
+            _Items.Add(item);
+            _Visible = true;
+            InitGui();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Show()
+        {
+            if (!_Visible)
+            {
+                ShowWidget(_MainMenu);
+                _Visible = true;
             }
         }
 
-        public void initGui()
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Hide()
         {
-            var skin = new Skin(_ImageMap, _Map);
-            var calibri16 = new Text(Calibri16, Color.White);
-            var calibri20 = new Text(Calibri20, Color.White);
-
-            var testSkins = new[] { new Tuple<string, Skin>("Skin", skin) };
-            var testTexts = new[] { new Tuple<string, Text>("Calibri16", calibri16), 
-                                    new Tuple<string, Text>("Calibri20", calibri20)};
-
-            int width = Game.Window.ClientBounds.Width;
-            int height = Game.Window.ClientBounds.Height;
-
-            _gui = new Gui(base.Game, skin, calibri16, testSkins, testTexts); //creat the GUI
-            this.createOptionPanel(width, height);
-
+            if (_Visible)
+            {
+                foreach (Widget widget in GUI.Widgets)
+                {
+                    HideWidget(widget);
+                }
+                _Visible = false;
+            }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="widget"></param>
+        private void HideWidget(Widget widget)
+        {
+            foreach (Widget child in widget.Children)
+            {
+                HideWidget(child);
+                child.Visible = false;
+            }
+            widget.Visible = false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="widget"></param>
+        private void ShowWidget(Widget widget)
+        {
+            //Widget[] children = widget.Children.ToArray();
+            foreach (Widget child in widget.Children)
+            {
+                ShowWidget(child);
+                child.Visible = true;
+            }
+            widget.Visible = true;
+        }
+
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            if (_gui != null) 
-                _gui.Update();
+            if (GUI != null)
+                GUI.Update();
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            if (_gui != null) 
-                _gui.Draw();
+            if (GUI != null)
+                GUI.Draw();
             base.Draw(gameTime);
         }
 
-
         public void OnResize()
         {
-            this.initGui();
-            _gui.Resize();
+            this.InitGui();
+            GUI.Resize();
         }
     }
 }

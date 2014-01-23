@@ -30,7 +30,7 @@ namespace Sandstorm
             else
             {
 
-                if (_camera.Type == Camera.ProjectionType.PERSPECTIVE_PROJECTION)
+                if (_camera.CameraSettings.ProjectionType == ProjectionType.PERSPECTIVE_PROJECTION)
                 {
                     // Handle mouse input
                     MouseState mouseState = Mouse.GetState();

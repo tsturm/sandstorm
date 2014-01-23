@@ -38,10 +38,11 @@ namespace Sandstorm
         /// <summary>
         /// Gets or Sets the camera of the scene
         /// </summary>
-        public Camera Camera { get; set; }
+        private Camera Camera { get; set; }
+        private Camera CameraOrtho { get; set; }
 
-        public Camera CameraOrtho { get; set; }
-        public Camera ActiveCamera { get; set; }
+        //reference of ortho / normal
+        private Camera ActiveCamera { get; set; }
 
 
         private Terrain Terrain;
@@ -81,11 +82,10 @@ namespace Sandstorm
         /// </summary>
         protected override void Initialize()
         {
-            Camera = new Camera(GraphicsDevice.Viewport);
+            Camera = new Camera(GraphicsDevice.Viewport, ProjectionType.PERSPECTIVE_PROJECTION, "PC");
             cameraController = new CameraController(Camera);
 
-            CameraOrtho = new Camera(GraphicsDevice.Viewport);
-            CameraOrtho.Type = global::Sandstorm.Camera.ProjectionType.ORTHOGRAPHIC_PROJECTION;
+            CameraOrtho = new Camera(GraphicsDevice.Viewport,ProjectionType.ORTHOGRAPHIC_PROJECTION,"Beamer");
             CameraOrtho.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), (float)Math.PI / 2);
             cameraControllerOrtho = new CameraController(CameraOrtho);
 
@@ -96,7 +96,7 @@ namespace Sandstorm
             Kinect = new SandstormKinectCore();
 
             FPSCounter = new FPSCounter(this);
-            _HUD = new HUD(this, ParticleSystem);
+            _HUD = new HUD(this);
 
             //load configs
             this.LoadEverythingFromXML();
@@ -106,7 +106,7 @@ namespace Sandstorm
             Kinect.StartKinect();
             
             //init GUI
-            _HUD.initGui();
+            _HUD.InitGui();
 
             base.Initialize();
         }
@@ -119,13 +119,19 @@ namespace Sandstorm
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             SpriteFont = Content.Load<SpriteFont>("font\\Font");
+
+            _HUD.AddSubMenu(ParticleSystem.ParticleProperties);
+            _HUD.AddSubMenu(Terrain.TerrainProperties);
+            _HUD.AddSubMenu(Kinect.KinectSettings);
         }
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// all content.
         /// </summary>
-        protected override void UnloadContent() { }
+        protected override void UnloadContent() {
+            Kinect.Exit();
+        }
 
         /// <summary>
         /// Handles Window resizing
@@ -147,24 +153,16 @@ namespace Sandstorm
         {
             if (    Terrain.HeightMap != null && ParticleSystem.Heightmap != null 
                 && !Terrain.HeightMap.DoSwap && !ParticleSystem.Heightmap.DoSwap
-                && e.TextureData.Length == (this.Kinect.KinectSettings.TargetDimension.Item1 * this.Kinect.KinectSettings.TargetDimension.Item2)
                 )
             {
-                //super ugly
-                Vector4[] tmp1 = (Vector4[]) e.TextureData.Clone();
+                /*Vector4[] tmp = (Vector4[]) e.TextureData.Clone();
                 Vector4[] tmp2 = (Vector4[]) e.TextureData.Clone();
-
-                    //if (this.myKinectTexture != null && this.myKinectTexture.Name == "kinect")
-                    //{
-                        //this.myKinectTexture.GetData(tmp1);
-                        //this.myKinectTexture.GetData(tmp2);
-                        //this.myKinectTexture.Dispose();
-
-                        Terrain.HeightMap.TextureB.SetData(tmp1);
-                        //ParticleSystem.Heightmap.TextureB.SetData(tmp2); //= e.Texture;
-                        Terrain.HeightMap.DoSwap = true;
-                        //ParticleSystem.Heightmap.DoSwap = true;
-                   // }
+                ParticleSystem.Heightmap.TextureB.SetData(tmp);
+                Terrain.HeightMap.TextureB.SetData(tmp2);*/
+                ParticleSystem.Heightmap.TextureB.SetData(e.TextureData);
+                Terrain.HeightMap.TextureB.SetData(e.TextureData);
+                ParticleSystem.Heightmap.DoSwap = true;
+                Terrain.HeightMap.DoSwap = true;
             }
             
         }
@@ -175,6 +173,17 @@ namespace Sandstorm
         KeyboardState oldState = Keyboard.GetState();
         private void HandleInput()
         {
+            MouseState mouseState = Mouse.GetState();
+
+            if (mouseState.X > Window.ClientBounds.Width - (_HUD.MenuOffset - 140))
+            {
+                _HUD.Show();
+            }
+            else if (mouseState.X < Window.ClientBounds.Width - _HUD.MenuOffset)
+            {
+                _HUD.Hide();
+            }
+
             KeyboardState newState = Keyboard.GetState();
             if (newState.IsKeyDown(Keys.Escape))
             {
@@ -196,16 +205,6 @@ namespace Sandstorm
                         graphics.PreferredBackBufferHeight = GraphicsDevice.Adapter.CurrentDisplayMode.Height;
                         graphics.ToggleFullScreen();
                     }
-                }
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.F11))
-            {
-                if (!oldState.IsKeyDown(Keys.F11))
-                {
-                    if (ActiveCamera == Camera)
-                        ActiveCamera = CameraOrtho;
-                    else
-                        ActiveCamera = Camera;
                 }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.C))
@@ -239,6 +238,21 @@ namespace Sandstorm
                     ParticleSystem.Reset = true;
                 }
             }
+            else if (Keyboard.GetState().IsKeyDown(Keys.H))
+            {
+                if (!oldState.IsKeyDown(Keys.H))
+                {
+                    _HUD.MenuOffset = (_HUD.MenuOffset == 170) ? 340 : 170;
+                    _HUD.InitGui();
+                }
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.P))
+            {
+                if (!oldState.IsKeyDown(Keys.P))
+                {
+                    ParticleSystem.DoDraw = !ParticleSystem.DoDraw;
+                }
+            }
 
             // Update saved state.
             oldState = newState;
@@ -256,10 +270,13 @@ namespace Sandstorm
             _HUD.Update(gameTime);
 
             //Mouse camera Events only on focus and if not clicked on buttons
-            if (this.IsActive && !_HUD._gui.HasMouse)
+            if (this.IsActive && !_HUD.GUI.HasMouse)
             {
-                cameraController.Update(gameTime);
-                cameraControllerOrtho.Update(gameTime);
+                if(ActiveCamera == CameraOrtho)
+                    cameraControllerOrtho.Update(gameTime);
+                else if(ActiveCamera == Camera)
+                    cameraController.Update(gameTime);
+                
             }
 
             base.Update(gameTime);
@@ -271,25 +288,34 @@ namespace Sandstorm
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            ParticleSystem.UpdateParticles(gameTime);
-            GraphicsDevice.SetRenderTarget(null);
-            GraphicsDevice.Clear(Color.Black);
+            try
+            {
+                ParticleSystem.UpdateParticles(gameTime);
+                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.Clear(Color.Black);
 
-            ParticleSystem.SetMatrices(ActiveCamera.ViewMatrix, ActiveCamera.ProjMatrix);
-            Terrain.SetMatrices(ActiveCamera.ViewMatrix, ActiveCamera.ProjMatrix);
+                ParticleSystem.SetMatrices(ActiveCamera.CameraSettings.ViewMatrix, ActiveCamera.CameraSettings.ProjectionMatrix);
+                Terrain.SetMatrices(ActiveCamera.CameraSettings.ViewMatrix, ActiveCamera.CameraSettings.ProjectionMatrix);
 
+                base.Draw(gameTime);
+
+
+                string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\nProjectionType: {1}\nCameraName: {2}\nCameraMode: {3}", ParticleSystem.ActiveParticles, ActiveCamera.CameraSettings.ProjectionType, ActiveCamera.CameraSettings.CameraName, ActiveCamera.CameraSettings.CameraMode);
+
+                SpriteBatch.Begin();
+
+                SpriteBatch.DrawString(SpriteFont, text, new Vector2(10, 25), Color.White);
+
+                SpriteBatch.End();
+
+                _HUD.Draw(gameTime);
+
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine("InvalidOperationException Sandstorm " + e);
+            }
             base.Draw(gameTime);
-
-
-            string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\n", ParticleSystem.ActiveParticles);
-
-            SpriteBatch.Begin();
-
-            SpriteBatch.DrawString(SpriteFont, text, new Vector2(10, 25), Color.White);
-
-            SpriteBatch.End();
-
-            _HUD.Draw(gameTime);
         }
 
 
@@ -303,7 +329,7 @@ namespace Sandstorm
             StoreXMLConfig(this.ParticleSystem.ParticleProperties);
             StoreXMLConfig(this.Kinect.KinectSettings);
             StoreXMLConfig(this.Terrain.TerrainProperties);
-            StoreXMLConfig(this.Camera.CameraSettings);
+            StoreXMLConfig(this.CameraOrtho.CameraSettings);
 
             Debug.WriteLine("StoreXML", "All XML Files written!");
         }
@@ -337,12 +363,14 @@ namespace Sandstorm
             }
 
             obj = LoadXMLConfig(typeof(CameraProperties));
-            this.Camera.CameraSettings = obj as CameraProperties;
-            if (this.Camera.CameraSettings == null)
+            this.CameraOrtho.CameraSettings = obj as CameraProperties;
+            if (this.CameraOrtho.CameraSettings == null)
             {
-                this.Camera.CameraSettings = CameraProperties.Default;
+                this.CameraOrtho.CameraSettings = CameraProperties.DefaultOrtho;
+                this.CameraOrtho.UpdateViewMatrix();
+                this.CameraOrtho.UpdateProjectionMatrix();
             }
-            _HUD.initGui();
+            _HUD.InitGui();
             Debug.WriteLine("LoadXML", "All XML Files read!");
         }
 
