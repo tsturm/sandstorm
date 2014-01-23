@@ -209,6 +209,7 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 			float3 fieldForce = normalize(fieldDir) * (Field.w / length(fieldDir));
 
 			velocity += ElapsedTime * (ExternalForces + fieldForce);
+			//velocity += normalize(nextFloat3(float3(-0.5,-0.5,-0.5), float3(0.5,0.5,0.5), Input.TexCoord, 1.5784));
 
 			position += velocity * ElapsedTime;
 
@@ -225,7 +226,7 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 				float3 normal = -normalize(cross(vec1-vec0,vec2-vec0));//float3(0.0f,1.0f,0.0f));
 				float distance = heightPositionParticle - heightPositionMap;
 				
-				if(distance<=0.0f)
+				/*if(distance<=0.0f)
 				{
 					velocity = (velocity - ((2.0f * dot(velocity, normal)) * normal));
 					float friction = 1.0f;
@@ -234,12 +235,19 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 					//velocity += normal*abs(distance);
 					
 					position.y=heightPositionMap;
-				}
-				else
-				{
-					velocity = ((distance/100)*(velocity - ((2.0f * dot(velocity, normal)) * normal)))+((1-distance/100)*velocity);
-				}
-				velocity.y=0;
+				}*/
+				float dichte = distance/100;
+				//float dichte = log(1/exp(1)+distance);
+				if(dichte<0)
+					dichte = 0;				
+				if(dichte>1)
+					dichte = 1;
+				
+				normal = ((dichte)*float3(0,1,0)) +  ((1-dichte)*normal);
+				
+				velocity = velocity - ((2.0f * dot(velocity, normal)) * normal);
+				velocity.y *= 0.65;
+				
 			}
 		}
 	}

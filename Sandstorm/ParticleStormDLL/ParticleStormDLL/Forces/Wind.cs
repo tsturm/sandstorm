@@ -11,6 +11,8 @@ namespace ParticleStormDLL.Forces
         public float Speed { get; set; }
         public Vector3 Direction { get; set; }
 
+        private Random rand = new Random();
+
         public Wind(Vector3 direction, float speed)
         {
             Direction = direction;
@@ -19,6 +21,7 @@ namespace ParticleStormDLL.Forces
 
         public override Vector3 Update(GameTime gameTime)
         {
+            //Direction += new Vector3((float)(rand.NextDouble()-0.5),(float)(rand.NextDouble()-0.5),(float)(rand.NextDouble()-0.5));
             Direction.Normalize();
             Force = Direction * Speed;
             return Force;

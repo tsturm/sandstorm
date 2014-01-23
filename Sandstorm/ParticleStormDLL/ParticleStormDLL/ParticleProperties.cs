@@ -23,19 +23,19 @@ namespace ParticleStormDLL
 
         public static readonly ParticleProperties Sandstorm = new ParticleProperties() 
         { 
-            EmissionRate = 256,
+            EmissionRate = 256*8,
             LifeTimeMin = 1.0f,
-            LifeTimeMax = 15.0f,
+            LifeTimeMax = 25.0f,
             PositionMin = new Vector3(-200, 50, -200),
             PositionMax = new Vector3(200, 80, -200),
             VelocityMin = new Vector3(0, 0, 0),
             VelocityMax = new Vector3(0, 0, 0),
-            StartSizeMin = 1.0f,
-            StartSizeMax = 5.0f,
-            EndSizeMin = 5.0f,
-            EndSizeMax = 5.0f,
-            StartColorMin = new Color(1.0f, 1.0f, 1.0f, 1.0f),
-            StartColorMax = new Color(1.0f, 1.0f, 1.0f, 1.0f),
+            StartSizeMin = 10.0f,
+            StartSizeMax = 50.0f,
+            EndSizeMin = 0.0f,
+            EndSizeMax = 0.0f,
+            StartColorMin = new Color(1.0f, 1.0f, 1.0f, 0.0f),
+            StartColorMax = new Color(1.0f, 1.0f, 1.0f, 0.007f),
             EndColorMin = new Color(1.0f, 1.0f, 1.0f, 0.0f),
             EndColorMax = new Color(1.0f, 1.0f, 1.0f, 0.0f),
             Texture = null,
@@ -139,12 +139,12 @@ namespace ParticleStormDLL
             PositionMax = new Vector3(100, 200, 100);
             VelocityMin = new Vector3(-30, 0, -20);
             VelocityMax = new Vector3(30, 0, 20);
-            StartSizeMin = 1.0f;
-            StartSizeMax = 2.0f;
+            StartSizeMin = 10.0f;
+            StartSizeMax = 20.0f;
             EndSizeMin = 0.0001f;
             EndSizeMax = 0.0001f;
-            StartColorMin = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-            StartColorMax = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            StartColorMin = new Color(1.0f, 1.0f, 1.0f, 0.001f);
+            StartColorMax = new Color(1.0f, 1.0f, 1.0f, 0.01f);
             EndColorMin = new Color(1.0f, 1.0f, 1.0f, 0.0f);
             EndColorMax = new Color(1.0f, 1.0f, 1.0f, 0.0f);
             Texture = null;

@@ -235,7 +235,7 @@ namespace Sandstorm
             {
                 if (!oldState.IsKeyDown(Keys.R))
                 {
-                    ParticleSystem.Reset();
+                    ParticleSystem.Reset = true;
                 }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.H))
