@@ -81,13 +81,15 @@ namespace ParticleStormDLL
             ExternalForces = Vector3.Zero;
 
             Forces.Add(new Gravity());
-            Forces.Add(new Wind(new Vector3(0.0f, 0.0f, 1.0f), 50.0f));
+            Forces.Add(new Wind(new Vector3(0.0f, 0.0f, 1.0f), 40.0f));
 
             //Set Default view matrix
             ViewMatrix = Matrix.Identity;
 
             //Set default projection matrix
             ProjectionMatrix = Matrix.Identity;
+
+            Reset = false;
         }
 
         /// <summary>
@@ -389,7 +391,7 @@ namespace ParticleStormDLL
             GraphicsDevice.SetVertexBuffers(new VertexBufferBinding(Mesh.VertexBuffer, 0, 0),
                                             new VertexBufferBinding(InstanceBuffer, 0, 1));
 
-            //Set effect technique
+            /*//Set effect technique
             if (ParticleProperties.Texture == null) 
             {
                 EffectDraw.CurrentTechnique = EffectDraw.Techniques["Draw"];
@@ -400,7 +402,10 @@ namespace ParticleStormDLL
                      ParticleProperties.Texture = ContentManager.Load<Texture2D>("Simple");
                 EffectDraw.CurrentTechnique = EffectDraw.Techniques["DrawTextured"];
                 EffectDraw.Parameters["diffuseMap"].SetValue(ParticleProperties.Texture);
-            }
+            }*/
+            ParticleProperties.Texture = ContentManager.Load<Texture2D>("AlienBug");
+            EffectDraw.CurrentTechnique = EffectDraw.Techniques["DrawTextured"];
+            EffectDraw.Parameters["diffuseMap"].SetValue(ParticleProperties.Texture);
 
             EffectDraw.Parameters["ViewMatrix"].SetValue(ViewMatrix);
             EffectDraw.Parameters["projMatrix"].SetValue(ProjectionMatrix);
@@ -412,14 +417,23 @@ namespace ParticleStormDLL
             EffectDraw.CurrentTechnique.Passes[0].Apply();
 
             //Draw particle instances
-            GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 
-                                                   0, 
-                                                   0, 
-                                                   Mesh.VertexCount, 
-                                                   0, 
-                                                   Mesh.PrimitiveCount, 
+            GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList,
+                                                   0,
+                                                   0,
+                                                   Mesh.VertexCount,
+                                                   0,
+                                                   Mesh.PrimitiveCount,
                                                    ActiveParticles);
         }
+
+        /*/// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public Texture2D HeigthMapNormals(Texture2D heightmap)
+        {
+
+        }*/
 
         /// <summary>
         /// Called when the DrawableGameComponent needs to be drawn.
@@ -430,20 +444,22 @@ namespace ParticleStormDLL
             //Set Backbuffer as RenderTarget
             GraphicsDevice.SetRenderTarget(null);
 
-            if (ActiveParticles > 0 && ActiveParticles < (1024*1024))
-            {              
-                DrawParticles(gameTime);
+            if (Reset)
+            {
+                ActiveParticles = 0;
+                GenerateRenderTargets();
+                Reset = false; 
             }
-
-            base.Draw(gameTime);
+            else
+            {
+                if (ActiveParticles > 0 && ActiveParticles < (1024 * 1024))
+                {
+                    DrawParticles(gameTime);
+                }
+                base.Draw(gameTime);
+            }
         }
 
-        /// <summary>
-        /// Reset all particles
-        /// </summary>
-        public void Reset()
-        {
-            GenerateRenderTargets();
-        }
+        public bool Reset { get; set; }
     }
 }
