@@ -49,14 +49,14 @@ namespace Sandstorm.Navigation
 
         public static readonly CameraProperties Default = new CameraProperties()
         {
-            // CameraMode = CAMERA_MODE.CAMERA_MODE_TURNTABLE;
-            /*  ViewMatrix = Matrix.Identity,
-              ProjectionMatrix = Matrix.Identity*/
+            CameraMode = CAMERA_MODE.CAMERA_MODE_TURNTABLE,
+            ViewMatrix = Matrix.Identity,
+            ProjectionMatrix = Matrix.Identity
         };
 
         public static readonly CameraProperties DefaultOrtho = new CameraProperties()
         {
-                CameraMode = CAMERA_MODE.CAMERA_MODE_ORBIT,
+                CameraMode = CAMERA_MODE.CAMERA_MODE_TURNTABLE,
                 ProjectionType = ProjectionType.ORTHOGRAPHIC_PROJECTION,
                 ViewMatrix = Matrix.Identity,
                 ProjectionMatrix = Matrix.Identity,

@@ -187,7 +187,8 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 		if(life <= 0.0)
 		{
 			velocity = nextFloat3(VelocityMin, VelocityMax, Input.TexCoord, 1.5784);
-			position = nextFloat3(PositionMin, PositionMax, Input.TexCoord, 12.4732);
+			//position = nextFloat3(PositionMin, PositionMax, Input.TexCoord, 12.4732);
+			position = float3(99999, 99999, 99999);
 			life = lifeFull = nextFloat(LifeMin, LifeMax, Input.TexCoord, 7.1581);
 			float startSize = nextFloat(StartSizeMin, StartSizeMax, Input.TexCoord, 34.5424);
 			float endSize = nextFloat(EndSizeMin, EndSizeMax, Input.TexCoord, 2.7522);

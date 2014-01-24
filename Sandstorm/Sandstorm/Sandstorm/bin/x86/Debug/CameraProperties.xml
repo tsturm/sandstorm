@@ -213,6 +213,6 @@
     </Translation>
   </ProjectionMatrix>
   <ProjectionType>ORTHOGRAPHIC_PROJECTION</ProjectionType>
-  <CameraMode>CAMERA_MODE_ORBIT</CameraMode>
+  <CameraMode>CAMERA_MODE_TURNTABLE</CameraMode>
   <CameraName>Beamer</CameraName>
 </CameraProperties>
