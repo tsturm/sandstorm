@@ -315,7 +315,7 @@ namespace Sandstorm
             {
                 Console.WriteLine("InvalidOperationException Sandstorm " + e);
             }
-            base.Draw(gameTime);
+            //base.Draw(gameTime);
         }
 
 
