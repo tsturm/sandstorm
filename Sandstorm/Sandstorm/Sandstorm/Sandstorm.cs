@@ -145,6 +145,7 @@ namespace Sandstorm
                 graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
                 graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
                 Camera.Viewport = new Viewport(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height);
+                CameraOrtho.Viewport = new Viewport(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height);
             }
             _HUD.OnResize();
         }
@@ -300,13 +301,13 @@ namespace Sandstorm
                 base.Draw(gameTime);
 
 
-                string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\nProjectionType: {1}\nCameraName: {2}\nCameraMode: {3}", ParticleSystem.ActiveParticles, ActiveCamera.CameraSettings.ProjectionType, ActiveCamera.CameraSettings.CameraName, ActiveCamera.CameraSettings.CameraMode);
+                /*string text = string.Format(CultureInfo.CurrentCulture, "Active Particles: {0}\nProjectionType: {1}\nCameraName: {2}\nCameraMode: {3}", ParticleSystem.ActiveParticles, ActiveCamera.CameraSettings.ProjectionType, ActiveCamera.CameraSettings.CameraName, ActiveCamera.CameraSettings.CameraMode);
 
                 SpriteBatch.Begin();
 
                 SpriteBatch.DrawString(SpriteFont, text, new Vector2(10, 25), Color.White);
 
-                SpriteBatch.End();
+                SpriteBatch.End();*/
 
                 _HUD.Draw(gameTime);
 
