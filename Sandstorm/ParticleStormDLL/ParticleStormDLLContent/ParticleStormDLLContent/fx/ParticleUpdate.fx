@@ -18,6 +18,9 @@ float4 EndColorMin;
 float4 EndColorMax;
 float3 ExternalForces;
 float4 Field;
+float MapWidth;
+float MapHeight;
+float HeightScale;
 
 texture Terrain;
 sampler TerrainSampler = sampler_state
@@ -153,6 +156,42 @@ float4 nextFloat4(float4 min, float4 max, float2 uv, float seed)
 	return randomized;
 }
 
+bool particleOnMap(float3 p, float height)
+{
+	float mapWidthOver2 = MapWidth/2;
+	float mapHeightOver2 = MapHeight/2;
+
+	return (p.x >= -mapWidthOver2 && p.x <= mapWidthOver2 && p.z >= -mapHeightOver2 && p.z <= mapHeightOver2 && p.y >= height);
+}
+
+float2 getHeightmapTexCoord(float3 p)
+{
+	float mapWidthOver2 = MapWidth/2;
+	float mapHeightOver2 = MapHeight/2;
+
+	return float2( (p.x + mapWidthOver2) / MapWidth, (p.z + mapHeightOver2) / MapWidth);
+}
+
+float3 calculateNormal(sampler sam, float2 uv)
+{
+	float texelOffsetU = 1.0/MapWidth;
+	float texelOffsetV = 1.0/MapHeight;
+
+	//Coeffiecent for smooth/sharp Normals
+    float coef = 84.0;
+	
+	float s1 = tex2D(sam, float2(uv.x - texelOffsetU, uv.y)).x;	
+	float s2 = tex2D(sam, float2(uv.x, uv.y - texelOffsetV)).x;
+	float s3 = tex2D(sam, float2(uv.x + texelOffsetU, uv.y)).x;
+	float s4 = tex2D(sam, float2(uv.x, uv.y + texelOffsetV)).x;
+
+	//Calculate the Normal
+	float3 normal = float3((s1 - s3) * coef, 2.0f, (s2 - s4) * coef);
+	
+	//Return normalized Normal
+	return normalize(normal);
+}
+
 VSOutput PhysicsVS(VSInput Input)
 {	
 	VSOutput Output = (VSOutput)0;
@@ -210,45 +249,57 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 			float3 fieldForce = normalize(fieldDir) * (Field.w / length(fieldDir));
 
 			velocity += ElapsedTime * (ExternalForces + fieldForce);
-			//velocity += normalize(nextFloat3(float3(-0.5,-0.5,-0.5), float3(0.5,0.5,0.5), Input.TexCoord, 1.5784));
 
 			position += velocity * ElapsedTime;
 
-			float3 nextPosition = position + velocity * ElapsedTime;
-			float2 nextPositionTex = float2(nextPosition.x/420.0+0.5,nextPosition.z/420.0+0.5);
-			
-			float heightPositionParticle = nextPosition.y;
-			if(nextPositionTex.x<=1 && nextPositionTex.x>=0 && nextPositionTex.y<=1 && nextPositionTex.y>=0)
+			//===========================================================================
+			// Physics stuff
+			//===========================================================================
+
+			//Get the related heightmap texture coordinate
+			float2 heightmapTexCoord = getHeightmapTexCoord(position);
+
+			//Get height at particle position 
+			float height = tex2D(TerrainSampler, heightmapTexCoord).x * HeightScale;
+
+			//Check if the Position is outside of our Map
+			if (particleOnMap(position, height) == false)
 			{
-				float heightPositionMap = tex2D(TerrainSampler, float2(nextPosition.x/420.0+0.5,nextPosition.z/420.0+0.5)).x*100;
-				float3 vec0 = float3(nextPosition.x,tex2D(TerrainSampler, float2(nextPosition.x/420.0+0.5,nextPosition.z/420.0+0.5)).x*100,nextPosition.z);
-				float3 vec1 = float3(nextPosition.x+1,tex2D(TerrainSampler, float2((nextPosition.x+1)/420.0+0.5,nextPosition.z/420.0+0.5)).x*100,nextPosition.z);
-				float3 vec2 = float3(nextPosition.x,tex2D(TerrainSampler, float2(nextPosition.x/420.0+0.5,(nextPosition.z+1)/420.0+0.5)).x*100,nextPosition.z+1);
-				float3 normal = -normalize(cross(vec1-vec0,vec2-vec0));//float3(0.0f,1.0f,0.0f));
-				float distance = heightPositionParticle - heightPositionMap;
-				
-				/*if(distance<=0.0f)
+				//Kick it away
+				position = float3(999999, 999999, 999999);
+			}
+			else 
+			{
+				//Calculate next particle position
+				float3 nextPosition = position + velocity * ElapsedTime;
+
+				//Get the related heightmap texture coordinate
+				heightmapTexCoord = getHeightmapTexCoord(nextPosition);
+
+				//Get height at next particle position 
+				height = tex2D(TerrainSampler, heightmapTexCoord).x * HeightScale;
+
+				//Check if the next Position is inside of our Map
+				if (particleOnMap(nextPosition, height))
 				{
-					velocity = (velocity - ((2.0f * dot(velocity, normal)) * normal));
-					float friction = 1.0f;
-					velocity = (1.0f-friction)*velocity;
-					velocity = float3(velocity.x,0,velocity.z);
-					//velocity += normal*abs(distance);
-					
-					position.y=heightPositionMap;
-				}*/
-				float dichte = distance/100;
-				//float dichte = log(1/exp(1)+distance);
-				if(dichte<0)
-					dichte = 0;				
-				if(dichte>1)
-					dichte = 1;
-				
-				normal = ((dichte)*float3(0,1,0)) +  ((1-dichte)*normal);
-				
-				velocity = velocity - ((2.0f * dot(velocity, normal)) * normal);
-				velocity.y *= 0.65;
-				
+					//Get normal at next particle position
+					float3 normal = calculateNormal(TerrainSampler, heightmapTexCoord);
+
+					//Calculate distance between the particle and the map
+					float distance = nextPosition.y - height;
+
+					//Calculate density
+					float density = clamp(distance / 100.0, 0.0, 1.0);
+
+					//
+					normal = float3(0.0, density, 0.0) + ((1.0-density) * normal);
+
+					//
+					velocity = (velocity - (2.0 * dot(velocity, normal) * normal));
+
+					//
+					velocity.y += 0.5-density * 15;
+				}
 			}
 		}
 	}

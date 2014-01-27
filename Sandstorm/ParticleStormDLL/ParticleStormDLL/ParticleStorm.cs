@@ -88,7 +88,7 @@ namespace ParticleStormDLL
             ExternalForces = Vector3.Zero;
 
             Forces.Add(new Gravity());
-            Forces.Add(new Wind(new Vector3(0.0f, 0.0f, 1.0f), 40.0f));
+            Forces.Add(new Wind(new Vector3(0.0f, 0.0f, 700.0f)));
 
             //Set Default view matrix
             ViewMatrix = Matrix.Identity;
@@ -121,9 +121,9 @@ namespace ParticleStormDLL
             Mesh = new Quad(GraphicsDevice);
             FullScreenQuad = new Quad(GraphicsDevice);
 
-            ParticleProperties.Texture = ContentManager.Load<Texture2D>("Simple");
+            ParticleProperties.Texture = ContentManager.Load<Texture2D>("StarBurst");
             
-            Texture2D TmpMap = Game.Content.Load<Texture2D>("tex/heightmap");
+            Texture2D TmpMap = Game.Content.Load<Texture2D>("tex/testmap");
 
             Color[] heightMapData = new Color[TmpMap.Width * TmpMap.Height];
             Vector4[] heightMapData2 = new Vector4[TmpMap.Width * TmpMap.Height];
@@ -384,6 +384,9 @@ namespace ParticleStormDLL
                     EffectUpdate.Parameters["StartColorMax"].SetValue(ParticleProperties.StartColorMax.ToVector4());
                     EffectUpdate.Parameters["EndColorMin"].SetValue(ParticleProperties.StartColorMin.ToVector4());
                     EffectUpdate.Parameters["EndColorMax"].SetValue(ParticleProperties.StartColorMax.ToVector4());
+                    EffectUpdate.Parameters["MapWidth"].SetValue(Heightmap.Width);
+                    EffectUpdate.Parameters["MapHeight"].SetValue(Heightmap.Height);
+                    EffectUpdate.Parameters["HeightScale"].SetValue(84.0f);
                     EffectUpdate.Parameters["Field"].SetValue(new Vector4(0, 0, 0, 0));
                     EffectUpdate.Parameters["ElapsedTime"].SetValue((float)gameTime.ElapsedGameTime.TotalSeconds);
 

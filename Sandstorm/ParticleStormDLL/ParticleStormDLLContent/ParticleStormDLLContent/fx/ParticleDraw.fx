@@ -86,12 +86,12 @@ VSOutput DrawVS(VSInput Input, float2 positionTexCoord : BLENDWEIGHT)
 
 float4 DrawPS(VSOutput Input) : COLOR
 {
-	return Input.Life * Input.Color;
+	return Input.Color;
 }
 
 float4 DrawTexturedPS(VSOutput Input) : COLOR
 {
-	return Input.Life * Input.Color * tex2D(diffuseSampler, Input.TexCoord);
+	return Input.Color * tex2D(diffuseSampler, Input.TexCoord);
 }
 
 technique Draw

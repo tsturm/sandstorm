@@ -75,20 +75,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="fx\Physik.fx">
-      <Name>Physik</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="fx\particleDrawer.fx">
-      <Name>particleDrawer</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="GUI\Texture.png">
       <Name>Texture</Name>
       <Importer>TextureImporter</Importer>
@@ -138,6 +124,13 @@
   <ItemGroup>
     <Compile Include="GUI\StormThemeGrey.png">
       <Name>StormThemeGrey</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="tex\testmap.jpg">
+      <Name>testmap</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

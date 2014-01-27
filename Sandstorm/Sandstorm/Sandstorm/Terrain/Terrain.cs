@@ -58,7 +58,7 @@ namespace Sandstorm
         {
 
             Effect = Game.Content.Load<Effect>("fx\\terrain");
-            Texture2D TmpMap = Game.Content.Load<Texture2D>("tex/heightmap");
+            Texture2D TmpMap = Game.Content.Load<Texture2D>("tex/testmap");
 
             Color[] heightMapData = new Color[TmpMap.Width * TmpMap.Height];
             Vector4[] heightMapData2 = new Vector4[TmpMap.Width * TmpMap.Height];
