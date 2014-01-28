@@ -82,10 +82,11 @@ namespace Sandstorm
         /// </summary>
         protected override void Initialize()
         {
-            Camera = new Camera(GraphicsDevice.Viewport, ProjectionType.PERSPECTIVE_PROJECTION, "PC");
+            Camera = new Camera(GraphicsDevice.Viewport);
             cameraController = new CameraController(Camera);
 
-            CameraOrtho = new Camera(GraphicsDevice.Viewport,ProjectionType.ORTHOGRAPHIC_PROJECTION,"Beamer");
+            CameraOrtho = new Camera(GraphicsDevice.Viewport);
+            CameraOrtho.CameraSettings = CameraProperties.DefaultOrtho;
             CameraOrtho.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), (float)Math.PI / 2);
             cameraControllerOrtho = new CameraController(CameraOrtho);
 
@@ -106,7 +107,7 @@ namespace Sandstorm
             Kinect.StartKinect();
             
             //init GUI
-            _HUD.InitGui();
+            _HUD.InitGui();          
 
             base.Initialize();
         }
@@ -269,6 +270,7 @@ namespace Sandstorm
             //Handle user input
             HandleInput();
             _HUD.Update(gameTime);
+            ParticleSystem.HeightScale = Terrain.TerrainProperties.HeightScale;
 
             //Mouse camera Events only on focus and if not clicked on buttons
             if (this.IsActive && !_HUD.GUI.HasMouse)

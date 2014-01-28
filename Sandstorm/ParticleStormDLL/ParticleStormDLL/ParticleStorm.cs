@@ -31,6 +31,7 @@ namespace ParticleStormDLL
         protected Vector3 ExternalForces;
 
         public DoubleTexture Heightmap { get; set; }
+        public float HeightScale { get; set; }
 
         protected BaseMesh FullScreenQuad;
         protected BaseMesh Mesh;
@@ -88,13 +89,15 @@ namespace ParticleStormDLL
             ExternalForces = Vector3.Zero;
 
             Forces.Add(new Gravity());
-            Forces.Add(new Wind(new Vector3(0.0f, 0.0f, 700.0f)));
+            Forces.Add(new Wind(new Vector3(0.0f, 0.0f, 400.0f)));
 
             //Set Default view matrix
             ViewMatrix = Matrix.Identity;
 
             //Set default projection matrix
             ProjectionMatrix = Matrix.Identity;
+
+            HeightScale = 145.0f;
 
             DoReset = false;
         }
@@ -272,45 +275,28 @@ namespace ParticleStormDLL
         /// <param name="gameTime">Time elapsed since the last call to Update</param>
         public override void Update(GameTime gameTime)
         {
-            //Elapsed += gameTime.ElapsedGameTime;
-
-            //if (Elapsed >= TimeSpan.FromSeconds(1))
-            //{
-            //    Elapsed = TimeSpan.FromSeconds(0);
-            //    if (ActiveParticles + ParticleProperties.EmissionRate < TotalParticles)
-            //    {
-            //        WaitToEmit += ParticleProperties.EmissionRate;
-            //    }
-            //    else
-            //    {
-            //        WaitToEmit = TotalParticles - ActiveParticles;
-            //    }
-            //}
-
-            //if (WaitToEmit > 0)
-            //{
-            //    ActiveParticles = WaitToEmit;
-            //}
-
-            particles += (gameTime.ElapsedGameTime.TotalSeconds * ParticleProperties.EmissionRate);
-            if (particles >= 1)
+            if (DoDraw)
             {
-                if (ActiveParticles < TotalParticles) ActiveParticles += (int)Math.Floor(particles);
-                particles = 0;
+                particles += (gameTime.ElapsedGameTime.TotalSeconds * ParticleProperties.EmissionRate);
+                if (particles >= 1)
+                {
+                    if (ActiveParticles < TotalParticles) ActiveParticles += (int)Math.Floor(particles);
+                    particles = 0;
+                }
+
+                //if (ActiveParticles < TotalParticles) ActiveParticles += (int)particles;//(gameTime.TotalGameTime.TotalSeconds * ParticleProperties.EmissionRate);
+
+                //Reset accumulated external forces
+                ExternalForces = new Vector3(0.0f, 0.0f, 0.0f);
+
+                //Accumulate all existing external forces
+                foreach (var force in Forces)
+                {
+                    ExternalForces += force.Update(gameTime);
+                }
+
+                Heightmap.Swap();
             }
-
-            //if (ActiveParticles < TotalParticles) ActiveParticles += (int)particles;//(gameTime.TotalGameTime.TotalSeconds * ParticleProperties.EmissionRate);
-
-            //Reset accumulated external forces
-            ExternalForces = new Vector3(0.0f, 0.0f, 0.0f);
-
-            //Accumulate all existing external forces
-            foreach (var force in Forces)
-            {
-                ExternalForces += force.Update(gameTime);
-            }
-
-            Heightmap.Swap();
 
             base.Update(gameTime);
         }
@@ -323,8 +309,6 @@ namespace ParticleStormDLL
         {
             if (DoDraw)
             {
-
-
                 try
                 {
 
@@ -386,7 +370,7 @@ namespace ParticleStormDLL
                     EffectUpdate.Parameters["EndColorMax"].SetValue(ParticleProperties.StartColorMax.ToVector4());
                     EffectUpdate.Parameters["MapWidth"].SetValue(Heightmap.Width);
                     EffectUpdate.Parameters["MapHeight"].SetValue(Heightmap.Height);
-                    EffectUpdate.Parameters["HeightScale"].SetValue(84.0f);
+                    EffectUpdate.Parameters["HeightScale"].SetValue(HeightScale);
                     EffectUpdate.Parameters["Field"].SetValue(new Vector4(0, 0, 0, 0));
                     EffectUpdate.Parameters["ElapsedTime"].SetValue((float)gameTime.ElapsedGameTime.TotalSeconds);
 

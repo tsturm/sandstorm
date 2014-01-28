@@ -19,7 +19,7 @@ namespace Sandstorm
         private Camera() { }
 
         private CameraProperties _cameraSettings = null;
-        public CameraProperties CameraSettings { get { return this._cameraSettings; } set { this._cameraSettings = value; } }
+        public CameraProperties CameraSettings { get; set; }
 
         private float _farPlane = 10000f;
         private float _nearPlane = .1f;
@@ -34,13 +34,9 @@ namespace Sandstorm
 
         private float _pitch;
 
-        public Camera(Viewport pViewPort,ProjectionType type,String cameraName = "Unknown")
+        public Camera(Viewport pViewPort)
         {
-          //  this.CameraSettings = CameraProperties.Default.MemberwiseClone();
-            this.CameraSettings = new CameraProperties();
-            this.CameraSettings.ProjectionType = type;
-            this.CameraSettings.CameraName = cameraName;
-
+            CameraSettings = CameraProperties.Default;
             _viewport = pViewPort;
 
             UpdateViewMatrix();

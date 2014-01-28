@@ -12,6 +12,24 @@ namespace Sandstorm.Navigation
 
     public class CameraProperties
     {
+        public static readonly CameraProperties Default = new CameraProperties()
+        {
+            CameraMode = CAMERA_MODE.CAMERA_MODE_TURNTABLE,
+            ProjectionType = ProjectionType.PERSPECTIVE_PROJECTION,
+            ViewMatrix = Matrix.Identity,
+            ProjectionMatrix = Matrix.Identity,
+            CameraName = "Perspective"
+        };
+
+        public static readonly CameraProperties DefaultOrtho = new CameraProperties()
+        {
+                CameraMode = CAMERA_MODE.CAMERA_MODE_TURNTABLE,
+                ProjectionType = ProjectionType.ORTHOGRAPHIC_PROJECTION,
+                ViewMatrix = Matrix.Identity,
+                ProjectionMatrix = Matrix.Identity,
+                CameraName = "Orthografic"
+        };
+
         /// <summary>
         /// ViewMatrix for Camera mapping
         /// </summary>
@@ -47,21 +65,15 @@ namespace Sandstorm.Navigation
         /// 
         public String CameraName { get; set; }
 
-        public static readonly CameraProperties Default = new CameraProperties()
+        public CameraProperties()
         {
-            CameraMode = CAMERA_MODE.CAMERA_MODE_TURNTABLE,
-            ViewMatrix = Matrix.Identity,
-            ProjectionMatrix = Matrix.Identity
-        };
+            ProjectionType = ProjectionType.PERSPECTIVE_PROJECTION;
+            CameraMode = CAMERA_MODE.CAMERA_MODE_TURNTABLE;
+            ViewMatrix = Matrix.Identity;
+            ProjectionMatrix = Matrix.Identity;
+        }
 
-        public static readonly CameraProperties DefaultOrtho = new CameraProperties()
-        {
-                CameraMode = CAMERA_MODE.CAMERA_MODE_TURNTABLE,
-                ProjectionType = ProjectionType.ORTHOGRAPHIC_PROJECTION,
-                ViewMatrix = Matrix.Identity,
-                ProjectionMatrix = Matrix.Identity,
-                CameraName = "Beamer"
-        };
+
 
 
     }

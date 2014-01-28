@@ -289,7 +289,7 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 					float distance = nextPosition.y - height;
 
 					//Calculate density
-					float density = clamp(distance / 100.0, 0.0, 1.0);
+					float density = clamp(distance / HeightScale, 0.0, 1.0);
 
 					//
 					normal = float3(0.0, density, 0.0) + ((1.0-density) * normal);
@@ -299,6 +299,9 @@ PSOutput PhysicsPS(VSOutput Input) : COLOR
 
 					//
 					velocity.y += 0.5-density * 15;
+
+					//
+					velocity.y *= 0.65;
 				}
 			}
 		}

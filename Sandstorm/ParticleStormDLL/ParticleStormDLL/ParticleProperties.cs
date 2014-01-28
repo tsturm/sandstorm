@@ -23,7 +23,7 @@ namespace ParticleStormDLL
 
         public static readonly ParticleProperties Sandstorm = new ParticleProperties() 
         { 
-            EmissionRate = 256*10,
+            EmissionRate = 256*8,
             LifeTimeMin = 10.0f,
             LifeTimeMax = 10.0f,
             PositionMin = new Vector3(-200, 10, -209),
