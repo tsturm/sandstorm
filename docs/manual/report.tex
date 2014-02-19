@@ -1,0 +1,173 @@
+% LaTex Klasse
+\documentclass[10pt,a4paper,article,oneside]{memoir}
+
+%% Pakete default
+\usepackage[utf8]{inputenc} 
+\usepackage[backend=biber,bibencoding=utf8,sorting=nyt,language=ngerman, style=alphabetic]{biblatex}
+\usepackage[breaklinks=true]{hyperref}
+\usepackage[german]{babel}
+\usepackage{graphicx}
+\usepackage{subfloat}
+\usepackage{eurosym}
+\usepackage{amsmath}
+
+%% Pakete usefull
+\usepackage{tikz}
+%\usepackage{tikzscale}
+%\usepackage{bbding}
+%\usepackage{listings} 
+%\usepackage{epstopdf}
+%\usepackage{pgfgantt}
+%\usepackage{wrapfig}
+%\usepackage{mathtools}
+%\usepackage[page]{appendix}
+
+%% R\"omishce zeichen
+%\newcommand{\rmnum}[1]{\romannumeral #1}
+
+%%line space
+\DisemulatePackage{setspace}
+\usepackage{setspace}
+%%set global linespace
+\newcommand{\mylinespace}{1}
+
+% Image floating
+%\newcommand{\illustrationname}{Illustration}
+%\newfloat[chapter]{illustration}{lol}{\illustrationname}
+
+%% Absatzeinzug!!!
+\setlength{\parindent}{0pt}
+
+%% TiKz Stuff %%%
+\usetikzlibrary{calc, decorations.pathmorphing,decorations.pathreplacing, fadings, shadings, shapes, arrows,trees, positioning,patterns,automata}
+%\pgfdeclarelayer{background}
+%\pgfdeclarelayer{foreground}
+%\pgfsetlayers{background,main,foreground}
+%\usepackage{tikz-uml}
+%\usepackage{pgfplots}
+
+%% Bib
+%\bibliography{references}
+%\defbibheading{bibliography}{\bibsection}
+
+
+%% PAGE DIMENSIONS A4  % This is from memman.pdf
+\settrimmedsize{297mm}{210mm}{*}
+\setlength{\trimtop}{0pt}
+\setlength{\trimedge}{\stockwidth}
+\addtolength{\trimedge}{-\paperwidth}
+\settypeblocksize{670pt}{410pt}{*}
+\setulmargins{3cm}{*}{*}
+\setlrmargins{*}{*}{0.8}
+\setmarginnotes{17pt}{51pt}{\onelineskip}
+\setheadfoot{\onelineskip}{2\onelineskip}
+\setheaderspaces{*}{2\onelineskip}{*}
+\checkandfixthelayout
+
+%\maketitle % CUSTOMISATION
+ % to be done
+ %\pagenumbering{Roman}
+
+% For more than trivial changes, you may as well do it yourself in a titlepage environment 
+ %\pretitle{\begin{center}\sffamily\huge\MakeUppercase}
+ %\posttitle{\par\end{center}\vskip 0.5em}
+
+%%% ToC (table of contents) APPEARANCE
+ %\maxtocdepth{subsection} % include subsections
+ %\renewcommand{\cftchapterpagefont}{}
+ %\renewcommand{\cftchapterfont}{} % no bold!
+
+%%% HEADERS & FOOTERS
+\pagestyle{empty} % try also: empty , plain , headings , ruled , Ruled , companion
+
+%%% CHAPTERS
+\chapterstyle{section} %southall} % try also: default , section , hangnum , companion , article, demo
+
+\renewcommand{\chaptitlefont}{\Huge\sffamily\raggedright} % set sans serif chapter title font
+\renewcommand{\chapnumfont}{\Huge\sffamily\raggedright} % set sans serif chapter number font
+
+%%% SECTIONS
+\hangsecnum % hang the section numbers into the margin to match \chapterstyle{hangnum}
+\maxsecnumdepth{subsection} % number subsections
+
+\setsecheadstyle{\Large\sffamily\raggedright} % set sans serif section font
+\setsubsecheadstyle{\large\sffamily\raggedright} % set sans serif subsection font
+
+
+%% END Memoir customization
+
+%% TikZ input Hack
+ \newcommand{\inputTikZ}[1]{\input{#1.tikz}} 
+ %\newsubfloat{figure} %% use for \subbottom or \subtop in a figure
+
+%%%##########################################
+% Content Composer
+\newboolean{de}
+\newboolean{fullfrontpage}
+
+
+\setboolean{de}{true} %DE - true; EN - false
+\setboolean{fullfrontpage}{true} % full - true; just a header - false
+
+%set publisher
+\newcommand{\docType}{Bedienungsanleitung}
+\newcommand{\docTypeRubric}{\glqq Strömungssimulation / Sandkasten\grqq}
+\newcommand{\docCourse}{Master Projekt System Entwicklung}
+\newcommand{\docCourseSemester}{}
+\newcommand{\docCourseProf}{Prof. Dr. J. Wietzke, Prof. Dr. E. Hergenröther}
+\newcommand{\docDate}{16.02.2014}
+\newcommand{\docVersion}{1.0}
+\newcommand{\docStudentA}{T. Sturm}
+\newcommand{\docStudentAMatrikel}{}
+\newcommand{\docStudentB}{A. Holike}
+\newcommand{\docStudentBMatrikel}{}
+\newcommand{\docStudentC}{S. Arthur}
+\newcommand{\docStudentCMatrikel}{}
+\newcommand{\docStudentD}{M. Djakow}
+\newcommand{\docStudentDMatrikel}{}
+
+%%% #########################################
+%%% BEGIN DOCUMENT
+
+\begin{document}
+
+%Titel
+\iffullfrontpage
+	\include{include/titel_frontpage}
+\else
+	\input{include/titel_header}
+\fi
+
+%\tableofcontents* % the asterisk means that the contents itself isn't put into the ToC
+
+%\clearpage %schreibt letztes Kapitel fertig, noetig fuer toc
+
+
+%%% BEGIN  CONTENT %%%
+%% Styles für TikZ
+  %\include{graphics/styles}
+
+\input{include/einleitung}
+\clearpage
+ %and so on
+%\inputTikZ{graphics/hardware}
+%% end of doc
+%\clearpage
+
+%\pagenumbering{Alph}
+
+%\newpage
+%\printbibliography
+
+%\newpage
+%\listoffigures
+%\newpage
+
+%%%Anhang
+%\appendix
+%\renewcommand{\appendixtocname}{Anhang}
+%\renewcommand{\appendixpagename}{\textsf{Anhang}}
+
+%\appendixpage
+
+\end{document}
