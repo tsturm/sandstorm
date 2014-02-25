@@ -66,13 +66,16 @@ Dieses Erscheinungsbild lässt sich durch ein fehlendes Beleuchtungssystem und d
 	\label{fig:differentColors}
 \end{figure}
 
-Um die Höhenunterschiede bei der Projektion auf den Sand noch deutlicher zu machen, haben wir am Ende des Semesters noch mit der Darstellung von Höhenlinien experimentiert (s. Abbildung \ref{fig:contourLines}). Diese verbinden in bestimmten Abständen alle Punkte mit den gleichen Höhenwerten. Die aktuelle Implementierung ist noch nicht perfekt und benötigt noch einiges an Nachbearbeitung, aber schon jetzt kann man die Vorteile bei der Projektion auf den Sand erkennen. 
+Um die Höhenunterschiede bei der Projektion auf den Sand noch deutlicher erkennbar zu machen, haben wir am Ende des ersten Projektsemesters noch mit der Darstellung von Höhenlinien experimentiert und im laufe des zweiten Projektsemester letztendlich vollständig integriert.
+
+Die erste experimentelle Version (s. Abbildung \ref{fig:contourLines}a) arbeitete ausschließlich auf den reinen Höhendaten an einem einzelnen Punkt, weshalb an manchen Stellen noch sehr großflächige, schwarze Bereiche auftraten. Bei der endgültigen Version (s. Abbildung \ref{fig:contourLines}b) flossen schließlich noch zusätzliche Informationen aus den Nachbarbereichen mit in die Berechnung ein, um eine einheitliche Stärke der Höhenlinien zu gewährleisten und größere, schwarze Bereiche auszuschließen.  
+
 
 \begin{figure}[h!]
 	\centering
 	\vspace*{50px}
-	\includegraphics[width=400px]{graphics/contourLines.png}
-	\caption{Experimentelle Darstellung mit zusätzlichen Höhenlinien.}
+	\includegraphics[width=400px]{graphics/contourLines2.png}
+	\caption{(a) 1. experimentelle und (b) endgültige Darstellung der Höhenlinien.}
 	\label{fig:contourLines}
 \end{figure}
 
