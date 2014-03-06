@@ -17,5 +17,20 @@ Die Kommunikation zwischen der Benutzeroberfläche und den einzelnen Komponenten
 
 \end{Spacing}
 \newpage
+
+
+\section{Reflection}
+Im Laufe der Zeit wurde unser Projekt immer größer, dies brachte auch viele neue Funktionalitäten mit sich.
+All diese neuen Features mussten wir stetig unserer GUI-Oberfläche hinzufügen. Dieser sehr statische Ansatz wurde deshalb durch Reflektion in einen dynamischen überführt.
+Diverse moderne Programmiersprachen so auch unser verwendetes C-Sharp besitzen die Möglichkeit während des Programmablaufs Informationen über die Struktur eines gegebenen Objekts abzurufen.
+
+\begin{figure}[h!]
+	\vspace*{30px}
+	\includegraphics[width=\columnwidth]{graphics/reflection.png}	
+	\caption{Reflection}
+	\label{fig:Reflection}
+\end{figure}
+
+Dieser Ansatz und die Tatsache das wir diverse Probleme mit unserer statischen Multi-Window GUI hatten, haben uns dazu bewegt unser GUI-System auf ein Reflection basiertes dynamisch erzeugtes Single-Window GUI-System umzusteigen.
 \clearpage
 %% End Of Doc
