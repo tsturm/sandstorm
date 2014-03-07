@@ -19,6 +19,11 @@ Die Kommunikation zwischen der Benutzeroberfläche und den einzelnen Komponenten
 \newpage
 
 
+\section{Properties}
+Um unser System so dynamisch wie möglich zu gestalten entschlossen wir uns Sammelcontainer für Systemparameter einzuführen - sogenannte Properties.
+Diese Properties lassen sich als Konfigurationsdateien ansehen. Ändert man einen Wert innerhalb einer Properties so wird er neue Parameter vom System sofort als neuer gültiger Wert angesehen.
+Dadurch das jegliche Parameter einer Kategorie (Physikengine,RenderEngine,Kinect..) mit solch einer Properties ausgestattet sind, ist es möglich für verschiedene Anwendungscenarien Default-Wert zu hinterlegen und diese bei Bedarf zu laden oder zu speichern.
+
 \section{Reflection}
 Im Laufe der Zeit wurde unser Projekt immer größer, dies brachte auch viele neue Funktionalitäten mit sich.
 All diese neuen Features mussten wir stetig unserer GUI-Oberfläche hinzufügen. Dieser sehr statische Ansatz wurde deshalb durch Reflektion in einen dynamischen überführt.
@@ -31,6 +36,9 @@ Diverse moderne Programmiersprachen so auch unser verwendetes C-Sharp besitzen d
 	\label{fig:Reflection}
 \end{figure}
 
-Dieser Ansatz und die Tatsache das wir diverse Probleme mit unserer statischen Multi-Window GUI hatten, haben uns dazu bewegt unser GUI-System auf ein Reflection basiertes dynamisch erzeugtes Single-Window GUI-System umzusteigen.
+Dieser Ansatz und die Tatsache das wir diverse Probleme mit unserer statischen Multi-Window GUI hatten, haben uns dazu bewegt unser altes GUI-System abzulösen.
+Dank unseren Properties war es uns mittels Reflection möglich ein neues dynamisches GUI System einzuführen, hierbei verzichteten wir auch auf das Multi-Window System und haben die GUI direkt auf den Sandkasten projeziert.
+
+
 \clearpage
 %% End Of Doc
