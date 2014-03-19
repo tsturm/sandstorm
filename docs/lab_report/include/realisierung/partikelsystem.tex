@@ -52,19 +52,31 @@ Mit dieser Technik war es uns nun möglich, unsere einzelnen Partikeleigenschaft
 \begin{figure}[h!]
 	\centering
 	\vspace*{30px}
-	\includegraphics[width=410px]{graphics/DoubleTargets2.png}
+	\includegraphics[width=350px]{graphics/DoubleTargets2.png}
 	\caption{Duplizierte Rendertargets für Ping-Pong Verfahren.}
 	\label{fig:DoubleTarget}
 \end{figure}
 
-	\item[Fullscreen-Pass] \hfill \\
-Bla Blub
+	\item[Fullscreen-Pass/Offscreen-Pass] \hfill \\
+Das Update unserer \textit{Rendertargets} und somit die Manipulation unserer Partikeleigenschaften, findet in einem sogenannten \textit{Fullscreen-Pass} statt, welcher vor dem eigentlichen Zeichen der \textit{Billboards} durchlaufen wird. Hierbei wird ein im \textit{Screenspace} positioniertes, Bildschirmfüllendes Rechteck genutzt, um ein 1-zu-1 Mapping des zu lesenden und des zu schreibenden \textit{Rendertargets} zu erreichen. Da dieser Pass keine Bildschirmausgabe zur folge hat, kann er auch als \textit{Offscreen-Pass} bezeichnet werden.
+
+	\item[Blending] \hfill \\
+Um bestimmte Effekte realistischer Darzustellen, bietet das neue Partikelsystem, optional die Möglichkeit, additives Blending (s. Abbildung \ref{fig:addBlending}) zu aktivieren. Dabei werden die Farben übereinanderliegender Partikel aufsummiert, wodurch Bereiche mit vielen übereinanderliegenden Partikeln heller erscheinen (s. Abbildung \ref{fig:particleResults}).
+
+\begin{figure}[h!]
+	\centering
+	\vspace*{10px}
+	\includegraphics[width=100px]{graphics/additiveBlending.png}
+	\caption{Additives Blending.}
+	\label{fig:addBlending}
+\end{figure}
+
 \end{description}
 
 \newpage
 \subsection{Das Ergebnis}
 
-Das Ergebnis unserer Neuimplementierung war mehr als zufriedenstellend. Am Ende hatten wir ein, vom restlichen System getrenntes und sehr flexibles Partikelsystem entwickelt, welches nun komplett auf der GPU lief und uns somit wieder mehr Ressourcen, für andere Aufgaben, auf Seiten der CPU zur Verfügung standen. Auch unser, am Anfang noch für utopisch gehaltenes Ziel, eine Anzahl von über 1.000.000 Partikel in Echtzeit darzustellen, konnten wir mit dem neuen System erreichen. Bei über 1.000.000 Partikeln, läuft unsere Anwendung nun immer noch mit über 100 Frames die Sekunde, solche Ergebnisse konnten wir bei der vorherigen CPU-basierten Implementierung, selbst mit minimaler Anzahl an Partikeln nicht erreichen. Abbildung \ref{fig:particleResults} zeigt das Partikelsystem mit einigen unterschiedlichen Konfigurationen.
+Das Ergebnis unserer Neuimplementierung war mehr als zufriedenstellend. Am Ende hatten wir ein, vom restlichen System getrenntes und sehr flexibles Partikelsystem entwickelt, welches nun komplett auf der GPU lief und uns somit wieder mehr Ressourcen für andere Aufgaben, auf Seiten der CPU zur Verfügung standen. Auch unser, am Anfang noch für utopisch gehaltenes Ziel, eine Anzahl von über 1.000.000 Partikel in Echtzeit darzustellen, konnten wir mit dem neuen System erreichen. Bei über 1.000.000 Partikeln, läuft unsere Anwendung nun immer noch mit über 100 Frames die Sekunde, solche Ergebnisse konnten wir bei der vorherigen CPU-basierten Implementierung, selbst mit minimaler Anzahl an Partikeln nicht erreichen. Abbildung \ref{fig:particleResults} zeigt das Partikelsystem mit einigen unterschiedlichen Konfigurationen.
 
 \begin{figure}[h!]
 	\centering
