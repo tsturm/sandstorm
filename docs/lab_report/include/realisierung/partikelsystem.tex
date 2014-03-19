@@ -56,11 +56,23 @@ Mit dieser Technik war es uns nun möglich, unsere einzelnen Partikeleigenschaft
 	\caption{Duplizierte Rendertargets für Ping-Pong Verfahren.}
 	\label{fig:DoubleTarget}
 \end{figure}
+
+	\item[Fullscreen-Pass] \hfill \\
+Bla Blub
 \end{description}
 
+\newpage
 \subsection{Das Ergebnis}
 
-coming soon
+Das Ergebnis unserer Neuimplementierung war mehr als zufriedenstellend. Am Ende hatten wir ein, vom restlichen System getrenntes und sehr flexibles Partikelsystem entwickelt, welches nun komplett auf der GPU lief und uns somit wieder mehr Ressourcen, für andere Aufgaben, auf Seiten der CPU zur Verfügung standen. Auch unser, am Anfang noch für utopisch gehaltenes Ziel, eine Anzahl von über 1.000.000 Partikel in Echtzeit darzustellen, konnten wir mit dem neuen System erreichen. Bei über 1.000.000 Partikeln, läuft unsere Anwendung nun immer noch mit über 100 Frames die Sekunde, solche Ergebnisse konnten wir bei der vorherigen CPU-basierten Implementierung, selbst mit minimaler Anzahl an Partikeln nicht erreichen. Abbildung \ref{fig:particleResults} zeigt das Partikelsystem mit einigen unterschiedlichen Konfigurationen.
+
+\begin{figure}[h!]
+	\centering
+	\vspace*{30px}
+	\includegraphics[width=410px]{graphics/ParticleResults.png}
+	\caption{Partikelsystem mit unterschiedlichen Konfigurationen.}
+	\label{fig:particleResults}
+\end{figure}
 
 \end{Spacing}
 \newpage
