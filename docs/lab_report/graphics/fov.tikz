@@ -1,0 +1,76 @@
+% !TEX root = ../praxisbericht.tex
+\begin{tikzpicture}[scale=0.44]
+\usetikzlibrary{calc}
+	%%% Parameter %%%
+	\pgfmathsetmacro{\distFar}{21}
+	\pgfmathsetmacro{\distNear}{1.5}
+	\pgfmathsetmacro{\angleTurn}{2}
+	\pgfmathsetmacro{\distArrow}{1}
+	\pgfmathsetmacro{\angelVsize}{6}
+	\pgfmathsetmacro{\angelHsize}{11}
+	\pgfmathsetmacro{\depthOne}{0.999}
+	\pgfmathsetmacro{\depthTwo}{0.75}
+	\pgfmathsetmacro{\depthThree}{0.65}
+	%%%%%%%%%%%%
+		% Viewpoint
+	\coordinate (V) at (0,0);
+		% Sichtfeld
+	\coordinate (A) at ($(\distFar, \angleTurn)+(V)$);			
+	\coordinate (B) at ($(A)+(0, \angelVsize)$);	
+	\coordinate (C) at ($(165:\angelHsize)+(A)$);	
+	\coordinate (D) at ($(165:\angelHsize)+(B)$);
+	\coordinate (M0) at ($(A)!0.5!(D)$);
+		% Ebene 1
+	\coordinate (P0) at ($(A)!\depthOne!(V)$);
+	\coordinate (P1) at ($(B)!\depthOne!(V)$);
+	\coordinate (P2) at ($(C)!\depthOne!(V)$);
+	\coordinate (P3) at ($(D)!\depthOne!(V)$);
+	\coordinate (M1) at ($(P0)!0.5!(P3)$);
+		% Ebene 2
+	\coordinate (P4) at ($(A)!\depthTwo!(V)$);
+	\coordinate (P5) at ($(B)!\depthTwo!(V)$);
+	\coordinate (P6) at ($(C)!\depthTwo!(V)$);
+	\coordinate (P7) at ($(D)!\depthTwo!(V)$);
+		% Ebene 3
+	\coordinate (P8) at ($(A)!\depthThree!(V)$);
+	\coordinate (P9) at ($(B)!\depthThree!(V)$);
+	\coordinate (P10) at ($(C)!\depthThree!(V)$);
+	\coordinate (P11) at ($(D)!\depthThree!(V)$);
+		% Bemaßung unten
+	\coordinate (B1) at ($(V)-(0,1.5)$);
+	\coordinate (B3) at ($(A)-(0,3.5)$);
+	\coordinate (B2) at (intersection cs: first line={(B1) -- (B3)}, second line={(P8) -- (P9)});
+	\coordinate (B3) at ($(A)-(0,3.5)$);
+	\coordinate (L1) at ($(B1)!0.5!(B2)$);
+	\coordinate (L2) at ($(B1)!0.5!(B3)$);
+		% Sichtfeld
+	\draw [fill = gray!20, thick]	
+			(P0) -- (P1) -- (P3) -- (P2) -- cycle
+			(A) -- (B) -- (D) -- (C) -- cycle;
+	\draw [color= gray!80, thin, opacity = 0.5]	
+			(P0) -- (A)
+			(P1) -- (B)
+			(P2) -- (C)
+			(P3) -- (D);
+	\draw [fill=gray!20, opacity=0.5, thick ]	
+			(P8) -- (P9) -- (P11) -- (P10) -- cycle;
+	\draw [color = gray!80, thin]
+			(V) -- (B1)
+			(P8) -- (B2)
+			(A) -- (B3);
+	\draw []
+			(V) -- (P4) (V) -- (P5)(V) -- (P7);
+	\draw [latex-latex] (P5) to [out=-80,in=75] (P4);
+	\draw [latex-latex] (P5) to [out=145,in=5] (P7) ;
+	\draw[shading = ball, ball color =gray!20] (V) circle (1em);
+		% Beschriftung
+	\draw [] ($(P4)+(-0.5, 0.5)$) node [] {\footnotesize $43\,^{\circ}$};
+	\draw [] ($(P7)+(0.8, -0.5)$) node [] {\footnotesize $57\,^{\circ}$};
+	\draw [] ($(L1)+(0,-1.6)$) node [] {\footnotesize 400mm};
+	\draw [] ($(L2)+(0,-3.1)$) node [] {\footnotesize 3000mm};
+	\draw[decorate,decoration={brace,mirror,raise=4pt,amplitude=10pt}, thin]
+    		(B1)--(B2);
+	\draw[decorate,decoration={brace,mirror,raise=4pt,amplitude=10pt}, thin]
+    		($(B1)+(0,-1.5)$)--($(B3)+(0,-1.5)$);
+	\draw (-1.25,1) node[] {\footnotesize Kinect};
+\end{tikzpicture}

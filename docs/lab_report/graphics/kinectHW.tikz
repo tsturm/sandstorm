@@ -1,0 +1,47 @@
+% !TEX root = ../praxisbericht.tex
+\begin{tikzpicture}[scale=0.7]
+\usetikzlibrary{calc}
+		% Eckpunkte Kinect
+	\coordinate (P0) at (-7, -1);
+	\coordinate (P1) at ( 7, -1);
+	\coordinate (P2) at ( 7,   1);
+	\coordinate (P3) at (-7,  1);
+		% Fuss
+	\coordinate (F0) at (-2.5, -2.25);
+	\coordinate (F1) at ( 2.5, -2.25);
+	\coordinate (F2) at ( 1,   1);
+	\coordinate (F3) at (-1,  1);	
+		% Linsen
+	\coordinate (A) at (-4,0);
+	\coordinate (B) at (-2.5,0);
+	\coordinate (C) at (-0.75,0);
+	\coordinate (D) at (0.75,0);
+		% Fuss
+	\draw[rounded corners, fill = gray!50] (F0) -- (F1) -- (F2) -- (F3) -- cycle;
+		% Kinect
+	\draw[thick, rounded corners, fill=gray!20] 	(P0) -- (P1) -- (P2) -- (P3) -- cycle;
+		% Laser
+	\draw[fill=white] (A) circle (1.5em);		
+	\draw[] (A) circle (1.25em);
+	\draw[] (A) circle (1em);
+	\draw[] (A) circle (0.5em);
+		% LED
+	%\draw[black, fill =green!60] (B) circle (0.25em);
+		% Video Camera
+	\draw[] (C) circle (1.5em);
+	\fill[shading=radial, outer color=gray!90,inner color=white] (C) circle (1.25em);
+	\draw[] (C) circle (1.25em);
+	\draw[] (C) circle (0.5em);
+		% IR Camera
+	\fill[shading=radial, outer color=gray!50,inner color=white] (D) circle (1.25em);
+	\draw[] (D) circle (1.5em);
+	\draw[] (D) circle (1.25em);
+	\draw[] (D) circle (0.5em);
+		% Beschriftung
+	\draw[thin, -to] (-3,2) to[out=-90,in=90] (-0.75,0.75);
+	\draw (-3,2.25) node[] {\footnotesize Digitalkamera};
+	\draw[thin, -to] (3,2) to[out=-90,in=90] (0.75,0.75);
+	\draw (3,2.25) node[] {\footnotesize Infrarotkamera};
+	\draw[thin, -to] (-6.25,-1.9) to[out=90,in=-90] (-4,-0.75);
+	\draw (-6.25,-2.25) node[] {\footnotesize Infrarotprojektor};
+\end{tikzpicture}
