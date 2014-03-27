@@ -1,0 +1,28 @@
+3. Konzept
+- Ablauf?
+- Grunstruktur
+- Klassendigramm
+- Aufbau des Projekts
+- Quellcode Verwaltung / Repository
+- Propertiesystem
+
+4. Hardwareaufbau
+- Bild
+- Skizze
+- Kinect
+- blah blah
+
+Datencontainer in Grundlagenkapitel?
+
+
+
+4.9 Physik
+- Aktuelle Implementierung
+- Kräfteerhaltung
+- Kollision
+- " erkennung
+
+Ergebnis
+- Bild laufendes System
+
+Probleme überarbeiten / aktuellen Stand bringen
