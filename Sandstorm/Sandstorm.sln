@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandstormContent", "Sandsto
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandstormKinect", "SandstormKinect\SandstormKinect.csproj", "{5531CED4-3CCB-403F-B23C-3DF4616A441D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleStormDLL", "ParticleStormDLL\ParticleStormDLL\ParticleStormDLL.csproj", "{AD731E39-672A-43DC-92F3-B04D5935F9A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleSystem", "ParticleStormDLL\ParticleStormDLL\ParticleSystem.csproj", "{AD731E39-672A-43DC-92F3-B04D5935F9A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleStormDLLContent", "ParticleStormDLL\ParticleStormDLLContent\ParticleStormDLLContent\ParticleStormDLLContent.contentproj", "{3607C4EA-3757-4AA2-B1C7-49F0DC379496}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleSystemContent", "ParticleStormDLL\ParticleStormDLLContent\ParticleStormDLLContent\ParticleSystemContent.contentproj", "{3607C4EA-3757-4AA2-B1C7-49F0DC379496}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
