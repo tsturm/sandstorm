@@ -1,19 +1,54 @@
 % !TEX root = ../report.tex
-\section{Die Benutzeroberfläche}
+\section{Das Graphical User Interface}
 \begin{Spacing}{\mylinespace}
 
-Nachdem die Grundfunktionalität der Hauptkomponenten unseres Systems standen ging es nun daran eine einfache aber dennoch funktionale Benutzeroberfläche zu entwerfen. Da das \textit{XNA-Framework} von Haus aus auf \textit{Windows-Forms} zur Darstellung von Benutzeroberflächen setzt, beschlossen auch wir vorerst diese Variante zu nutzen. Hielten uns aber die Möglichkeit offen eventuell später auf das etwas modernere \textit{WPF}-System zu wechseln.
+Zur Interaktion und Einstellung der einzelnen Komponenten entschieden wir uns dafür, unserer Anwendung ein \textit{Graphical User Interface} (GUI) zu spendieren. 
+
+\subsection{Die Anforderungen}
+
+Als Anforderungen setzten wir uns ein übersichtliches und leicht verständliches System, welches uns im Laufe des Projekts ermöglichen sollte, schnell und ohne größeren Aufwand, neue Funktionalitäten hinzuzufügen.  
+
+\subsection{Die Umsetzung}
+
+Um diese Anforderungen zu erreichen experimentierten wir im ersten Projektsemester mit einem \textit{Multi-Window} Ansatz auf Basis von \textit{Windows Forms}. Dieser Ansatz bestand aus zwei separaten Fenstern (s. Abbildung \ref{fig:GUIOld}). Ein Fenster, das für die Projektion auf den Sand, mit Hilfe des Beamers genutzt wurde und ein weiteres Fenster für die 3D-Ansicht, Zusatzinformationen und den Bedienelementen zur Anpassung des Systems.
 \\\\
-Hauptanforderungen waren ein übersichtliches Design und ein einfaches Hinzufügen von neuen Funktionalitäten. Um diese Anforderungen zu erfüllen entschieden wir uns für eine schlichte Statusleiste am unteren Rand des Editor-Fensters für einfache Anzeigen wie zum Beispiel die Frames Pro Sekunde(FPS) oder die Anzahl der Partikel und ein Tab-Panel an der rechten Seite des Editor-Fensters zur Konfiguration der einzelnen Komponenten. Durch die Nutzung des Tab-Panel lässt sich eine gute Separierung der einzelnen Komponenten in der Benutzeroberfläche realisieren. 
-\\\\
-Die Kommunikation zwischen der Benutzeroberfläche und den einzelnen Komponenten ist über das im \textit{.Net-Framework} integrierte Event-System realisiert. Bei einer Interaktion mit der Benutzeroberfläche wird ein entsprechendes Event gefeuert, welches anschließend die benötigten Daten an alle Komponenten liefert, die sich zuvor für dieses Event registriert haben.  
+Leider stellte sich recht schnell heraus, dass dieser Ansatz doch nicht ganz so flexibel war, wie anfangs erwartet und das hinzufügen von neuen Bedienelementen jedes Mal mit relative viel Arbeit verbunden war. Zudem bedeuteten die beiden Fenster auch die doppelte Arbeit, da die komplette Szene jeweils zweimal gezeichnet werden musste. Aus diesen Gründen, entschlossen wir uns zu Beginn des zweiten Projektsemesters, diesen Ansatz zu verwerfen und auf ein einzelnes Fenster mit einer GPU-basierten GUI zu setzen.
 
 \begin{figure}[h!]
+	\centering
 	\vspace*{30px}
-	\includegraphics[width=\columnwidth]{graphics/gui.png}	
-	\caption{Die GUI}
-	\label{fig:GUI}
+	\includegraphics[width=320px]{graphics/gui.png}	
+	\caption{Multi-Window GUI aus dem ersten Projektsemester.}
+	\label{fig:GUIOld}
 \end{figure}
+
+\begin{description}
+	\item[Ruminate GUI] \hfill \\
+	Nach längerer Recherche und Suche nach einer passenden Bibliothek zur Darstellung eines GUI unter XNA, entschieden wir uns letztendlich für die sehr minimalistische, Open-Source Bibliothek \textit{Ruminate} \cite{Franks2013}. Diese bot uns Grundlegenden Bedienelemente (s. Abbildung) wie Buttons, Slider, usw. und war weitaus weniger überladen als die meisten anderen Bibliotheken.
+\\\\
+Natürlich hatte auch diese Bibliothek nicht nur Vorteile. Da diese von einem Ein-Mann-Team als Hobbyprojekt entwickelt wurde, gab es hier und da noch das ein oder andere Problem und auch das Design der Bedienelemente war nicht das schönste. Dank Open-Source, konnten wir uns aber selbst um diese Probleme kümmern und das GUI individuell an unser System anpassen.
+	
+\begin{figure}[h!]
+	\centering
+	\vspace*{20px}
+	\includegraphics[width=280px]{graphics/ruminate.png}	
+	\caption{Einige Bedienelemente der Ruminate GUI \cite{Franks2013}.}
+	\label{fig:Ruminate}
+\end{figure}
+	
+	\item[Reflections] \hfill \\
+	
+\begin{figure}[h!]
+	\vspace*{30px}
+	\includegraphics[width=\columnwidth]{graphics/reflection.png}	
+	\caption{Reflection}
+	\label{fig:Reflection}
+\end{figure}
+	
+\end{description}
+
+\subsection{Das Ergebnis}
+
 
 \end{Spacing}
 \newpage
@@ -45,12 +80,7 @@ Im Laufe der Zeit wurde unser Projekt immer größer, dies brachte auch viele ne
 All diese neuen Features mussten wir stetig unserer GUI-Oberfläche hinzufügen. Dieser sehr statische Ansatz wurde deshalb durch Reflektion in einen dynamischen überführt.
 Diverse moderne Programmiersprachen so auch unser verwendetes C-Sharp besitzen die Möglichkeit während des Programmablaufs Informationen über die Struktur eines gegebenen Objekts abzurufen.
 
-\begin{figure}[h!]
-	\vspace*{30px}
-	\includegraphics[width=\columnwidth]{graphics/reflection.png}	
-	\caption{Reflection}
-	\label{fig:Reflection}
-\end{figure}
+
 
 Dieser Ansatz und die Tatsache das wir diverse Probleme mit unserer statischen Multi-Window GUI hatten, haben uns dazu bewegt unser altes GUI-System abzulösen.
 Dank unseren Properties war es uns mittels Reflection möglich ein neues dynamisches GUI System einzuführen, hierbei verzichteten wir auch auf das Multi-Window System und haben die GUI direkt auf den Sandkasten projeziert.
