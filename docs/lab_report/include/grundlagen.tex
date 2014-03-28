@@ -2,21 +2,10 @@
 \chapter{Grundlagen}
 \begin{Spacing}{\mylinespace}
 
+\input{include/grundlagen/datencontainer}
+\input{include/grundlagen/mathematische-verfahren}
+\clearpage
+
 Hier kommt immer die Kapitelüberschrift hin, ein kleines Vorgeplänkel was im Kapitel behandelt wird.
 
-\section{Mathematische Verfahren}
-
-\subsection{Verzerrung von Bildern}
-
-\subsection{Billboarding}
-
-Um unsere Vorgabe der Echtzeitfähigkeit zu erfüllen benötigt es ein paar Tricks, die es erlauben die Komplexität unseres Renderers zu minimieren, gleichzeitig jedoch darf dem Zuschauer diese Manipulation nicht bemerken.
-Eine beliebte Technik hierfür ist das Billboarding. Die Idee des Billboardings basiert darauf, komplexe geometrische 3D-Objekte auf ein zweidimensionales Rechteck das sogenannte Billboard runterzubrechen. 
-Bei dem Billboard handelt es sich meist um ein vorher berechnetes Bild von dem ursprünglich darzustellenden 3D-Objekts.
-Anschließend wird dieses Billboard zur Kamera ausgerichtet, dem Zuschauer fällt es somit sehr schwer zu erkennen, das es sich bei dem gezeigten Objekt um eine zweidimensionale Kopie des 3D-Objektes handelt.
-Diese Technik wird hauptsächlich dazu verwendet die benötigten Rechenoperationen für Objekte welche in der Ferne liegen zu minimieren. 
-Kommt die Kamera dem tatsächlichen Objekten sehr nahe, wird meist mit einer Interpolation zwischen dem Billboard und dem tatsächlichen 3D-Objekt umgeschaltet.
-\end{Spacing}
-\newpage
-\clearpage
 %% End Of Doc

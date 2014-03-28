@@ -3,7 +3,6 @@
 - Grunstruktur
 - Klassendigramm
 - Aufbau des Projekts
-- Quellcode Verwaltung / Repository
 - Propertiesystem
 
 4. Hardwareaufbau
@@ -12,9 +11,15 @@
 - Kinect
 - blah blah
 
-Datencontainer in Grundlagenkapitel?
 
 
+
+Probleme überarbeiten / aktuellen Stand bringen
+
+
+#fertig
+
+- Quellcode Verwaltung / Repository
 
 4.9 Physik
 - Aktuelle Implementierung
@@ -22,7 +27,9 @@ Datencontainer in Grundlagenkapitel?
 - Kollision
 - " erkennung
 
+
 Ergebnis
 - Bild laufendes System
 
-Probleme überarbeiten / aktuellen Stand bringen
+
+Datencontainer in Grundlagenkapitel?
