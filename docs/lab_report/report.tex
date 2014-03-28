@@ -1,5 +1,5 @@
 % LaTex Klasse
-\documentclass[10pt,a4paper,article,oneside]{memoir}
+\documentclass[11pt,a4paper,article,oneside]{memoir}
 
 %% Pakete default
 \usepackage[utf8]{inputenc} 
@@ -7,7 +7,8 @@
 \usepackage[breaklinks=true]{hyperref}
 \usepackage[german]{babel}
 \usepackage{graphicx}
-\usepackage{subfloat}
+%\usepackage{subfig}
+%\usepackage{subfloat}
 \usepackage{eurosym}
 \usepackage{amsmath}
 
@@ -19,6 +20,14 @@
 
 %% Pakete usefull
 \usepackage{tikz}
+\newsubfloat{figure}
+% Command to set caption styles
+\captionnamefont{\bfseries\small}
+\captiontitlefont{\itshape\small}
+\subcaptionlabelfont{\bfseries\small}
+\subcaptionfont{\itshape\small}
+
+
 %\usepackage{tikzscale}
 %\usepackage{bbding}
 %\usepackage{listings} 
@@ -119,7 +128,7 @@
 \newcommand{\docType}{Lab Report}
 \newcommand{\docTypeRubric}{\glqq Strömungssimulation in der erweiterten Realität\grqq}
 \newcommand{\docCourse}{Master Projekt System Entwicklung}
-\newcommand{\docCourseSemester}{SS 2013}
+\newcommand{\docCourseSemester}{WS 2013/14}
 \newcommand{\docCourseProf}{Prof. Dr. J. Wietzke, Prof. Dr. E. Hergenröther}
 \newcommand{\docDate}{01.05.2013}
 \newcommand{\docStudentA}{T. Sturm}
