@@ -5,23 +5,18 @@
 \subsection{Verzerrung von Bildern}
 
 \subsection{Blending}
-Blending ist Verfahren welches es ermöglicht überlappende Teilbereiche von zwei Objekten zu definieren.
-Im einfachsten Fall - so wie auch in unserem Projekt, kommt das Alpha-Blending zum Einsatz.
-Dieses sorgt dafür, das transparente Bereiche zweier Objekte die sich überlappen vermischt werden und somit auch Teile des Hintergrunds sichtbar werden.
-
+Blending ist ein Verfahren welches es ermöglicht überlappende Teilbereiche von zwei Objekten zu definieren.
+Hierbei spielt der Alpha-Kanal eine große Rolle, dieser besagt wie durchsichtig ein Objekt ist und somit die Dominanz beim mischen von Farben. Es gibt verschiedene Ausprägungen des Blendings, im einfachsten Fall - so wie auch in unserem Projekt, kommt das additive Alpha-Blending zum Einsatz. Besitzt der Alpha Wert einen hohen Wert (nahe 1) so ist das Objekt sehr dominant und kaum bis garnicht durchsichtig. Ist der Alpha Wert hingegen niedrig (nahe 0) so ist das Objekt durchsichtig vergleiche hierzug Abbildung \ref{fig:AlphaBlending}.
 \begin{figure}[h!]
 	\centering
 	\vspace*{30px}
 	\includegraphics[width=320px]{graphics/blending.png}	
-	\caption{Alpha-Blending\protect\footnotemark}
+	\caption{Additives Alpha-Blending\protect\footnotemark}
 	\label{fig:AlphaBlending}
 \end{figure}
 \footnotetext{Quelle: \url{http://common.ziffdavisinternet.com/encyclopedia_images/_ALPHACH.GIF}}
 
-
-
 \subsection{Billboarding}
-
 Um unsere Vorgabe der Echtzeitfähigkeit zu erfüllen benötigt es ein paar Tricks, die es erlauben die Komplexität unseres Renderers zu minimieren, gleichzeitig jedoch darf der Zuschauer diese Manipulation nicht bemerken.
 Eine beliebte Technik hierfür ist das Billboarding. Die Idee des Billboardings basiert darauf, komplexe geometrische 3D-Objekte auf ein zweidimensionales Rechteck das sogenannte Billboard runterzubrechen. 
 Bei dem Billboard handelt es sich meist um ein vorher berechnetes Bild von dem ursprünglich darzustellenden 3D-Objekts.
