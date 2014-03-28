@@ -101,17 +101,18 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ParticleStormDLL\ParticleStormDLL\ParticleStormDLL.csproj">
+    <ProjectReference Include="..\..\ParticleStormDLL\ParticleStormDLL\ParticleSystem.csproj">
       <Project>{AD731E39-672A-43DC-92F3-B04D5935F9A7}</Project>
-      <Name>ParticleStormDLL</Name>
+      <Name>ParticleSystem</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SandstormKinect\SandstormKinect.csproj">
       <Project>{5531CED4-3CCB-403F-B23C-3DF4616A441D}</Project>
       <Name>SandstormKinect</Name>
     </ProjectReference>
     <ProjectReference Include="..\SandstormContent\SandstormContent.contentproj">
-      <Name>SandstormContent</Name>
+      <Name>SandstormContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{CD38F6FA-BADC-4510-811D-CE20496BA8D7}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
