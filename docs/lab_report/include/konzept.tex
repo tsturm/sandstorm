@@ -2,6 +2,19 @@
 \chapter{Konzept}
 \begin{Spacing}{\mylinespace}
 
+\section{Datenfluss}
+Der Datenfluss unseres Projektes soll hiermit noch einmal mit einer kurzen Skizze erläutert werden.
+Als erstes wird ein Tiefenbild mit der Kinekt erfasst und an unsere Applikation übermittelt.
+Die Applikation verarbeitet die erfassten Daten und bereitet diese für die GPU vor.
+Anschließend arbeitet die GPU auf den erfassten Daten und erzeugt ein Bild welches auf dem Bildschirm bzw. Beamer erscheint.
+\begin{figure}[h!]
+	\centering
+	\vspace*{20px}
+	\includegraphics[width=320px]{graphics/flow.png}
+	\caption{Datenfluss}
+	\label{fig:dataFlow}
+\end{figure}
+
 \section{Modularisierung}
 Um eine parallele Entwicklung und spätere Erweiterbarkeit sicherzustellen entschieden wir uns für eine modulbasierte Entwicklung.
 Unser Projekt lässt sich in 3 Kategorien gliedern. Das ParticleSystem \textbf{(ParticleSystem)}, die Kinect Ansteuerung \textbf{(SandstormKinect)} und einen Controller \textbf{(Sandstorm)} der Events entgegen nimmt und diese verarbeitet oder ggf. weiterleitet.
