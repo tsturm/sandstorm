@@ -32,16 +32,14 @@ Um unser angestrebtes Ziel zu erreichen, haben wir auf eine Kombination aus vers
 	\item[Rendertargets] \hfill \\
 	In unserer vorherigen CPU-basierten Implementierung des Partikelsystems, war es ein leichtes, die benötigten Eigenschaften (Position, Geschwindigkeit, usw.) unserer Partikel, in einer dazu passenden Datenstruktur im RAM abzulegen und zu manipulieren. Bei der Neuimplementierung musste nun ein Weg gefunden werden, die Speicherung und Manipulation der Partikeleigenschaften, performant auf die GPU zu übertragen.
 \\\\
-Hierfür entschieden wir uns, für die Nutzung sogenannter \textit{Rendertargets}.   Diese repräsen- tieren eine spezielle Art von Texturen, für die neben dem standardmäßigen Lesezugriff auch Schreibzugriff zur Verfügung steht. Durch diese Eigenschaft, wird es möglich, \textit{Rendertargets} als Datencontainer zu nutzen und deren Inhalt direkt auf der GPU zu manipulieren.
+Hierfür entschieden wir uns, für die Nutzung sogenannter \textit{Rendertargets}.   Diese repräsentieren eine spezielle Art von Texturen, für die neben dem standardmäßigen Lesezugriff auch Schreibzugriff zur Verfügung steht. Durch diese Eigenschaft, wird es möglich, \textit{Rendertargets} als Datencontainer zu nutzen und deren Inhalt direkt auf der GPU zu manipulieren.
 \\\\
-Zusätzlich zu den normalen \textit{Rendertargets}, unterstützt XNA auch \textit{Multiple Rendertargets}. Welche es ermöglichen, während eines Passes, in bis zu vier Rendertargets gleichzeitig zu schreiben.
-\\\\
-Mit dieser Technik war es uns nun möglich, unsere einzelnen Partikeleigenschaften in den einzelnen Farbkanälen der vier verfügbaren Rendertargets abzulegen (s. Abbildung \ref{fig:RTCahnnels}) und direkt auf der GPU zu manipulieren. 
+Zusätzlich zu den normalen \textit{Rendertargets}, unterstützt XNA auch \textit{Multiple Rendertargets}. Welche es ermöglichen, während eines Passes, in bis zu vier Rendertargets gleichzeitig zu schreiben. Mit dieser Technik war es uns nun möglich, unsere einzelnen Partikeleigenschaften in den einzelnen Farbkanälen der vier verfügbaren Rendertargets abzulegen (s. Abbildung \ref{fig:RTCahnnels}) und direkt auf der GPU zu manipulieren. 
 	
 \begin{figure}[h!]
 	\centering
-	\vspace*{55px}
-	\includegraphics[width=410px]{graphics/RendertargetsChannels.png}
+	\vspace*{15px}
+	\includegraphics[width=380px]{graphics/RendertargetsChannels.png}
 	\caption{Kanalbelegung der einzelnen Rendertargets.}
 	\label{fig:RTCahnnels}
 \end{figure}	
@@ -51,8 +49,8 @@ Mit dieser Technik war es uns nun möglich, unsere einzelnen Partikeleigenschaft
 	
 \begin{figure}[h!]
 	\centering
-	\vspace*{30px}
-	\includegraphics[width=350px]{graphics/DoubleTargets2.png}
+	\vspace*{10px}
+	\includegraphics[width=280px]{graphics/DoubleTargets2.png}
 	\caption{Duplizierte Rendertargets für Ping-Pong Verfahren.}
 	\label{fig:DoubleTarget}
 \end{figure}
@@ -65,8 +63,8 @@ Um bestimmte Effekte realistischer Darzustellen, bietet das neue Partikelsystem,
 
 \begin{figure}[h!]
 	\centering
-	\vspace*{10px}
-	\includegraphics[width=100px]{graphics/additiveBlending.png}
+	\vspace*{0px}
+	\includegraphics[width=70px]{graphics/additiveBlending.png}
 	\caption{Additives Blending.}
 	\label{fig:addBlending}
 \end{figure}
