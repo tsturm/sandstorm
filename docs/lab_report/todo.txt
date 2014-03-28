@@ -3,7 +3,6 @@
 - Grunstruktur
 - Klassendigramm
 - Aufbau des Projekts
-- Propertiesystem
 
 4. Hardwareaufbau
 - Bild
@@ -18,7 +17,8 @@ Probleme überarbeiten / aktuellen Stand bringen
 
 
 #fertig
-
+3. Konzept
+- Propertiesystem
 - Quellcode Verwaltung / Repository
 
 4.9 Physik
