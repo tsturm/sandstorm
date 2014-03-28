@@ -2,12 +2,13 @@
 \section{Die Datencontainer}
 \begin{Spacing}{\mylinespace}
 Um die Echtzeitfähigkeit unseres Systems zu gewährleisten, benötigt es GPU-Unterstützung.
-Bevor wir in technische Details verfallen, werden wir einen kleinen Exkurs machen wie GPUs eigentlich arbeiten.
+Bevor wir jedoch in technische Details verfallen, werden wir einen kleinen Exkurs machen wie GPUs eigentlich funktionieren.
 \subsection{Die GPU}
 CPUs und GPUs weisen grundlegend verschiedene Architekturen auf.
 \begin{figure}[h!]
 	\vspace*{30px}
-	\includegraphics[width=\columnwidth]{graphics/GPUvsCPU.jpg}	
+	\centering
+	\includegraphics[width=300px]{graphics/GPUvsCPU.jpg}	
 	\caption{GPU-Architektur\protect\footnotemark}
 	\label{fig:GPUvsCPU}
 \end{figure}
@@ -19,7 +20,7 @@ Durch das zuweisen einer Aufgabe pro Shader-Unit erlaubt eine GPU somit das hoch
 Diese parallele Programmierung hat jedoch auch Nachteile.
 Nicht nur das es einer speziellen Programmierung benötigt - sogenannte Shader-Programmierung (Shader-Programme).
 Sondern es setzt auch Vorraus, das jede Shader-Unit das gleiche Shader-Programm ausführt.
-Besitzen jedoch die zu verarbeitenden Berechnungen genug Unabhänigkeit, so kann eine erhebliche Beschleunigung durch den Einsatz einer GPU welche meist hunderte von Shader-Units besitzt erzielt werden.
+Besitzen jedoch die zu verarbeitenden Berechnungen genug Unabhänigkeit, so kann eine erhebliche Beschleunigung durch den Einsatz einer GPU welche meist hunderte von Shader-Units besitzt, erzielt werden.
 
 
 \subsection{GPU-Programmierung}
@@ -27,11 +28,41 @@ GPUs und CPUs besitzen unabhängigen Speicher es benötigt somit nicht nur spezi
 Zur Vereinfachung nehmen wir in nachfolgenden Kapiteln an, das wir folgendes Viereck zeichnen möchten.
 
 \begin{figure}[h!]
-	\vspace*{100px}
-	\includegraphics[height=30px]{graphics/quad.png}	
-	\caption{Das Viereck}
+	\vspace*{30px}
+	\centering
+	\includegraphics[height=130px]{graphics/quad.png}	
+	\caption{Das Viereck\protect\footnotemark}
 	\label{fig:Viereck}
 \end{figure}
+\footnotetext{Quelle: \url{http://msdn.microsoft.com/en-us/library/windows/desktop/bb147325\%28v=vs.85\%29.aspxl}}
+
+
+\subsection{VertexBuffer}
+Ein VertexBuffer ist ein Array, welches von dem CPU-Speicher in den GPU-Speicher übetragen wird.
+Jeder ArrayIndex bezieht sich dabei auf exakt einen Punkt im Raum.
+Bezieht man sich auf unser Viereck aus Abbildung \ref{fig:Viereck} welches wir versuchen zu zeichnen bekommt man also folgendes Array: \\
+\begin{figure}[h!]
+	\vspace*{30px}
+	\centering
+	\includegraphics[height=150px]{graphics/vertexbuffer.png}	
+	\caption{Der VertexBuffer\protect\footnotemark}
+	\label{fig:VertexBuffer}
+\end{figure}
+\footnotetext{Quelle: \url{http://msdn.microsoft.com/en-us/library/windows/desktop/bb147325\%28v=vs.85\%29.aspxl}}\\
+Überträgt man diesen VertexBuffer mittels eines Draw-Calls an die GPU so kann ein minimales Shader-Programm unser übergebenes Viereck zeichnen.
+
+\subsection{IndexBuffer}
+In manchen Fällen reicht es nicht aus, den VertexBuffer sequentiell abzuarbeiten. Abhilfe schafft hier der IndexBuffer, dieser erlaubt es die Ausführungsreinfolge des Vertexbuffers zu beinflussen.
+Der IndexBuffer wird jedoch auch für diverse andere Dinge benutzt, z.B. beim Billboarding.
+\begin{figure}[h!]
+	\vspace*{30px}
+	\centering
+	\includegraphics[height=150px]{graphics/indexbuffer.png}	
+	\caption{Der IndexBuffer\protect\footnotemark}
+	\label{fig:IndexBuffer}
+\end{figure}
+\footnotetext{Quelle: \url{http://msdn.microsoft.com/en-us/library/windows/desktop/bb147325\%28v=vs.85\%29.aspxl}}
+
 \end{Spacing}
 \clearpage
 %% End Of Doc

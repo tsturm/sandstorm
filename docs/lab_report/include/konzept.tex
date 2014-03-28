@@ -10,7 +10,7 @@ Anschließend arbeitet die GPU auf den erfassten Daten und erzeugt ein Bild welc
 \begin{figure}[h!]
 	\centering
 	\vspace*{20px}
-	\includegraphics[width=320px]{graphics/flow.png}
+	\includegraphics[width=250px]{graphics/flow.png}
 	\caption{Datenfluss}
 	\label{fig:dataFlow}
 \end{figure}
@@ -29,12 +29,12 @@ Dies bedeutet das jede DrawableGameCompontent ein eigenes kleines Projekt darste
 \end{figure}
 
 \section{Versionierung}
-Um einen bestmöglichsten Konfort während der parallelen Entwicklung zu gewährleisten benötigt es eine Synchronisierung und Versionierung von Quellcode. Es gibt diverse Ansätze um dies sicherzustellen jedoch bietet Tools wie SVN, CVS, Perforce oder GIT sehr ähnliche Funktionlitäten. Wir entschieden uns aus Gewohnheit für ein GIT-Repository auf Github.com, dies lies sich innerhalb von Minuten einrichten und ist überall - sofern eine Internetverbindung besteht erreichbar. Jeglicher Quellcode des Projekts lässt sich somit unter folgender Adresse abrufen: \url{https://github.com/tsturm/sandstorm}. Zusätzlich wird auf dem Perforce-Server des Fachbereichs Informatik die aktuelle Version vorgehalten.
+Um einen bestmöglichsten Konfort während der parallelen Entwicklung zu gewährleisten benötigt es neben der Synchronisierung auch eine Versionierung von Quellcode. Es gibt diverse Ansätze um dies sicherzustellen jedoch bieten Tools wie SVN, CVS, Perforce oder GIT sehr ähnliche Funktionlitäten. Wir entschieden uns aus Gewohnheit für ein GIT-Repository auf Github.com, dies lies sich innerhalb von Minuten einrichten und ist überall - sofern eine Internetverbindung besteht - erreichbar. Jeglicher Quellcode des Projekts lässt sich somit unter folgender Adresse abrufen: \url{https://github.com/tsturm/sandstorm}. Zusätzlich wird auf dem Perforce-Server des Fachbereichs Informatik die aktuelle Version vorgehalten.
 
 
 \section{Properties}
-Um unser System so dynamisch wie möglich zu gestalten entschlossen wir uns Sammelcontainer für Systemparameter einzuführen - sogenannte Properties.
-Diese Properties lassen sich als Konfigurationsdateien ansehen. Ändert man einen Wert innerhalb einer Properties so wird er neue Parameter vom System sofort als neuer gültiger Wert angesehen.
+Um unser System so dynamisch wie möglich zu gestalten entschlossen wir uns diverse Sammelcontainer für Systemparameter einzuführen - sogenannte Properties.
+Diese Properties sind vergleichbar mit Konfigurationsdateien. Ändert man einen Wert innerhalb einer Properties so wird der neue Wert sofort vom restlichen System übernommen.
 Dadurch das jegliche Parameter einer Kategorie (Physikengine,RenderEngine,Kinect..) mit solch einer Properties ausgestattet sind, ist es möglich für verschiedene Anwendungscenarien Default-Wert zu hinterlegen und diese bei Bedarf zu laden oder zu speichern.
 
 \end{Spacing}
