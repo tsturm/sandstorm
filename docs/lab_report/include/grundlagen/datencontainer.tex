@@ -8,12 +8,11 @@ CPUs und GPUs weisen grundlegend verschiedene Architekturen auf.
 \begin{figure}[h!]
 	\vspace*{20px}
 	\centering
-	\includegraphics[width=300px]{graphics/GPUvsCPU.jpg}	
-	\caption{GPU-Architektur\protect\footnotemark}
+	\includegraphics[width=300px]{graphics/GPUvsCPU.png}	
+	\caption{CPU- vs. GPU-Architektur}
 	\label{fig:GPUvsCPU}
 \end{figure}
-\footnotetext{Quelle: \url{http://www.tomshardware.de/CUDA-Nvidia-CPU-GPU,testberichte-240065-2.html}}
-\\
+
 Während eine CPU einen relativ großen Befehlssatz hat um Ganz- oder Fließkommazahlen zu verarbeiten, besitzt hingegen eine GPU einen sehr kleinen Befehlsatz und kann lediglich Fließkommazahlen verarbeiten.
 Der große Vorteil einer GPU jedoch ist das sie die Möglichkeit besitzt Berechnungsaufgaben an verschiedene kleinere CO-Prozessoren sogenannte Shader-Units abzugeben.
 Durch das zuweisen einer Aufgabe pro Shader-Unit erlaubt eine GPU somit das hoch-parallele abarbeiten von Aufgaben - solange diese unabhängig voneinander sind.
@@ -34,7 +33,6 @@ Zur Vereinfachung nehmen wir in nachfolgenden Kapiteln an, das wir folgendes Vie
 	\caption{Das Viereck}
 	\label{fig:Viereck}
 \end{figure}
-
 
 \subsection{VertexBuffer}
 Ein \textit{Vertex Buffer} ist ein Array, welches von dem CPU-Speicher in den GPU-Speicher übetragen wird.
