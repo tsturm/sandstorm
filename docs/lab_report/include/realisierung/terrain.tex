@@ -1,4 +1,4 @@
-% !TEX root = ../report.tex
+% !TEX root = ../../report.tex
 \section{Das Terrain}
 \begin{Spacing}{\mylinespace}
 
@@ -10,20 +10,18 @@ Als Grundgeometrie für die Darstellung unseres Terrains erzeugen wir ein flache
 \begin{figure}[h!]
 	\centering
 	\vspace*{10px}
-	\includegraphics[width=220px]{graphics/grid.png}
+	\includegraphics[width=0.6\textwidth]{graphics/grid.png}
 	\caption{Reguläres Gitter des Terrains.}
 	\label{fig:grid}
 \end{figure}
 
 \subsection{Die Höhendaten}
-Um mit dem zuvor erstellten regulären Gitter ein vollständiges Abbild unserer Sandkastenlandschaft zu repräsentieren, musste nun noch ein Weg gefunden werden die von der Kinect gelieferten Höhendaten in das Model zu integrieren.
-\\\\
-Der erste Schritt auf diesem Weg besteht aus einer Vorverarbeitung der gelieferten Daten. Die Kinect liefert uns ein Short-Array mit 307200 Werten, was einer Auflösung von 640 x 480 Pixeln entspricht. Da der Aufbau unseres Sandkastens sowie unseres regulären Gitters allerdings quadratisch ist, müssen wir die gelieferten Daten auch auf dieses Maß beschneiden. Dazu durchlaufen wir das gelieferte Array und extrahieren daraus einen inneren quadratischen Bereich, für den, genau wie bei unserem regulären Gitter, eine variable Größe gewählt werden kann. Abbildung \ref{fig:resize} zeigt diesen Vorgang.     
+Um mit dem zuvor erstellten regulären Gitter ein vollständiges Abbild unserer Sandkastenlandschaft zu repräsentieren, musste nun noch ein Weg gefunden werden die von der Kinect gelieferten Höhendaten in das Model zu integrieren. Abbildung \ref{fig:resize} zeigt die erhaltenen Daten der Kinect.
 \\
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=250px]{graphics/resize.png}
-	\caption{Zuschnitt der gelieferten Daten.}
+	\includegraphics[width=0.6\textwidth]{graphics/resize.png}
+	\caption{Die gelieferten Daten.}
 	\label{fig:resize}
 \end{figure}  
 

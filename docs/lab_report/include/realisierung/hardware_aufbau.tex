@@ -2,16 +2,16 @@
 \section{Der Hardwareaufbau}
 \begin{Spacing}{\mylinespace}
 
-Der Laboraufbau besteht aus vier Grundkomponenten, welche in Abbildung \ref{fig:laboraufbau} dargestellt sind. Die Maße der Grundfläche betragen $1m x 1m$. Der Projektor sowie die Tiefenkamera sind einen Meter über der Oberkante des Sandkastens montiert.
+Der Laboraufbau besteht aus vier Grundkomponenten, welche in Abbildung \ref{fig:labor} dargestellt sind. Die Maße der Grundfläche betragen $1m x 1m$. Der Projektor sowie die Tiefenkamera sind einen Meter über der Oberkante des Sandkastens montiert.
 
 \vspace{0.2cm}
 \textit{Rechner (Aa) inkl. Kontrollmonitor (Ab), Projektor (Ba) mit Projektionsperspektive(Bb), Tiefenkamera (Ca) mit Erfassungsperspektive (Cb), zu betrachtende Oberfläche (Sandkasten) (D)}
 
 \begin{figure}[hbtp]
 	\centering
-	\label{fig:laboraufbau}
 	\includegraphics[width=0.6\textwidth]{graphics/Aufbau.png}
 	\caption{Laboraufbau}
+	\label{fig:labor}
 \end{figure}
 
 \subsection{Rechner}
@@ -24,14 +24,14 @@ Nach dem die ersten Versuche mit einem älteren BenQ Projektor getätigt wurde k
 
 \subsection{Tiefenkamera}
 
-Zur Erfassung der Höheninformation der Oberfläche wurde die Tiefenkamera Kinect for Windows von der Firma Microsoft verwendet. Sie arbeitet nach dem Prinzip des Structured-Light-Coding und besitzt eine Höhengenauigkeit von einem Millimeter. Sie ist mit Hilfe eine Holzkonstruktion mittig über der Projektionsfläche des Projektors platziert. Die Stellschrauben ist auch hierbei ein Kailibration möglich. In Abbildung re{fig:fov} ist das Sichtfeld ersichtlich. Die Kinect verfügt über zwei Betriebsmodi. Dem Normal-Modus sowie, der im Projekt zum Einsatz gekommene, Nah-Modus. Dieser zeichnet sich durch die Erfassung von zuverlässigen Tiefendaten aber einem Abstand von 40cm aus. Die maximale Entfernung kann hierbei bis zu 3m betragen.
+Zur Erfassung der Höheninformation der Oberfläche wurde die Tiefenkamera Kinect for Windows von der Firma Microsoft verwendet. Sie arbeitet nach dem Prinzip des Structured-Light-Coding und besitzt eine Höhengenauigkeit von einem Millimeter. Sie ist mit Hilfe eine Holzkonstruktion mittig über der Projektionsfläche des Projektors platziert. Die Stellschrauben ist auch hierbei ein Kailibration möglich. In Abbildung \ref{fig:fov} ist das Sichtfeld ersichtlich. Die Kinect verfügt über zwei Betriebsmodi. Dem Normal-Modus sowie, der im Projekt zum Einsatz gekommene, Nah-Modus. Dieser zeichnet sich durch die Erfassung von zuverlässigen Tiefendaten aber einem Abstand von 40cm aus. Die maximale Entfernung kann hierbei bis zu 3m betragen.
 
 \begin{figure}[h!]
 	\centering
 	\vspace{0.2cm}
-	\label{fig:fov}
 	\inputTikZ{graphics/fov}
 	\caption{Kinect Sensor}
+		\label{fig:fov}
 \end{figure}
 
 \subsection{Sandkasten}

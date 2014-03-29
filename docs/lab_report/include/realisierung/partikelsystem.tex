@@ -1,4 +1,4 @@
-% !TEX root = ../report.tex
+% !TEX root = ../../report.tex
 \section{Das Partikelsystem}
 \begin{Spacing}{\mylinespace}
 
@@ -51,13 +51,13 @@ Zusätzlich zu den normalen \textit{Rendertargets}, unterstützt XNA auch \texti
 	
 \begin{figure}[h!]
 	\centering
-	\vspace*{30px}
-	\includegraphics[width=350px]{graphics/DoubleTargets2.png}
+	\vspace*{10px}
+	\includegraphics[width=410px]{graphics/DoubleTargets2.png}
 	\caption{Duplizierte Rendertargets für Ping-Pong Verfahren.}
 	\label{fig:DoubleTarget}
 \end{figure}
 
-	\item[Fullscreen-Pass/Offscreen-Pass] \hfill \\
+\item[Fullscreen-Pass/Offscreen-Pass] \hfill \\
 Das Update unserer \textit{Rendertargets} und somit die Manipulation unserer Partikeleigenschaften, findet in einem sogenannten \textit{Fullscreen-Pass} statt, welcher vor dem eigentlichen Zeichen der \textit{Billboards} durchlaufen wird. Hierbei wird ein im \textit{Screenspace} positioniertes, Bildschirmfüllendes Rechteck genutzt, um ein 1-zu-1 Mapping des zu lesenden und des zu schreibenden \textit{Rendertargets} zu erreichen. Da dieser Pass keine Bildschirmausgabe zur folge hat, kann er auch als \textit{Offscreen-Pass} bezeichnet werden.
 
 	\item[Blending] \hfill \\
@@ -80,7 +80,7 @@ Das Ergebnis unserer Neuimplementierung war mehr als zufriedenstellend. Am Ende 
 
 \begin{figure}[h!]
 	\centering
-	\vspace*{30px}
+	\vspace*{20px}
 	\includegraphics[width=410px]{graphics/ParticleResults.png}
 	\caption{Partikelsystem mit unterschiedlichen Konfigurationen.}
 	\label{fig:particleResults}
