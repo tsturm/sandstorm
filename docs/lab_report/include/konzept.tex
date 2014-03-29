@@ -2,40 +2,33 @@
 \chapter{Konzept}
 \begin{Spacing}{\mylinespace}
 
+Wie bereits in der Einleitung angeführt, soll eine Strömungssimulation erarbeitet werden. Die Grandlage hierfür bilden zwei optische System. Im ersten Teil wird die Oberfläche mit einer Tiefenkamera eingelesen. Der zweite Teil besteht aus einem Projektor, welcher die simulierte Strömung direkt auf die eingelesene Oberfläche projeziert. Dies soll in Echtzeit erfolgen. Als Kernstück soll mit einem Rechner gearbeitet werden, auf dem die Simulationssoftware ausgeführt wird und alle optischen Systeme angebunden sind.
+
 \section{Datenfluss}
-Der Datenfluss unseres Projektes soll hiermit noch einmal mit einer kurzen Skizze erläutert werden.
-Als erstes wird ein Tiefenbild mit der Kinekt erfasst und an unsere Applikation übermittelt.
-Die Applikation verarbeitet die erfassten Daten und bereitet diese für die GPU vor.
-Anschließend arbeitet die GPU auf den erfassten Daten und erzeugt ein Bild welches auf dem Bildschirm bzw. Beamer erscheint.
+Der Datenfluss unseres Projektes  wird in Abbildung \ref{fig:dataFlow} dargestellt. Zu Begin wird ein Tiefenbild mit der Kinekt erfasst und an die Simulationssoftware übermittelt. Die Anwendung verarbeitet die erfassten Daten und bereitet diese für die GPU vor. Anschließend arbeitet die GPU auf den erfassten Daten und erzeugt ein Bild welches abschließend über den Projektor ausgegeben wird.
+
 \begin{figure}[h!]
 	\centering
 	\vspace*{20px}
-	\includegraphics[width=250px]{graphics/flow.png}
+	\includegraphics[width=0.6\textwidth]{graphics/flow.png}
 	\caption{Datenfluss}
 	\label{fig:dataFlow}
 \end{figure}
 
 \section{Modularisierung}
-Um eine parallele Entwicklung und spätere Erweiterbarkeit sicherzustellen entschieden wir uns für eine modulbasierte Entwicklung.
-Unser Projekt lässt sich in 3 Kategorien gliedern. Das ParticleSystem \textbf{(ParticleSystem)}, die Kinect Ansteuerung \textbf{(SandstormKinect)} und einen Controller \textbf{(Sandstorm)} der Events entgegen nimmt und diese verarbeitet oder ggf. weiterleitet.
-Das XNA-Framework unterstützt einen modulbasierten Ansatz indem es jeder DrawableGameCompontent ihren eigenen Kontext zuweist.
-Dies bedeutet das jede DrawableGameCompontent ein eigenes kleines Projekt darstellt und unabhängig von den anderen Projekten betrieben werden kann.
+Um eine parallele Entwicklung und spätere Erweiterbarkeit sicherzustellen soll modulbasiert entwickelt werden. Das Projekt lässt sich in drei Kategorien gliedern. Bestandteile sind das ParticleSystem (ParticleSystem), die Kinect Ansteuerung (SandstormKinect) und einen Controller (Sandstorm), welcher Events entgegen nimmt und für die Verarbeitung zuständig ist. Die Basis bildet die DrawableGameCompontent, welches jeder Komponente einen eigenen Kontext zuweist. Dies bedeutet das jede DrawableGameCompontent ein separates Projekt darstellt und unabhängig betrieben werden kann. Die Strukturierung ist in Abbildung \ref{fig:singleColor} dargestellt.
+
 \begin{figure}[h!]
 	\centering
 	\vspace*{20px}
-	\includegraphics[width=320px]{graphics/DrawableGame.png}
+	\includegraphics[width=0.6\textwidth]{graphics/DrawableGame.png}
 	\caption{Kompontenten}
 	\label{fig:singleColor}
 \end{figure}
 
-\section{Versionierung}
-Um einen bestmöglichsten Konfort während der parallelen Entwicklung zu gewährleisten benötigt es neben der Synchronisierung auch eine Versionierung von Quellcode. Es gibt diverse Ansätze um dies sicherzustellen jedoch bieten Tools wie SVN, CVS, Perforce oder GIT sehr ähnliche Funktionlitäten. Wir entschieden uns aus Gewohnheit für ein GIT-Repository auf Github.com, dies lies sich innerhalb von Minuten einrichten und ist überall - sofern eine Internetverbindung besteht - erreichbar. Jeglicher Quellcode des Projekts lässt sich somit unter folgender Adresse abrufen: \url{https://github.com/tsturm/sandstorm}. Zusätzlich wird auf dem Perforce-Server des Fachbereichs Informatik die aktuelle Version vorgehalten.
-
-
 \section{Properties}
-Um unser System so dynamisch wie möglich zu gestalten entschlossen wir uns diverse Sammelcontainer für Systemparameter einzuführen - sogenannte Properties.
-Diese Properties sind vergleichbar mit Konfigurationsdateien. Ändert man einen Wert innerhalb einer Properties so wird der neue Wert sofort vom restlichen System übernommen.
-Dadurch das jegliche Parameter einer Kategorie (Physikengine,RenderEngine,Kinect..) mit solch einer Properties ausgestattet sind, ist es möglich für verschiedene Anwendungscenarien Default-Wert zu hinterlegen und diese bei Bedarf zu laden oder zu speichern.
+Um das  System so dynamisch wie möglich zu gestalten, sollen Sammelcontainer für Systemparameter einzuführt werden, sogenannte Properties.
+Diese Properties sind vergleichbar mit Konfigurationsdateien. Ändert man einen Wert innerhalb einer Properties so wird der neue Wert sofort vom restlichen System übernommen. Für jede Kategorie (Physikengine,RenderEngine,Kinect..) soll ein solcher Container genutzt werden, um für verschiedene Anwendungscenarien Default-Wert zu hinterlegen und diese bei Bedarf zu laden oder zu speichern.
 
 \end{Spacing}
 \newpage
