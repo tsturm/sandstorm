@@ -6,6 +6,7 @@
 \usepackage[backend=biber,bibencoding=utf8,sorting=nyt,language=ngerman, style=alphabetic]{biblatex}
 \usepackage[breaklinks=true]{hyperref}
 \usepackage[german]{babel}
+\usepackage[babel,german=quotes]{csquotes}
 \usepackage{graphicx}
 %\usepackage{subfig}
 \usepackage{subfloat}
@@ -62,7 +63,8 @@
 %\usepackage{pgfplots}
 
 %% Bib
-\bibliography{references}
+%\bibliography{references}
+\addbibresource{references.bib} 
 %\defbibheading{bibliography}{\bibsection}
 
 
@@ -184,10 +186,10 @@
 %% end of doc
 \clearpage
 
-\pagenumbering{Alph}
+%\pagenumbering{Alph}
 
 \newpage
-\printbibliography
+\printbibliography[title={Quellenverzeichnis}]
 
 %\newpage
 %\listoffigures

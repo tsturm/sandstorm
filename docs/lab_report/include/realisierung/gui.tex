@@ -1,5 +1,5 @@
 % !TEX root = ../report.tex
-\section{Das Graphical User Interface}
+\section{Das Graphical User Interface} \label{GUISec}
 \begin{Spacing}{\mylinespace}
 
 Zur Interaktion und Einstellung der einzelnen Komponenten entschieden wir uns dafür, unserer Anwendung ein \textit{Graphical User Interface} (GUI) zu spendieren. 
@@ -24,60 +24,52 @@ Leider stellte sich recht schnell heraus, dass dieser Ansatz doch nicht ganz so 
 
 \begin{description}
 	\item[Ruminate GUI] \hfill \\
-	Nach längerer Recherche und Suche nach einer passenden Bibliothek zur Darstellung eines GUI unter XNA, entschieden wir uns letztendlich für die sehr minimalistische, Open-Source Bibliothek \textit{Ruminate} \cite{Franks2013}. Diese bot uns grundlegende Bedienelemente (s. Abbildung \ref{fig:Ruminate}) wie Buttons, Slider, usw. und war weitaus weniger überladen als die meisten anderen Bibliotheken.
+	Nach längerer Recherche und Suche nach einer passenden Bibliothek zur Darstellung eines GUI unter XNA, entschieden wir uns letztendlich für die sehr minimalistische, Open-Source Bibliothek \textit{Ruminate} \cite{Fra13}. Diese bot uns grundlegende Bedienelemente (s. Abbildung \ref{fig:Ruminate}) wie Buttons, Slider, usw. und war weitaus weniger überladen als die meisten anderen Bibliotheken.
 \\\\
 Natürlich hatte auch diese Bibliothek nicht nur Vorteile. Da diese von einem Ein-Mann-Team als Hobbyprojekt entwickelt wurde, gab es hier und da noch das ein oder andere Problem und auch das Design der Bedienelemente war nicht das schönste. Dank Open-Source, konnten wir uns aber selbst um diese Probleme kümmern und das GUI individuell an unser System anpassen.
 	
 \begin{figure}[h!]
 	\centering
 	\vspace*{20px}
-	\includegraphics[width=280px]{graphics/ruminate.png}	
-	\caption{Einige Bedienelemente der Ruminate GUI \cite{Franks2013}.}
+	\includegraphics[width=250px]{graphics/ruminate.png}	
+	\caption{Einige Bedienelemente der Ruminate GUI \cite{Fra13}.}
 	\label{fig:Ruminate}
 \end{figure}
 	
 	\item[Reflections] \hfill \\
+	Um das Problem, mit dem sehr unflexiblen und statischen hinzufügen einzelner Bedienelementen pro konfigurierbarer Eigenschaft zu beheben, nutzten wir sogenannte \textit{Reflections}. Diese erlauben es zur Laufzeit auf die Struktur (Name, Typ, Methoden, Properties, usw.) eines gegebenen Objekts zuzugreifen und diese zu manipulieren. Mit dieser Technik konnten wir nun unser einzelnen \textit{Component Properties} (s. Abschnitt \ref{PropSec}), an die GUI Komponente übergeben und auf deren Typ und die einzelnen konfigurierbaren Eigenschaften zugreifen. Mit diesen Informationen konnte nun ein voll dynamisches GUI konstruiert werden (s. Abbildung \ref{fig:GUIReflect}). Sobald nun einer der \textit{Component Properties} eine neue Eigenschaft hinzugefügt wurde, wurde diese auch automatisch in das GUI übernommen.   
 	
 \begin{figure}[h!]
-	\vspace*{30px}
-	\includegraphics[width=\columnwidth]{graphics/reflection.png}	
-	\caption{Reflection}
-	\label{fig:Reflection}
+	\centering
+	\vspace*{20px}
+	\includegraphics[width=280px]{graphics/GUIReflect.png}	
+	\caption{Dynamische Konstruktion des GUI.}
+	\label{fig:GUIReflect}
 \end{figure}
 	
 \end{description}
 
 \subsection{Das Ergebnis}
+Auch bei dem GUI hat sich die Entscheidung für eine komplette Neuimplementierung ausgezahlt. Letztendlich entstand ein hoch flexibles, an den Windows 8 Stil erinnerndes (s. Abbildung \ref{fig:NewGui}) und durch unterschiedliche \textit{Themes} anpassbares (s. Abbildung \ref{fig:GUIThemes}) GUI System, welches uns viel Arbeit beim Hinzufügen von Bedienelementen einsparte und die Gesamtleistung unseres System, durch den \textit{Single-Window} Ansatz, nahezu verdoppelte.
 
 \begin{figure}[h!]
 	\centering
-	\vspace*{30px}
-	\includegraphics[width=210px]{graphics/newGui.png}
-	\caption{Die ingame GUI.}
-	\label{fig:NewGUI}
+	\vspace*{10px}
+	\includegraphics[width=\columnwidth]{graphics/newGui2.png}
+	\caption{Das neue ingame GUI.}
+	\label{fig:NewGui}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\vspace*{30px}
-	\includegraphics[width=\columnwidth]{graphics/guiThemes.png}
-	\caption{Unterschiedliche Erscheinungsbilder der GUI.}
+	\vspace*{10px}
+	\includegraphics[width=290px]{graphics/guiThemes.png}
+	\caption{Unterschiedliche Erscheinungsbilder des GUI.}
 	\label{fig:GUIThemes}
 \end{figure}
 
 \end{Spacing}
 \newpage
-
-\section{Reflection}
-Im Laufe der Zeit wurde unser Projekt immer größer, dies brachte auch viele neue Funktionalitäten mit sich.
-All diese neuen Features mussten wir stetig unserer GUI-Oberfläche hinzufügen. Dieser sehr statische Ansatz wurde deshalb durch Reflektion in einen dynamischen überführt.
-Diverse moderne Programmiersprachen so auch unser verwendetes C-Sharp besitzen die Möglichkeit während des Programmablaufs Informationen über die Struktur eines gegebenen Objekts abzurufen.
-
-
-
-Dieser Ansatz und die Tatsache das wir diverse Probleme mit unserer statischen Multi-Window GUI hatten, haben uns dazu bewegt unser altes GUI-System abzulösen.
-Dank unseren Properties war es uns mittels Reflection möglich ein neues dynamisches GUI System einzuführen, hierbei verzichteten wir auch auf das Multi-Window System und haben die GUI direkt auf den Sandkasten projeziert.
-
 
 \clearpage
 %% End Of Doc
