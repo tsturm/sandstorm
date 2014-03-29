@@ -38,19 +38,21 @@ Zusätzlich zu den normalen \textit{Rendertargets}, unterstützt XNA auch \texti
 	
 \begin{figure}[h!]
 	\centering
-	\vspace*{15px}
-	\includegraphics[width=380px]{graphics/RendertargetsChannels.png}
+	\vspace*{55px}
+	\includegraphics[width=410px]{graphics/RendertargetsChannels.png}
 	\caption{Kanalbelegung der einzelnen Rendertargets.}
 	\label{fig:RTCahnnels}
 \end{figure}	
-	
+
+\newpage
+
 	\item[Ping-Pong] \hfill \\
 	Im Normalfall können \textit{Rendertargets}, innerhalb eines Passes, entweder nur gelesen oder nur geschrieben werden. Um diese Einschränkung zu umgehen und einen weiteren Pass einzusparen, setzten wir das sogenannte \textit{Ping-Pong} Verfahren ein. Bei diesem Verfahren, existiert von jedem \textit{Rendertarget} ein Duplikat (s. Abbildung \ref{fig:DoubleTarget}). Während eines Passes wird nun eines der Duplikate genutzt um Daten daraus zu lesen und das andere um die manipulierten Daten zurück zuschreiben. Im Anschluss an den Pass, werden die beiden \textit{Rendertargets} dann einfach ausgetauscht. Somit können im nächsten Pass, die zuvor geschrieben Daten gelesen werden und die alten Daten können überschrieben werden.
 	
 \begin{figure}[h!]
 	\centering
-	\vspace*{10px}
-	\includegraphics[width=280px]{graphics/DoubleTargets2.png}
+	\vspace*{30px}
+	\includegraphics[width=350px]{graphics/DoubleTargets2.png}
 	\caption{Duplizierte Rendertargets für Ping-Pong Verfahren.}
 	\label{fig:DoubleTarget}
 \end{figure}
@@ -63,8 +65,8 @@ Um bestimmte Effekte realistischer Darzustellen, bietet das neue Partikelsystem,
 
 \begin{figure}[h!]
 	\centering
-	\vspace*{0px}
-	\includegraphics[width=70px]{graphics/additiveBlending.png}
+	\vspace*{10px}
+	\includegraphics[width=100px]{graphics/additiveBlending.png}
 	\caption{Additives Blending.}
 	\label{fig:addBlending}
 \end{figure}
