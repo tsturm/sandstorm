@@ -167,9 +167,9 @@
 \clearpage
 \input{include/bestehende_arbeiten}
 \clearpage
-\input{include/konzept}
-%\clearpage
 \input{include/grundlagen}
+\clearpage
+\input{include/konzept}
 \clearpage
 \input{include/realisierung}
 \clearpage
@@ -179,8 +179,7 @@
 \clearpage
 \input{include/ausblick}
 \clearpage
-\input{include/appendix}
-\clearpage
+
  %and so on
 %\inputTikZ{graphics/hardware}
 %% end of doc
@@ -188,8 +187,20 @@
 
 %\pagenumbering{Alph}
 
+
+
 \newpage
-\printbibliography[title={Quellenverzeichnis}]
+\defbibheading{head}{\chapter{Literaturverzeichnis}}
+\printbibliography[heading=head]
+\clearpage
+
+\newpage
+\listoffigures
+\clearpage
+
+\newpage
+\input{include/appendix}
+\clearpage
 
 %\newpage
 %\listoffigures
