@@ -1,0 +1,29 @@
+% !TEX root = ../../report.tex
+\begin{tikzpicture}[node distance=2.3cm, auto ]
+ 
+   % Place nodes
+\node [block] (1) {Kinect Treiber / Bibliothek};
+\node [block, below of =1](2) {Tiefenbild};
+\node [block, below of=2] (3) {Zuschnitt};
+\node [block, below of=3] (4) {Nachbearbeitung};
+\node [block, below of=4] (5) {Verschicken};
+
+    % Draw edges
+%\draw [latex'-latex', thick] (view) -- (viewmodel);
+%\draw [-latex', thick] ($(viewmodel.south)+(-0.5,0)$) --($(model.north) + (-0.5,0)$);
+%\draw [-latex', thick, dashed] ($(model.north)+(0.5,0)$) --($(viewmodel.south) + (0.5,0)$);
+
+     %Notes
+%\path ( view.west |- view.north)+ (-0.25, 0.125) node (a) {};	    	
+%\path ( viewmodel.west |- viewmodel.south)+ (-0.25, -0.125) node (b) {};
+%\draw [thick, decorate,decoration={brace,mirror,amplitude=10pt}] (a) -- (b);
+%\path ($(a)!0.5!(b)$)+(-0.75,0) node [rotate=90] {Darstellung + Darstellungslogik};
+
+%\path ( model.east |- model.north)+ (0.25, 0.125) node (c) {};	    	
+%\path ( model.east |- model.south)+ (0.25, -0.125) node (d) {};
+%\draw [thick, decorate,decoration={brace,amplitude=10pt,mirror}] (d) -- (c);
+%\path (model)+(4,0) node [rotate=90] {Geschäftslogik + Daten};
+
+%\node (e) at ($(view)!0.5!(viewmodel)+(1.5,0)$) [] {$Datenbindung$};
+
+\end{tikzpicture}
