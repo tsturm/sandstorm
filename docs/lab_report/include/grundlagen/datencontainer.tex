@@ -25,43 +25,42 @@ Besitzen jedoch die zu verarbeitenden Berechnungen genug Unabhänigkeit, so kann
 
 \subsection{GPU-Programmierung}
 GPUs und CPUs besitzen unabhängigen Speicher es benötigt somit nicht nur spezieller Programme, sondern auch den schwierigen Teil der GPU Programmierung - den Datentransport zwischen den Speichern.
-Zur Vereinfachung nehmen wir in nachfolgenden Kapiteln an, das wir folgendes Viereck zeichnen möchten.
+Zur Vereinfachung nehmen wir in nachfolgenden Kapiteln an, das wir folgendes Viereck (s. Abbildung \ref{fig:Viereck}) zeichnen möchten.
 
 \begin{figure}[h!]
 	\vspace*{30px}
 	\centering
-	\includegraphics[height=130px]{graphics/quad.png}	
-	\caption{Das Viereck\protect\footnotemark}
+	\includegraphics[height=130px]{graphics/Quad2.png}	
+	\caption{Das Viereck}
 	\label{fig:Viereck}
 \end{figure}
-\footnotetext{Quelle: \url{http://msdn.microsoft.com/en-us/library/windows/desktop/bb147325\%28v=vs.85\%29.aspxl}}
 
 
 \subsection{VertexBuffer}
-Ein VertexBuffer ist ein Array, welches von dem CPU-Speicher in den GPU-Speicher übetragen wird.
-Jeder ArrayIndex bezieht sich dabei auf exakt einen Punkt im Raum.
+Ein \textit{Vertex Buffer} ist ein Array, welches von dem CPU-Speicher in den GPU-Speicher übetragen wird.
+Jeder Array Index bezieht sich dabei auf exakt einen Punkt im Raum.
 Bezieht man sich auf unser Viereck aus Abbildung \ref{fig:Viereck} welches wir versuchen zu zeichnen bekommt man also folgendes Array: \\
 \begin{figure}[h!]
 	\vspace*{30px}
 	\centering
-	\includegraphics[height=150px]{graphics/vertexbuffer.png}	
-	\caption{Der VertexBuffer\protect\footnotemark}
+	\includegraphics[height=150px]{graphics/vertexbuffer2.png}	
+	\caption{Der VertexBuffer}
 	\label{fig:VertexBuffer}
 \end{figure}
-\footnotetext{Quelle: \url{http://msdn.microsoft.com/en-us/library/windows/desktop/bb147325\%28v=vs.85\%29.aspxl}}\\
-Überträgt man diesen VertexBuffer mittels eines Draw-Calls an die GPU so kann ein minimales Shader-Programm unser übergebenes Viereck zeichnen.
+\\
+Überträgt man diesen \textit{Vertex Buffer} mittels eines Draw-Calls an die GPU so kann ein minimales Shader-Programm unser übergebenes Viereck zeichnen.
 
 \subsection{IndexBuffer}
-In manchen Fällen reicht es nicht aus, den VertexBuffer sequentiell abzuarbeiten. Abhilfe schafft hier der IndexBuffer, dieser erlaubt es die Ausführungsreinfolge des Vertexbuffers zu beinflussen.
-Der IndexBuffer wird jedoch auch für diverse andere Dinge benutzt, z.B. beim Billboarding.
+Wie man in Abbildung \ref{fig:VertexBuffer} erkennen kann, enthält der \textit{Vertex Buffer} duplizierte Einträge an den Stellen (0-4) und (2-5). Bei dem in unserem Beispiel verwendeten Viereck, fällt dieser unnötige Speicherverbrauch nicht großartig ins Gewicht. Bei weitaus komplexeren Modellen, können diese doppelten Einträge jedoch schnell zu einem Problem werden. Um doppelte Einräge im \textit{Vertex Buffer} zu verhindern, werden sogenannte \textit{Index Buffer} eingesetzt. Diese enthalten Indizes die auf die einzelnen Einträge im \textit{Vertex Buffer} referenzieren. Abbildung \ref{fig:IndexBuffer} zeigt, den für unser Beispiel benötigen, Index- und Vertex Buffer. Wie man sieht sind die doppelten Einträge aus unserem \textit{Vertex Buffer} verschwunden und die Reihenfolge zum Zeichen der beiden Dreiecke, wird nun durch den \textit{Index Buffer} vorgegeben. 
+ 
+
 \begin{figure}[h!]
 	\vspace*{30px}
 	\centering
-	\includegraphics[height=150px]{graphics/indexbuffer.png}	
-	\caption{Der IndexBuffer\protect\footnotemark}
+	\includegraphics[height=150px]{graphics/indexbuffer2.png}	
+	\caption{Der IndexBuffer}
 	\label{fig:IndexBuffer}
 \end{figure}
-\footnotetext{Quelle: \url{http://msdn.microsoft.com/en-us/library/windows/desktop/bb147325\%28v=vs.85\%29.aspxl}}
 
 \end{Spacing}
 \clearpage
