@@ -1,18 +1,25 @@
 % !TEX root = ../report.tex
 \appendix
-\addtocontents{toc}{\setlength\cftchapternumwidth{1em}}
+\addtocontents{toc}{\setlength\cftchapternumwidth{1.5em}}
 
 \begin{Spacing}{\mylinespace}
-	\renewcommand\thechapter{}
+	%\renewcommand\thechapter{}
+	\setcounter{page}{1}
 	\chapter{Anhang}
-	\renewcommand{\thechapter}{A}
+	%\renewcommand{\thechapter}{A}
 	
+	\newpage
+	\setcounter{page}{2}
+	\addcontentsline{toc}{section}{Inbetriebnahme}
 	\begin{figure}[h!]
 		\centering
 		\vspace*{0px}
 		\includegraphics[width=\columnwidth]{graphics/Start.png}
 	\end{figure}	
 	
+	\newpage
+	\setcounter{page}{3}
+	\addcontentsline{toc}{section}{Hotkeys}
 	\begin{figure}[h!]
 		\centering
 		\vspace*{0px}

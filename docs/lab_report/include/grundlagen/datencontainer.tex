@@ -11,8 +11,7 @@ CPUs und GPUs weisen grundlegend verschiedene Architekturen auf.
 \end{figure}
 
 Während eine CPU einen relativ großen Befehlssatz hat um Ganz- oder Fließkommazahlen zu verarbeiten, besitzt hingegen eine GPU einen sehr kleinen Befehlsatz und kann lediglich Fließkommazahlen verarbeiten.
-Der große Vorteil einer GPU jedoch ist das sie die Möglichkeit besitzt Berechnungsaufgaben an verschiedene kleinere CO-Prozessoren sogenannte Shader-Units abzugeben.
-Durch das zuweisen einer Aufgabe pro Shader-Unit erlaubt eine GPU somit das hoch-parallele abarbeiten von Aufgaben - solange diese unabhängig voneinander sind.
+Der große Vorteil einer GPU jedoch ist das sie die Möglichkeit besitzt Berechnungsaufgaben an verschiedene kleinere CO-Prozessoren sogenannte Shader-Units abzugeben. Durch das zuweisen einer Aufgabe pro Shader-Unit erlaubt eine GPU somit das hoch-parallele abarbeiten von Aufgaben - solange diese unabhängig voneinander sind.
 Diese parallele Programmierung hat jedoch auch Nachteile.
 Nicht nur das es einer speziellen Programmierung benötigt - sogenannte Shader-Programmierung (Shader-Programme).
 Sondern es setzt auch Vorraus, das jede Shader-Unit das gleiche Shader-Programm ausführt. Besitzen jedoch die zu verarbeitenden Berechnungen genug Unabhänigkeit, so kann eine erhebliche Beschleunigung durch den Einsatz einer GPU welche meist hunderte von Shader-Units besitzt, erzielt werden.
@@ -30,7 +29,7 @@ Die GPU-Programmierung unterscheidet sich in vielen Punkten von der CPU-Programm
 	\label{fig:pipeline}
 \end{figure}
 
-Abbildung \ref{fig:pipeline} zeigt die einzelnen Arbeitsschritte einer GPU. Starten wir, mit unserem Beispiel im ersten Schritt \textit{Vertexdaten}. Um das Beispiel möglichst simple zu gestalten, wollen wir ein einfaches Rechteck generieren und ausgeben. Dazu muss man wissen, das eine GPU immer nur einzelne Punkte oder Dreiecke zeichnen kann. Um unser Rechteck zu erzeugen benötigen wir also zwei Dreiecke, die jeweils aus drei Punkten bestehen. (s. Abbildung \ref{fig:Viereck}.
+Abbildung \ref{fig:pipeline} zeigt die einzelnen Arbeitsschritte einer GPU. Starten wir, mit unserem Beispiel im ersten Schritt \textit{Vertexdaten}. Um das Beispiel möglichst simple zu gestalten, wollen wir ein einfaches rotes Rechteck generieren und ausgeben. Dazu muss man wissen, das eine GPU immer nur einzelne Punkte oder Dreiecke zeichnen kann. Um unser Rechteck zu erzeugen benötigen wir also zwei Dreiecke, die jeweils aus drei Punkten bestehen. (s. Abbildung \ref{fig:Viereck}.
 
 \begin{figure}[h!]
 	\vspace*{30px}
@@ -64,25 +63,31 @@ Wie man in Abbildung \ref{fig:VertexBuffer} erkennen kann, enthält unser erzeug
 \end{figure}
 
 \subsection{Vertex Shader}
-Nachdem wir unsere Daten nun erfolgreich auf die GPU übertragen haben, geht es weiter mit dem nächsten Schritt, dem \textit{Vertex Shader}. Shader sind die programmierbaren Einheiten einer GPU, in denen wir selbst Einfluss auf die Grafikpipeline nehmen können. Dazu zählen, der \textit{Vertex Shader}, auf den wir hier einen Blick werfen werden, der \textit{Pixel Shader}, den wir uns danach betrachten und bei neueren GPU's der \textit{Geometry Shader}, den wir nicht behandeln werden.
+Nachdem wir unsere Daten nun erfolgreich auf die GPU übertragen haben, geht es weiter mit dem nächsten Schritt, dem \textit{Vertex Shader}. Shader sind die programmierbaren Einheiten einer GPU, in denen wir selbst Einfluss auf die Grafikpipeline nehmen können. Dazu zählen, der \textit{Vertex Shader}, auf den wir hier einen Blick werfen werden, der \textit{Pixel Shader}, den wir uns danach betrachten und bei neueren GPU's der \textit{Geometry Shader}, den wir hier nicht behandeln werden.
 \\\\
+Der \textit{Vertex Shader} arbeitet auf der \textit{Vertex}-Ebene, das sind unsere einzelnen Punkte. Diese können hier noch einmal manipuliert oder transformiert werden.
+Der Quellcode \ref{vertexshader} zeigt einen minimalen \textit{Vertex Shader}. Dieser bekommt unsere Punkte übergeben, transformiert diese mit der Matrix \textit{worldViewProj} vom \textit{Objectspace} in den \textit{Screenspace} und gibt die transformierten Punkte an den nächsten Schritt der Pipeline weiter.
 
-\begin{lstlisting}[captionpos=b, caption=Vertex Shader unseres Rechtecks, label=vertexshader]
-float3 vertexshader()
-{
-  return mul(position, worldViewProj);		
-}
+\begin{lstlisting}[captionpos=b, caption=Vertex Shader unseres Rechtecks., label=vertexshader]
+01 float4x4 worldViewProj;
+02
+03 float4 vertexshader(float4 position)
+04 {
+05   return mul(position, worldViewProj);		
+06 }
 \end{lstlisting}
 
 \subsection{Clipping, Projektion, Rasterisierung}
+In diesem Schritt werden unsere in den \textit{Screenspace} transformierten Punkte auf einzelne Bildschirmpixel abgebildet (Rasterisierung) und alle überflüssigen Pixel, die außerhalb des Bildschirmbereichs liegen, verworfen (Clipping).
 
 \subsection{Pixel Shader}
+Nachdem unsere dreidimensionalen Punkte, im vorherigen Schritt zu zweidimensionalen Bildschirmpixel gerastert wurden, kommen wir nun zur nächsten programmierbaren Einheit einer GPU, dem \textit{Pixel Shader}. Dieser arbeitet auf textit{Pixel}-Ebene und ist für die Einfärbung zuständig. Der Quellcode \ref{pixelshader} zeigt einen minimalen \textit{Pixel Shader}. Dieser färbt alle Pixel unseres Rechtecks rot ein.
 
-\begin{lstlisting}[captionpos=b, caption=Fragment Shader unseres Rechtecks, label=pixelshader]
-float4 pixelshader()
-{
-  return float4(0.8, 0.0, 0.0, 1.0);
-}
+\begin{lstlisting}[captionpos=b, caption=Fragment Shader unseres Rechtecks., label=pixelshader]
+01 float4 pixelshader()
+02 {
+03   return float4(0.8, 0.0, 0.0, 1.0);
+04 }
 \end{lstlisting}
 
 \subsection{Weitere Pixel Operationen}
