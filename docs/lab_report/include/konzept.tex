@@ -5,7 +5,7 @@
 Wie bereits in der Einleitung angeführt, soll eine Strömungssimulation erarbeitet werden. Die Grundlage hierfür bilden zwei optische System. Im ersten Teil wird die Oberfläche mit einer Tiefenkamera eingelesen. Der zweite Teil besteht aus einem Projektor, welcher die simulierte Strömung direkt auf die eingelesene Oberfläche projiziert. Dies soll in Echtzeit erfolgen. Als Kernstück soll mit einem Rechner gearbeitet werden, auf dem die Simulationssoftware ausgeführt wird und alle optischen Systeme angebunden sind.
 
 \section{Der Datenfluss}
-Der Datenfluss unseres Projektes  wird in Abbildung \ref{fig:dataFlow} dargestellt. Zu Beginn wird ein Tiefenbild mit der Kinekt erfasst und an die Simulationssoftware übermittelt. Die Anwendung verarbeitet die erfassten Daten und bereitet diese für die GPU vor. Anschließend arbeitet die GPU auf den erfassten Daten und erzeugt ein Bild welches abschließend über den Projektor ausgegeben wird.
+Der Datenfluss unseres Projektes  wird in Abbildung \ref{fig:dataFlow} dargestellt. Zu Beginn wird ein Tiefenbild mit der Kinect erfasst und an die Simulationssoftware übermittelt. Die Anwendung verarbeitet die erfassten Daten und bereitet diese für die GPU vor. Anschließend arbeitet die GPU auf den erfassten Daten und erzeugt ein Bild welches abschließend über den Projektor ausgegeben wird.
 
 \begin{figure}[h!]
 	\centering

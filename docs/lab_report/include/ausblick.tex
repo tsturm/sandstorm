@@ -7,6 +7,10 @@ Das Projekt wurde im  im Laufe des zweiten Semesters grundlegend neu strukturier
 Nicht nur auf die Erweiterbarkeit (Properties) wurde sehr hohen Wert gelegt sondern es wurden viele neue zusätzliche Parameter unserer Engine hinzugefügt.
 Trotz der Tatsache, das man während der Entwicklung sehr schnell auf viele neue Ideen kommt, die man leider dann doch Aufgrund von Zeitmangel garnicht alle umsetzen kann haben wir uns nicht unterkriegen lassen und so viel es ging umgesetzt. Durch diverse DirektX-9 Probleme stoßen wir jedoch - wie bereits erwähnt, relativ schnell an die GPU-Grenzen des XNA-Frameworks.
 Eine Neuprogrammierung haben wir jedoch ausgeschlossen - denn es musste eine stabile lauffähige Version bis zum Start der Hobit fertig gestellt sein.
+Sollte jedoch in der Zukunft eine Neuprogrammierung in Frage kommen, wären zwei Wege denkbar.
+Der erste Weg welcher es erlaubt einen Großteil des Codes wiederzuverwenden besteht darin das XNA Framework (DirectX 9) durch ein Upgrade von DirectX 10 oder gar 11 abzulösen.
+Hierbei sollten die entstandenen Probleme mit DirectX9 behoben sein und es besteht die Möglichkeit durch diverse DirectX10/11 Wrapper für C\# mit der gleichen Sprache weiterzuarbeiten ohne das eine komplette Neuimplenetierung auf C++ nötig ist.
+Der zweite aufwändigere Weg ist die Wahl von OpenGL, hierbei wird es nötig sein einen großteil des Codes von C\# auf C++ zu portieren und diverse Anpassungen der ShaderProgramme durchzuführen. Der große Vorteil - neben der Plattformunabhängigkeit, besteht darin das OpenGL derzeit bereits das Shader Model 5.0 sowie Compute-Shading anbietet was einen erheblichen Performance Zuwachs bieten sollte. Nachteil wäre jedoch, das dieser Weg ohne Vorkenntnisse im Bereich der GPU-Programmierung sehr zeitintensiv sein wird.
 Dieses Projekt beinhaltet sehr viele Möglichkeiten und sollte in der Zukunft fortgeführt werden, jedoch benötigt es einen sehr großen Aufwand an Einarbeitungszeit deswegen wäre es schön wenn zukünftige Fächer der Hochschule bereits Grundlegende Kenntnisse im Bereich der GPU-Programmierung legen könnten.
 	
 \end{Spacing}
