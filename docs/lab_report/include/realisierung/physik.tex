@@ -115,7 +115,7 @@
 
 		Allein mithilfe der Reflektion können bereits die meisten Kollisionen
 		aufgelöst werden. Wenn beispielsweise ein Partikel senkrecht zur Oberfläche
-		in die Heightmap eindringt wird der Bewegungsvektor auf diese Weise umgekert
+		in die Heightmap eindringt wird der Bewegungsvektor auf diese Weise umgekehrt
 		und das Partikel wird sich in der nächsten Iteration wieder aus der Heightmap
 		herausbewegen.
 		%\[ \vec{v}_{i}(t) = \left(\begin{array}{rr} 0 \\ 0 \\0 \end{array}\right) , \vec{f}_{i} = \left(\begin{array}{rr} 0 \\ -1 \\0 \end{array}\right) , \vec{n} = \left(\begin{array}{rr} 0 \\ 1 \\0 \end{array}\right) \]
@@ -168,12 +168,12 @@
 		werden, bis sie schließlich vollständig zum erliegen kommen und
 		nicht dauerhaft ungebremst und durch die gesamte Welt springen.
 		Der Verlust von Bewegungsenergie bedeutet allerdings auch, dass bei einem auf der
-		Landschaft liegengebleibenes Partikel die Reflektion nicht mehr vollständig die
+		Landschaft liegengebliebenes Partikel die Reflektion nicht mehr vollständig die
 		Gravitation ausgleichen kann. Der Bewegungsvektor würde in der
 		nächsten Iteration entgegen der Gravitation zeigen, dieser ist allerdings durch die Reibung
 		schwächer als die Gravitation und kann diese nun nicht mehr vollständig neutralisieren. Die Reflektion
 		reicht nun durch die Kombination mit der Reibung, nicht mehr alleine aus
-		um zu verhindern, dass liegengebliebe Partikel immer weiter in die Oberfläche eindringen.
+		um zu verhindern, dass liegengebliebene Partikel immer weiter in die Oberfläche eindringen.
 
 		Um dies zu verhindern wir ein weiterer Mechanismus bei der Kollisionsauflösung benötigt.
 
@@ -202,7 +202,7 @@
 		jedes einzelnen Partikels mit den Positionen aller Partikel 
 		verglichen werden. Dies führt jedoch dazu, dass in jeder Iteration $n^2$
 		Vergleiche durchgeführt werden müssten, was jedoch nur mit einer sehr
-		geringen Anzahl an Partikeln praktikabel währe.
+		geringen Anzahl an Partikeln praktikabel wäre.
 		
 		Die Gesamtanzahl der Vergleiche lässt sich jedoch dadurch verringern, indem
 		die Welt in verschiedene Zellen unterteilt und nur noch
@@ -233,15 +233,15 @@
 		Wenn die Partikel auf verschiedene Kollisionsdomänen verteilt sind entsteht
 		unter DirectX9 ein weiteres Problem. Um die Kollisionen zu erkennen
 		werden alle Überprüfungen in einer Schleife durchführt, welche über alle
-		beteiligten Partikel iteriert. DirectX9 erlaubt jedoch nur Schiefenstrukturen
+		beteiligten Partikel iteriert. DirectX9 erlaubt jedoch nur Schleifenstrukturen
 		mit einer maximalen Länge von 255 Iterationen, wodurch die
-		Köllisionsdomänen so ausgelegt werden müssten dass sich maximal
+		Kollisionsdomänen so ausgelegt werden müssten dass sich maximal
 		255 Partikel in ihnen befinden können.
 		
 		Die Limitierung der Schleifenlänge ist jedoch nicht die einzige
 		Beschränkung die durch DirectX9 und dem Shader Model 3.0 entsteht.
-		Dadurch das alle Kontrollstruckturen komplett entfaltet werden, übersteigt die
-		die Anzahl der Insruktionen schnell das Instruktionslimit des
+		Dadurch das alle Kontrollstrukturen komplett entfaltet werden, übersteigt die
+		die Anzahl der Instruktionen schnell das Instruktionslimit des
 		Shader Model 3.0, welches maximal 512 Instruktionen erlaubt.
 		Dies reduziert die Anzahl der Kollisionsüberprüfungen
 		weiter auf ein unpraktikables Niveau. 
@@ -252,7 +252,7 @@
     	ähnlicher Weise aufgelöst werden wie eine Kollision mit der Heightmap.
     	Um jedoch den Bewegungsvektor des Partikels zu reflektieren, wird die
     	Flächennormale benötigt. Aufgrund der Tatsache dass alle Partikel
-    	perfekte Kugeln sind, zeigt die	Flächennormale der Kollisionoberfläche
+    	perfekte Kugeln sind, zeigt die	Flächennormale der Kollisionsoberfläche
     	immer in Richtung der Position des Partikels. Daher lässt sich die
     	Flächennormale ($\vec{n}$) dadurch berechnen indem man den Positionsvektor des
     	aktuell betrachteten Partikels ($\vec{p}_{i}$), von dem des mit ihm kollidierenden
@@ -262,7 +262,7 @@
 			\centering
 			\vspace*{30px}
 			\includegraphics[width=0.7\textwidth]{graphics/Phys_kp1234.png}
-			\caption{ (a) Kollision mit einem Partikel. (b) berechnung der Normalen (n). (c) Reflektion des Bewegungsvektors (v). (d) Auflösung der Kollision durch die Bewegung in der nächsten Iteration. }
+			\caption{ (a) Kollision mit einem Partikel. (b) Berechnung der Normalen (n). (c) Reflektion des Bewegungsvektors (v). (d) Auflösung der Kollision durch die Bewegung in der nächsten Iteration. }
 			\label{fig:partkoll2}
 		\end{figure}
 		Mit der Flächennormalen ($\vec{n}$) kann nun die Reflektion des
@@ -274,13 +274,13 @@
 	\subsection{Flusssimulation}
 		Aufgrund der in Kap. \ref{kollpart} genannten Probleme wurde eine
 		einfache Flusssimulation implementiert die eine starke Abstraktion
-		der Kollision der simmulierten Partikeln mit imaginären Partikel darstellt.
-		Diese imaginären Partikel befinden sich zwischen den simmulierten
+		der Kollision der simulierten Partikeln mit imaginären Partikel darstellt.
+		Diese imaginären Partikel befinden sich zwischen den simulierten
 		Partikeln und der Landschaft, sie werden allerdings weder dargestellt
-		noch simmuliert. Dies wird dadurch erreicht indem die Heightmap virtuell
+		noch simuliert. Dies wird dadurch erreicht indem die Heightmap virtuell
 		auf die Höhe des Partikels erhöht, und weder die Wirkung der Gravitation
 		noch der Reibung berechnet werden. Erreicht wird dies indem der 
-		ewegungsvektor jedes Partikels in jeder Iteration mithilfe der
+		Bewegungsvektor jedes Partikels in jeder Iteration mithilfe der
 		Flächennormale der Heightmap unterhalb der Partikelposition
 		reflektiert wird.
 		Wenn dann Partikel dann in einer horizontalen Bewegung über die 
@@ -293,7 +293,7 @@
 			\caption{ Bewegung eines Partikels über die imaginären Partikel. }
 			\label{fig:flow1}
 		\end{figure}
-		Diese Technik lässt sich noch weiter verfeinern indem man annimt dass
+		Diese Technik lässt sich noch weiter verfeinern indem man annimmt dass
 		die imaginären Partikel je nach Abstand zur Heightmap mehr oder weniger
 		beweglich sind. Je näher ein Partikel sich der Heightmap nähert desto
 		stärker wird es reflektiert. Befindet es sich jedoch weit über der
@@ -306,7 +306,7 @@
 			\caption{ Manipulation des Bewegungsvektors in verschiedenen Höhen. }
 			\label{fig:flow1}
 		\end{figure}
-		Dies führt mit einfachen Mitteln zu einem bereits ansehnlichen Ergebniss
+		Dies führt mit einfachen Mitteln zu einem bereits ansehnlichen Ergebnis
 		welches allerdings nicht wirklich physikalisch korrekt arbeitet.
 \end{Spacing}
 \newpage
