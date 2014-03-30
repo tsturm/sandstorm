@@ -3,19 +3,19 @@
 \begin{Spacing}{\mylinespace}
     Die Physik soll eine möglichst echtzeitfähige und
     realitätsgetreue Simulation von Luftströmung über eine dynamische Landschaft berechnen.
-    Zu diesem Zweck sollten die Partikel des Partikelsystem die einzelnen
+    Zu diesem Zweck sollten die Partikel des Partikelsystem, die einzelnen
     Luftteilchen darstellen und mithilfe einer einfachen Physik
-    die Interaktion zwischen diesen und ihrer Umgebung simuliert werden.
+    die Interaktion zwischen diesen und ihrer Umgebung simulieren.
     \subsection{Komponenten}
         Jedes Luftpartikel besteht aus zwei dreidimensionalen Vektoren.
         Der Vektor $\vec{p}_{i}$ stellt dabei die Position des Partikels im
         Raum dar und der Vektor $\vec{v}_{i}$ beschreibt die aktuelle Bewegung des Partikels.
-        Außerdem besitzen alle Partikel den gleichen Radius $r$ und einem
+        Außerdem besitzen alle Partikel den gleichen Radius $r$ und einen
         Reibungskoeffizienten $\mu$, welcher bestimmt wie viel Energie ein Partikel
         bei einer Kollision verliert.
         Zusätzlich zu den Partikeln stehen Informationen über die Umgebung
         wie z.B. Höhendaten der Landschaft und verschiedene externe
-        Kräfte ($F$), wie z.B. Gravitation, zur Verfügung.
+        Kräfte ($F$), wie z.B. Gravitation zur Verfügung.
 
         %\[ P_{i} = ( \vec{p}_{i}, \vec{v}_{i} ) , P_{i} \in P \]
         %\[ \vec{p}_{i} \in \mathbb{R}^{3} \]
@@ -31,8 +31,8 @@
 
         \[ \vec{p}_{i}(t+1) = \vec{p}_{i}(t) + \vec{v}_{i}(t) \]
 
-        Auf diese Weise wird der Impuls solange erhalten bis der Bewegungsvektor
-        durch Einwirkung äußerer Kräfte verändert wird (Abbildung \ref{fig:BewegungPartikel}).
+        Auf diese Weise wird der Impuls solange erhalten bis der Bewegungsvektor,
+        durch Einwirkung äußerer Kräfte, verändert wird (s. Abbildung \ref{fig:BewegungPartikel}).
 
         \begin{figure}[h!]
 			\centering
@@ -44,7 +44,7 @@
 
 		In diesem Fall wird angenommen das der zeitliche Abstand zwischen den
 		einzelnen Iterationen konstant ist. Wenn die Dauer zwischen den Iterationen
-		schwankt ist es ratsam dies zu kompensieren indem man den Bewegungsvektor
+		schwankt, ist es ratsam dies zu kompensieren indem man den Bewegungsvektor
 		$\vec{v}_{i}$ mit dem zeitlichen Abstand ($\Delta t$) zwischen den
 		Iterationen multipliziert.
 		 \[ \vec{p}_{i}(t+\Delta t) = \vec{p}_{i}(t) + \vec{v}_{i}(t) \cdot \Delta t\]
@@ -52,7 +52,7 @@
     \subsection{Verrechnung externer Kräfte}
         In jeder Iteration wird die Wirkung externer Kräfte ($F$) auf das
         Partikel berechnet. Dabei wird jede der externen Kräfte ($\vec{f}_i$) auf den
-        Bewegungsvektor $\vec{v}_{i}(t)$ aufaddiert (Abbildung \ref{fig:ModForce}).
+        Bewegungsvektor $\vec{v}_{i}(t)$ aufaddiert (s. Abbildung \ref{fig:ModForce}).
 
         \[ \vec{v}_{i}(t+\Delta t) = \vec{v}_{i}(t) + \sum_{\vec{f}_{i} \in F}{\vec{f}_{i} \cdot \Delta t} \]
 
@@ -88,9 +88,9 @@
     	Höhenwert der Heightmap unterhalb der horizontalen Position des Partikels. Wenn dieser Fall
     	vorliegt befindet sich das Partikel unterhalb der Heightmap und ist
     	folglich während der letzten Positionsänderung in das Terrain eingedrungen
-    	und es liegt nun eine Kollision vor.
+    	und es liegt eine Kollision vor.
 
-    	Zusätzlich kann der Durchmesser des Partikels berücksichtigt werden
+    	Zusätzlich kann der Durchmesser des Partikels berücksichtigt werden,
     	indem man den Radius zu dem Höhenwert der Heightmap aufaddiert und
     	dadurch eine Kollision erkannt wird bevor der Positionsvektor unterhalb
     	der tatsächlichen Heightmap liegt.
@@ -121,7 +121,7 @@
 		%\[ \vec{v}_{i}(t) = \left(\begin{array}{rr} 0 \\ 0 \\0 \end{array}\right) , \vec{f}_{i} = \left(\begin{array}{rr} 0 \\ -1 \\0 \end{array}\right) , \vec{n} = \left(\begin{array}{rr} 0 \\ 1 \\0 \end{array}\right) \]
 		%\[ \vec{v}_{i}(t+1) = \left(\begin{array}{rr} 0 \\ -1 \\0 \end{array}\right) -2 \cdot \langle \left(\begin{array}{rr} 0 \\ -1 \\0 \end{array}\right) , \left(\begin{array}{rr} 0 \\ 1 \\0 \end{array}\right) \rangle \cdot \left(\begin{array}{rr} 0 \\ 1 \\0 \end{array}\right) = \left(\begin{array}{rr} 0 \\ 1 \\0 \end{array}\right) \]
 		\\Die Kombination aus Reflektion und Gravitation führt außerdem dazu, dass
-		Partikel die auf der Heightmap liegenbleiben sind, sich entlang des Gefälles
+		Partikel die auf der Heightmap liegenbleiben, sich entlang des Gefälles
 		der Heightmap bewegen, oder im Falle einer horizontalen Ebene auf der aktuellen Position liegenbleiben.
 		Dies wird dadurch verursacht, dass ein liegengebliebenes
 		Partikel einen Nullvektor als Bewegungsvektor besitzt, wodurch nach Verrechnung der
