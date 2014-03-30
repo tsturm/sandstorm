@@ -6,66 +6,70 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {2}{\ignorespaces CPU- vs. GPU-Architektur}}{4}{figure.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {3}{\ignorespaces Das Viereck}}{5}{figure.3.3}
+\contentsline {figure}{\numberline {3}{\ignorespaces Die GPU Pipeline}}{5}{figure.3.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {4}{\ignorespaces Der VertexBuffer}}{5}{figure.3.4}
+\contentsline {figure}{\numberline {4}{\ignorespaces Aufbau des Rechtecks}}{5}{figure.3.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {5}{\ignorespaces Der IndexBuffer}}{6}{figure.3.5}
+\contentsline {figure}{\numberline {5}{\ignorespaces Der VertexBuffer unseres Rechtecks}}{6}{figure.3.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {6}{\ignorespaces Datenfluss}}{7}{figure.4.6}
+\contentsline {figure}{\numberline {6}{\ignorespaces Der Vertex- und Index Buffer unseres Rechtecks}}{6}{figure.3.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {7}{\ignorespaces Kompontenten}}{8}{figure.4.7}
+\contentsline {figure}{\numberline {7}{\ignorespaces Der Ergebnis unseres kleinen Beispiels.}}{7}{figure.3.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {8}{\ignorespaces Laboraufbau}}{9}{figure.5.8}
+\contentsline {figure}{\numberline {8}{\ignorespaces Datenfluss}}{8}{figure.4.8}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {9}{\ignorespaces Kinect Sensor}}{10}{figure.5.9}
+\contentsline {figure}{\numberline {9}{\ignorespaces Kompontenten}}{9}{figure.4.9}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {10}{\ignorespaces Laboraufbau}}{12}{figure.5.10}
+\contentsline {figure}{\numberline {10}{\ignorespaces Laboraufbau}}{10}{figure.5.10}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {11}{\ignorespaces Regul\IeC {\"a}res Gitter des Terrains.}}{14}{figure.5.11}
+\contentsline {figure}{\numberline {11}{\ignorespaces Kinect Sensor}}{11}{figure.5.11}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {12}{\ignorespaces Die gelieferten Daten.}}{14}{figure.5.12}
+\contentsline {figure}{\numberline {12}{\ignorespaces Laboraufbau}}{13}{figure.5.12}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {13}{\ignorespaces In einer Textur abgelegte H\IeC {\"o}hendaten (Heightmap).}}{15}{figure.5.13}
+\contentsline {figure}{\numberline {13}{\ignorespaces Regul\IeC {\"a}res Gitter des Terrains.}}{15}{figure.5.13}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {14}{\ignorespaces Darstellung mit nur einer Farbe.}}{16}{figure.5.14}
+\contentsline {figure}{\numberline {14}{\ignorespaces Die gelieferten Daten.}}{15}{figure.5.14}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {15}{\ignorespaces (a) Einf\IeC {\"a}rbung anhand der H\IeC {\"o}hentextur. (b, c) Einf\IeC {\"a}rbung anhand eines benutzerdefinierten Farbverlaufs.}}{16}{figure.5.15}
+\contentsline {figure}{\numberline {15}{\ignorespaces In einer Textur abgelegte H\IeC {\"o}hendaten (Heightmap).}}{16}{figure.5.15}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {16}{\ignorespaces (a) 1. experimentelle und (b) endg\IeC {\"u}ltige Darstellung der H\IeC {\"o}henlinien.}}{17}{figure.5.16}
+\contentsline {figure}{\numberline {16}{\ignorespaces Darstellung mit nur einer Farbe.}}{17}{figure.5.16}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {17}{\ignorespaces Grundfunktionen der Kamera.}}{18}{figure.5.17}
+\contentsline {figure}{\numberline {17}{\ignorespaces (a) Einf\IeC {\"a}rbung anhand der H\IeC {\"o}hentextur. (b, c) Einf\IeC {\"a}rbung anhand eines benutzerdefinierten Farbverlaufs.}}{17}{figure.5.17}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {18}{\ignorespaces Aufbau des Kamerasystems.}}{18}{figure.5.18}
+\contentsline {figure}{\numberline {18}{\ignorespaces (a) 1. experimentelle und (b) endg\IeC {\"u}ltige Darstellung der H\IeC {\"o}henlinien.}}{18}{figure.5.18}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {19}{\ignorespaces Aufbau des Rechtecks f\IeC {\"u}r ein Billboard.}}{19}{figure.5.19}
+\contentsline {figure}{\numberline {19}{\ignorespaces Grundfunktionen der Kamera.}}{19}{figure.5.19}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {20}{\ignorespaces Kanalbelegung der einzelnen Rendertargets.}}{20}{figure.5.20}
+\contentsline {figure}{\numberline {20}{\ignorespaces Aufbau des Kamerasystems.}}{19}{figure.5.20}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {21}{\ignorespaces Duplizierte Rendertargets f\IeC {\"u}r Ping-Pong Verfahren.}}{21}{figure.5.21}
+\contentsline {figure}{\numberline {21}{\ignorespaces Aufbau des Rechtecks f\IeC {\"u}r ein Billboard.}}{20}{figure.5.21}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {22}{\ignorespaces Additives Blending.}}{21}{figure.5.22}
+\contentsline {figure}{\numberline {22}{\ignorespaces Kanalbelegung der einzelnen Rendertargets.}}{21}{figure.5.22}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {23}{\ignorespaces Partikelsystem mit unterschiedlichen Konfigurationen.}}{22}{figure.5.23}
+\contentsline {figure}{\numberline {23}{\ignorespaces Duplizierte Rendertargets f\IeC {\"u}r Ping-Pong Verfahren.}}{22}{figure.5.23}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {24}{\ignorespaces Konstante Bewegung}}{23}{figure.5.24}
+\contentsline {figure}{\numberline {24}{\ignorespaces Additives Blending.}}{22}{figure.5.24}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {25}{\ignorespaces Bewegungsvektor vor(1) und nach(2) Modifikation durch eine externe Kraft }}{24}{figure.5.25}
+\contentsline {figure}{\numberline {25}{\ignorespaces Partikelsystem mit unterschiedlichen Konfigurationen.}}{23}{figure.5.25}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {26}{\ignorespaces Die auf das Partikel wirkende Kraft(f) bleibt konstant und die Bewegung wird bei jedem Rechenschritt weiter in die Richtung der Kraft beschleunigt}}{24}{figure.5.26}
+\contentsline {figure}{\numberline {26}{\ignorespaces Konstante Bewegung}}{24}{figure.5.26}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {27}{\ignorespaces (1) Partikel dringt in die Heightmap ein. (2) Erkennung der Kollision. (3) Reflektion des Bewegungsvektors(v) entlang der Fl\IeC {\"a}chennormale(n). (4) }}{25}{figure.5.27}
+\contentsline {figure}{\numberline {27}{\ignorespaces Bewegungsvektor vor(1) und nach(2) Modifikation durch eine externe Kraft }}{25}{figure.5.27}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {28}{\ignorespaces Bewegung eines Partikels entlang eines Gef\IeC {\"a}lles.}}{26}{figure.5.28}
+\contentsline {figure}{\numberline {28}{\ignorespaces Die auf das Partikel wirkende Kraft(f) bleibt konstant und die Bewegung wird bei jedem Rechenschritt weiter in die Richtung der Kraft beschleunigt}}{25}{figure.5.28}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {29}{\ignorespaces Multi-Window GUI aus dem ersten Projektsemester.}}{28}{figure.5.29}
+\contentsline {figure}{\numberline {29}{\ignorespaces (1) Partikel dringt in die Heightmap ein. (2) Erkennung der Kollision. (3) Reflektion des Bewegungsvektors(v) entlang der Fl\IeC {\"a}chennormale(n). (4) }}{26}{figure.5.29}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {30}{\ignorespaces Einige Bedienelemente der Ruminate GUI \cite {Fra13}.}}{29}{figure.5.30}
+\contentsline {figure}{\numberline {30}{\ignorespaces Bewegung eines Partikels entlang eines Gef\IeC {\"a}lles.}}{27}{figure.5.30}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {31}{\ignorespaces Dynamische Konstruktion des GUI.}}{29}{figure.5.31}
+\contentsline {figure}{\numberline {31}{\ignorespaces Multi-Window GUI aus dem ersten Projektsemester.}}{29}{figure.5.31}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {32}{\ignorespaces Das neue ingame GUI.}}{30}{figure.5.32}
+\contentsline {figure}{\numberline {32}{\ignorespaces Einige Bedienelemente der Ruminate GUI \cite {Fra13}.}}{30}{figure.5.32}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {33}{\ignorespaces Unterschiedliche Erscheinungsbilder des GUI.}}{30}{figure.5.33}
+\contentsline {figure}{\numberline {33}{\ignorespaces Dynamische Konstruktion des GUI.}}{30}{figure.5.33}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {34}{\ignorespaces Sandstorm Projekt in Betrieb}}{32}{figure.6.34}
+\contentsline {figure}{\numberline {34}{\ignorespaces Das neue ingame GUI.}}{31}{figure.5.34}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {35}{\ignorespaces Unterschiedliche Erscheinungsbilder des GUI.}}{31}{figure.5.35}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {36}{\ignorespaces Sandstorm Projekt in Betrieb}}{33}{figure.6.36}
